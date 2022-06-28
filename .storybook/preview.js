@@ -1,4 +1,4 @@
-import '../pages/globals.css';
+import '../styles/globals.css';
 
 
 export const parameters = {

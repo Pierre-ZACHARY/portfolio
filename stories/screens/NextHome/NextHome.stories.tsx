@@ -14,3 +14,6 @@ export default {
 const Template: ComponentStory<typeof Home> = (args) => <Home {...args} />;
 
 export const HomePage = Template.bind({});
+HomePage.args = {
+    allPostsData: [{date: "1111-11-11", id: "id:0", title: "Lorem Ipsum"}]
+}
