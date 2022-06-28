@@ -1,8 +1,7 @@
 import {NextPage} from "next";
 import Head from "next/head";
 import Image from "next/image";
-//import '../styles/globals.css';
-import styles from "../../../styles/Home.module.css";
+import styles from "./Home.module.css";
 import vercelpic from '../../../public/vercel.svg'
 
 export const Home: NextPage = () => {
