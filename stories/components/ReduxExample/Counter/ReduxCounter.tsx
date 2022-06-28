@@ -1,38 +1,28 @@
 import React from "react";
-import {useDispatch} from "react-redux";
-import {incrementByAmount} from "./counterReducer";
-import {switchCase} from "@babel/types";
+import {action, CounterAction} from "./counterAction";
+import {useAppDispatch} from "../../../../redux/hooks";
 
 interface ReduxCounterProps {
     backgroundColor?: string;
-    action: ReduxAction;
+    CounterAction: CounterAction;
     label: string;
-}
-
-enum ReduxAction {
-    Increment= "Increment",
-    Decrement = "Decrement",
-    incrementByAmount = "IncrementByAmount",
+    amount?: number
 }
 
 export const ReduxCounter = ({
-                           backgroundColor,
-                           label,
-                                 action: ReduxAction,
-                           ...props
-                       }: ReduxCounterProps) => {
-    const dispatch = useDispatch()
-    // TODO VOIR COMMENT ON PASSE UNE ACTION EN ARGUMENT
+                                 backgroundColor,
+                                 label,
+                                 CounterAction,
+                                 amount,
+                                 ...props
+}: ReduxCounterProps) => {
+    const dispatch = useAppDispatch()
 
     return (
-
-        <button
-            type="button"
-            style={{ backgroundColor }}
-            onClick={() => dispatch(incrementByAmount(3))}
-
-            {...props}
-        >
+        <button type="button"
+                style={{ backgroundColor }}
+                onClick={() => action(dispatch, CounterAction, amount)}
+                {...props}>
             {label}
         </button>
     );
