@@ -7,6 +7,7 @@ import Link from "next/link";
 import Layout, {siteTitle} from "../../components/NextjsExample/Layout/layout";
 import utilStyles from "/styles/utils.module.css";
 import {Component} from "react";
+import Date from '../../components/NextjsExample/Date/date';
 
 export class Home extends Component<{ allPostsData: {date: string; id: string; title: string;}[] }> {
     render() {
@@ -29,11 +30,13 @@ export class Home extends Component<{ allPostsData: {date: string; id: string; t
                     <ul className={utilStyles.list}>
                         {allPostsData.map(({ id, date, title }: {date: string; id: string; title: string;}) => (
                             <li className={utilStyles.listItem} key={id}>
-                                {title}
+                                <Link href={`/posts/${id}`}>
+                                    <a>{title}</a>
+                                </Link>
                                 <br />
-                                {id}
-                                <br />
-                                {date}
+                                <small className={utilStyles.lightText}>
+                                    <Date dateString={date} />
+                                </small>
                             </li>
                         ))}
                     </ul>
