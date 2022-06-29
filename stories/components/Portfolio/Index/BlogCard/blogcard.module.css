@@ -1,0 +1,118 @@
+@property --rotate {
+    syntax: "<angle>";
+    initial-value: 132deg;
+    inherits: false;
+}
+
+:root {
+    --card-height: 300px;
+    --card-width: calc(var(--card-height) / 1.5);
+}
+
+.mostViewed{
+    --gradient-1: #5ddcff;
+    --gradient-2: #3c67e3;
+    --gradient-3: #4e00c2;
+}
+.lastUpdated{
+    --gradient-1: #affa1b;
+    --gradient-2: #b6ff3f;
+    --gradient-3: #019a14;
+}
+.lastUpdated.mostViewed{
+    --gradient-1: #ec9674;
+    --gradient-2: #ec3525;
+    --gradient-3: #932811;
+}
+
+.card {
+    /*background: #191c29;*/
+    /*background: linear-gradient(180deg, rgba(255, 255, 255, 0.03) 50%, rgba(0, 0, 0, 0.9) 100%);*/
+    background-size: cover;
+    width: var(--card-width);
+    height: var(--card-height);
+    padding: 3px;
+    position: relative;
+    border-radius: 6px;
+    /*text-align: center;*/
+    cursor: pointer;
+}
+
+.card::before{
+    content: "";
+    width: 104%;
+    height: 102%;
+    border-radius: 8px;
+    background-image: linear-gradient(
+            var(--rotate),
+            var(--gradient-1),
+            var(--gradient-2) 43%,
+            var(--gradient-3));
+    position: absolute;
+    z-index: -1;
+    top: -1%;
+    left: -2%;
+    animation: spin 2.5s linear infinite;
+}
+
+
+.card::after {
+    position: absolute;
+    content: "";
+    top: calc(var(--card-height) / 6);
+    left: 0;
+    right: 0;
+    z-index: -1;
+    height: 100%;
+    width: 100%;
+    /*margin: 0 auto;*/
+    transform: scale(0.8);
+    filter: blur(calc(var(--card-height) / 6));
+    background-image: linear-gradient(
+            var(--rotate),
+            var(--gradient-1),
+            var(--gradient-2) 43%,
+            var(--gradient-3));
+    opacity: 1;
+    transition: opacity .5s;
+    animation: spin 2.5s linear infinite;
+}
+
+@keyframes spin {
+    0% {
+        --rotate: 0deg;
+    }
+    100% {
+        --rotate: 360deg;
+    }
+}
+
+.cardTitle, .cardInfo{
+    color: white;
+    text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
+    margin: 0;
+}
+
+.cardTitle {
+    overflow-wrap: anywhere;
+}
+
+.cardInfo{
+
+    font-size: 12px;
+}
+
+.cardGradient{
+    background: linear-gradient(180deg, rgba(255, 255, 255, 0.03) 50%, rgba(0, 0, 0, 0.9) 100%);
+    position: absolute;
+    bottom: 0;
+    top: 0;
+    right: 0;
+    left: 0;
+    border-radius: 6px;
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: end;
+    flex-direction: column;
+    padding: 10px;
+}
