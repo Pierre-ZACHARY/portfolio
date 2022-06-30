@@ -87,20 +87,24 @@
     }
 }
 
-.cardTitle, .cardInfo{
+.cardTitle, .cardInfo, .cardDate{
     color: white;
-    text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000, 1px 1px 0 #000;
     margin: 0;
 }
 
 .cardTitle {
     overflow-wrap: anywhere;
+    line-height: normal;
 }
 
 .cardInfo{
-
+    background: #333333;
+    width: fit-content;
+    padding: 0px 5px;
+    border-radius: 5px;
     font-size: 12px;
 }
+
 
 .cardGradient{
     background: linear-gradient(180deg, rgba(255, 255, 255, 0.03) 50%, rgba(0, 0, 0, 0.9) 100%);
@@ -115,4 +119,11 @@
     justify-content: end;
     flex-direction: column;
     padding: 10px;
+}
+
+.hrRounded{
+    border-top: 1px solid white;
+    margin: 5px 0px;
+    border-radius: 5px;
+    width: 50px;
 }

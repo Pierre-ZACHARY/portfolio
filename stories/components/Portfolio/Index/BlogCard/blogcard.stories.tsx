@@ -9,9 +9,7 @@ export default {
     title: 'Portfolio/Index/Components/Blogcard',
     component: Blogcard,
     // More on argTypes: https://storybook.js.org/docs/react/api/argtypes
-    argTypes: {
-
-    },
+    argTypes: { datestringiso: { control: 'date' }},
 } as ComponentMeta<typeof Blogcard>;
 
 
@@ -23,7 +21,8 @@ Default.args = {
     mostviewed: false,
     lastupdated: false,
     description: "",
-    imagesrc: cardbg.src
+    imagesrc: cardbg.src,
+    datestringiso: "2020-01-01"
 }
 
 export const MostViewed = Template.bind({});
@@ -32,7 +31,8 @@ MostViewed.args = {
     mostviewed: true,
     lastupdated: false,
     description: "",
-    imagesrc: cardbg.src
+    imagesrc: cardbg.src,
+    datestringiso: "2020-02-15"
 }
 
 export const LastUpdated = Template.bind({});
@@ -41,7 +41,8 @@ LastUpdated.args = {
     mostviewed: false,
     lastupdated: true,
     description: "",
-    imagesrc: cardbg.src
+    imagesrc: cardbg.src,
+    datestringiso: "2020-01-01"
 }
 
 
@@ -51,5 +52,6 @@ LastUpdatedAndMostViewed.args = {
     mostviewed: true,
     lastupdated: true,
     description: "",
-    imagesrc: cardbg.src
+    imagesrc: cardbg.src,
+    datestringiso: "2020-01-01"
 }

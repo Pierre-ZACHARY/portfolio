@@ -2,6 +2,7 @@ import Image from "next/image";
 import styles from "./blogcard.module.css"
 import cn from "classnames";
 import {backgroundImages} from "polished";
+import {format, parseISO} from "date-fns";
 
 
 interface BlogcardProps {
@@ -10,6 +11,7 @@ interface BlogcardProps {
     imagesrc: string;
     mostviewed: boolean;
     lastupdated: boolean;
+    datestringiso: string;
 }
 
 export const Blogcard = ({
@@ -18,6 +20,7 @@ export const Blogcard = ({
                              imagesrc,
                              mostviewed,
                              lastupdated,
+                             datestringiso,
                              ...props
                          }: BlogcardProps) => {
     console.log(cardtitle)
@@ -29,6 +32,14 @@ export const Blogcard = ({
         infotext += "👀️ Most Viewed"
     }
     let info = <pre className={styles.cardInfo}>{infotext}</pre>
+    let date;
+
+    date = parseISO(datestringiso)
+    if(date.toDateString() === "Invalid Date"){
+        date = parseISO(new Date(parseInt(datestringiso)).toISOString())
+    }
+
+    const formated_date = format(date, 'LLLL d, yyyy');
     return (
         <>
             <div className={[styles.card, cn({
@@ -37,6 +48,8 @@ export const Blogcard = ({
             })].join(" ")} style={{backgroundImage: `url(${imagesrc})`}}>
 
                 <div className={styles.cardGradient}>
+                    <h5 className={styles.cardDate}>{formated_date}</h5>
+                    <hr className={styles.hrRounded}/>
                     <h2 className={styles.cardTitle}>{cardtitle}</h2>
                     {info}
                 </div>
