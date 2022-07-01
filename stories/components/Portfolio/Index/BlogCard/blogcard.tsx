@@ -46,13 +46,14 @@ export const Blogcard = ({
                 [styles.mostViewed]: mostviewed,
                 [styles.lastUpdated]: lastupdated,
             })].join(" ")} style={{backgroundImage: `url(${imagesrc})`}}>
-
+                <div className={styles.cardBorder}><div className={styles.cardBorderChild}></div></div>
                 <div className={styles.cardGradient}>
                     <h5 className={styles.cardDate}>{formated_date}</h5>
                     <hr className={styles.hrRounded}/>
                     <h2 className={styles.cardTitle}>{cardtitle}</h2>
                     {info}
                 </div>
+                <div className={styles.cardShadow}><div className={styles.cardShadowChild}></div></div>
 
             </div>
 
