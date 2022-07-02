@@ -23,7 +23,6 @@ export const Blogcard = ({
                              datestringiso,
                              ...props
                          }: BlogcardProps) => {
-    console.log(cardtitle)
     let infotext = ""
     if(lastupdated){
         infotext += "⏱️ Last Post\n"
