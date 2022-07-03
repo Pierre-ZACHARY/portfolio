@@ -1,5 +1,5 @@
 import React from "react";
-import {action, CounterAction} from "./counterAction";
+import {executeAction, CounterAction} from "./counterAction";
 import {useAppDispatch} from "../../../../redux/hooks";
 import styles from "./ReduxCounter.module.css";
 
@@ -23,7 +23,7 @@ export const ReduxCounter = ({
         <button type="button"
                 className={styles.counterButton}
                 style={{ backgroundColor }}
-                onClick={() => action(dispatch, CounterAction, amount)}
+                onClick={() => executeAction(dispatch, CounterAction, amount)}
                 {...props}>
             {label}
         </button>

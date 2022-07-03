@@ -2,6 +2,7 @@
 :root {
     --card-height: 300px;
     --card-width: calc(var(--card-height) / 1.5);
+    --card-border-size: 4px;
 }
 
 .mostViewed{
@@ -52,13 +53,13 @@
 }
 .cardBorder{
     content: "";
-    width: 104%;
-    height: 102%;
+    width: calc(var(--card-width) + 2 * var(--card-border-size));
+    height: calc(var(--card-height) + 2 * var(--card-border-size));
     border-radius: 8px;
     position: absolute;
     z-index: -1;
-    top: -1%;
-    left: -2%;
+    top: calc(var(--card-border-size) * -1);
+    left: calc(var(--card-border-size) * -1);
     overflow: hidden;
 }
 
@@ -101,6 +102,7 @@
 
 .cardDate{
     margin-top: auto;
+    width: 100%;
 }
 
 .cardTitle {
@@ -115,6 +117,7 @@
     padding: 0px 5px;
     border-radius: 5px;
     font-size: 12px;
+    margin-left: auto;
 }
 
 

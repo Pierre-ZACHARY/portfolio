@@ -47,10 +47,10 @@ export const Blogcard = ({
             })].join(" ")} style={{backgroundImage: `url(${imagesrc})`}}>
                 <div className={styles.cardBorder}><div className={styles.cardBorderChild}></div></div>
                 <div className={styles.cardGradient}>
+                    {info}
                     <h5 className={styles.cardDate}>{formated_date}</h5>
                     <hr className={styles.hrRounded}/>
-                    <h2 className={styles.cardTitle}>{cardtitle}</h2>
-                    {info}
+                    <h3 className={styles.cardTitle}>{cardtitle}</h3>
                 </div>
                 <div className={styles.cardShadow}><div className={styles.cardShadowChild}></div></div>
 

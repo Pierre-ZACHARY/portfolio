@@ -1,11 +1,13 @@
 html,
 body {
-  padding: 0;
-  margin: 0;
+  padding: 0 !important;
+  margin: 0 !important;
   font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen, Ubuntu,
   Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
   line-height: 1.6;
   font-size: 18px;
+  background-color: var(--background);
+  transition: background-color 1s cubic-bezier(0, 0, 0.2, 1);
 }
 
 * {
@@ -24,4 +26,31 @@ a:hover {
 img {
   max-width: 100%;
   display: block;
+}
+
+:root{
+  --max-width: 1280px;
+  --font-xlarge: 29px;
+  --font-large: 24px;
+  --font-medium: 18px;
+  --font-small: 14px;
+}
+
+@media (max-width: 720px){
+  :root{
+    --font-xlarge: 24px;
+    --font-large: 18px;
+    --font-medium: 16px;
+    --font-small: 13px;
+  }
+}
+
+@media (min-width: 1921px){
+  :root{
+    --max-width: 1640px;
+    --font-xlarge: 34px;
+    --font-large: 27px;
+    --font-medium: 22px;
+    --font-small: 16px;
+  }
 }

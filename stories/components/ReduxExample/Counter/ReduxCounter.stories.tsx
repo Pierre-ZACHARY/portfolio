@@ -18,10 +18,11 @@ function Counter(){
 
 function decorator(story: PartialStoryFn<ReactFramework, Args>) {
     return (
-        <Provider store={store}>
+        <>
             <Counter/>
             {story()}
-        </Provider>)
+        </>
+    )
 }
 
 export default {

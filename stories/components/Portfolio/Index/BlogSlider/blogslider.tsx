@@ -22,7 +22,7 @@ export const Blogslider = ({content}: BlogsliderProps) => {
                 modules={[Keyboard, Navigation, Pagination, Scrollbar, A11y]}
                 slidesPerView={1}
                 spaceBetween={50}
-                navigation={true}
+                navigation
                 keyboard={{
                     enabled: true,
                 }}

@@ -7,7 +7,7 @@ export enum CounterAction {
 }
 
 
-export const action = (dispatch: Dispatch<AnyAction>, name: CounterAction, amount: number = 0) => {
+export const executeAction = (dispatch: Dispatch<AnyAction>, name: CounterAction, amount: number = 0) => {
     switch (name){
         case CounterAction.Increment:
             dispatch(increment());

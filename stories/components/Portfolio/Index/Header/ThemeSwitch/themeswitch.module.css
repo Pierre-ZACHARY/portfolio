@@ -1,0 +1,20 @@
+.select{
+    height: 30px;
+    width: 30px;
+    padding: 4px 5px 5px;
+    font-size: 20px;
+    text-align: center;
+    appearance: none;
+    color: var(--primary);
+    background-color: rgba(0,0,0,0);
+    display: flex;
+    border: none;
+}
+
+
+@media (max-width: 720px){
+    .select{
+        width: unset;
+        padding: 0;
+    }
+}

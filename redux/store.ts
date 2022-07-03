@@ -1,10 +1,12 @@
 import { configureStore } from '@reduxjs/toolkit'
 import counterReducer from "../stories/components/ReduxExample/Counter/counterReducer";
+import headerSectionReducer from "../stories/components/Portfolio/Index/Header/HeaderSection/headerSectionReducer";
 
 
 export const store =  configureStore({
     reducer: {
-        counter: counterReducer
+        counter: counterReducer,
+        headerSection: headerSectionReducer,
     },
 })
 
