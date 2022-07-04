@@ -4,6 +4,7 @@ import styles from "./header.module.css"
 import Link from "next/link";
 import {useEffect, useState} from "react";
 import { HamburgerSqueeze } from 'react-animated-burgers'
+import {TranslationSwitch} from "./TranslationSwitch/translationswitch";
 
 
 const Separator = () => {
@@ -35,6 +36,7 @@ export const Header = ({content}: HeaderProps) => {
                     <Link href="/"><a className={styles.logoLink}><h2 className={styles.logo}>Pierre ZACHARY</h2></a></Link>
                     <div className={styles.columnContainer}>
                         <section className={styles.firstRow}>
+                            <TranslationSwitch className={styles.flagSelect}/>
                             <ThemeSwitch/>
                         </section>
                         <section className={styles.secondRow}>

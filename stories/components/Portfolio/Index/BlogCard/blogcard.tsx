@@ -44,7 +44,8 @@ export const Blogcard = ({
             <div className={[styles.card, cn({
                 [styles.mostViewed]: mostviewed,
                 [styles.lastUpdated]: lastupdated,
-            })].join(" ")} style={{backgroundImage: `url(${imagesrc})`}}>
+            })].join(" ")} >
+                <div style={{backgroundImage: `url(${imagesrc})`}}/>
                 <div className={styles.cardBorder}><div className={styles.cardBorderChild}></div></div>
                 <div className={styles.cardGradient}>
                     {info}

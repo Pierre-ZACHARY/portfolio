@@ -1,20 +1,86 @@
+@import url('https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/fontawesome.min.css');
+
 .select{
-    height: 30px;
-    width: 30px;
-    padding: 4px 5px 5px;
-    font-size: 20px;
-    text-align: center;
-    appearance: none;
-    color: var(--primary);
-    background-color: rgba(0,0,0,0);
-    display: flex;
-    border: none;
+    height: 25px;
+    padding: 0;
+    transition: background-color 1s cubic-bezier(0, 0, 0.2, 1);
 }
 
+.select div{
+    width: fit-content;
+    z-index: 1;
+    background-color: rgba(0,0,0,0);
+}
+
+.valueContainer{
+    padding: 0 !important;
+    background-color: rgba(0,0,0,0);
+}
+
+.optionIcon{
+    color: var(--primary-color);
+    font-size: inherit;
+    width: var(--font-medium);
+    margin-right: 20px;
+}
+.valueContainer>button>.optionIcon{
+    margin: 0;
+    width: unset;
+}
+.valueContainer>button{
+    padding: 5px;
+    margin-right: -5px;
+    border: none !important;
+    outline: none !important;
+    background-color: var(--background);
+    transition: background-color 1s cubic-bezier(0, 0, 0.2, 1);
+}
+.valueContainer>button:hover{
+    cursor: pointer;
+}
+
+.optionLabel{
+    cursor: pointer;
+    padding: 0;
+    margin: 0;
+    font-size: var(--font-small);
+    color: var(--primary);
+}
+
+.select>div{
+    margin: 0;
+}
+.select:nth-child(3){
+    margin-left: -50px;
+}
+.option:hover .optionLabel{
+    color: var(--primary-color);
+}
+
+.option{
+    color: var(--primary);
+    font-size: var(--font-medium);
+    display: flex !important;
+    flex-wrap: nowrap;
+    align-items: center;
+}
 
 @media (max-width: 720px){
     .select{
         width: unset;
         padding: 0;
     }
+}
+
+.Menu{
+    position: relative;
+}
+
+.Menu>div{
+    position: absolute;
+    right: 0;
+    border: solid var(--primary) 1px;
+    border-radius: 4px;
+    background-color: var(--background);
+    transition: background-color 1s cubic-bezier(0, 0, 0.2, 1);
 }
