@@ -1,9 +1,10 @@
-import {useEffect, useRef, useState} from 'react'
+import {ComponentType, useEffect, useRef, useState} from 'react'
 import {useTheme} from 'next-themes'
-import Select, {components, GroupBase, StylesConfig} from 'react-select';
+import Select, {components, GroupBase, StylesConfig, ValueContainerProps} from 'react-select';
 import {faCircleHalfStroke, faComputer, faMoon, faSun} from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import styles from "./themeswitch.module.css"
+import {SelectComponents} from "react-select/dist/declarations/src/components";
 
 const { Option, ValueContainer, Menu } = components;
 
@@ -43,10 +44,13 @@ const customStyles: StylesConfig<OptionType, false, GroupBase<OptionType>> = {
     }),
 }
 
+interface ThemeSwitchProps{
+    className?: string;
+    alignToRight?: boolean;
+}
 
 
-
-export const ThemeSwitch = () => {
+export const ThemeSwitch = ({className = "", alignToRight = false}: ThemeSwitchProps) => {
     const [state, setState] = useState({mounted: false, open: false})
     const { theme, setTheme } = useTheme()
     const selectRef = useRef();
@@ -66,22 +70,23 @@ export const ThemeSwitch = () => {
         { value: "oled", label: "OLED", icon: <FontAwesomeIcon icon={faCircleHalfStroke} className={styles.optionIcon} />  },
     ];
 
-    const getIcon = (value: string | undefined) => {
+    const getOption = (value: string | undefined) => {
         if(value){
             for(let i = 0; i<options.length; i++ ){
                 if(options[i].value == value){
-                    return options[i].icon;
+                    return options[i];
                 }
             }
         }
     }
 
-    const CustomValueContainer = ({children, ...props}: any) => {
-        return(<ValueContainer {...props} className={styles.valueContainer} onBlur={HandleBlur}><button onClick={toggleMenu} onTouchEnd={toggleMenu} onBlur={HandleBlur} autoFocus={true}>{getIcon(theme)}</button></ValueContainer>)
+    const CustomValueContainer = ({children, ...props}:  any) => {
+        const {} = props;
+        return(<ValueContainer {...props} className={styles.valueContainer} onBlur={HandleBlur}><button onClick={toggleMenu} onTouchEnd={toggleMenu} onBlur={HandleBlur} autoFocus={true}>{getOption(theme)!.icon}<p className={styles.buttonLabel}>{getOption(theme)!.label}</p></button></ValueContainer>)
     }
 
     const CustomMenu = ({children, ...props}: any) => {
-        return(<Menu {...props} className={styles.Menu}><div>{children}</div></Menu>)
+        return(<Menu {...props} className={[styles.Menu, alignToRight ? styles.alignToRight : null].join(" ")}><div>{children}</div></Menu>)
     }
 
     // useEffect only runs on the client, so now we can safely show the UI
@@ -97,13 +102,13 @@ export const ThemeSwitch = () => {
         setTheme(e.value);
     }
 
-    const components = { ValueContainer: CustomValueContainer, Option: CustomOption, Menu: CustomMenu };
+    const components: Partial<SelectComponents<OptionType, false, GroupBase<OptionType>>> = { ValueContainer: CustomValueContainer, Option: CustomOption, Menu: CustomMenu } ;
 
     return (
         <>
             <Select components={components}
                     menuIsOpen={state.open}
-                    className={styles.select}
+                    className={[styles.select, className].join(" ")}
                     menuPosition="fixed"
                     styles={customStyles}
                     options={options}

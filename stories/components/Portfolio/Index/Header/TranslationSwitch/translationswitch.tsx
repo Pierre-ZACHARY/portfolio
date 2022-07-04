@@ -4,10 +4,11 @@ import ReactFlagsSelect from "react-flags-select";
 import {useState} from "react";
 
 interface TranslationswitchProps{
-    className: string;
+    className?: string;
+    alignToRight?: boolean;
 }
 
-export const TranslationSwitch = ({ className }: TranslationswitchProps) => {
+export const TranslationSwitch = ({ className="", alignToRight=false}: TranslationswitchProps) => {
     const router = useRouter()
     const [selected, setSelected] = useState("FR");
 
@@ -20,8 +21,8 @@ export const TranslationSwitch = ({ className }: TranslationswitchProps) => {
                 countries={["FR", "US"]}
                 fullWidth={false}
                 className={[styles.select, className].join(" ")}
-                showSelectedLabel={false}
-                alignOptionsToRight={true}
+                showSelectedLabel={true}
+                alignOptionsToRight={alignToRight}
             />
         </>
     )

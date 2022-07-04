@@ -36,8 +36,8 @@ export const Header = ({content}: HeaderProps) => {
                     <Link href="/"><a className={styles.logoLink}><h2 className={styles.logo}>Pierre ZACHARY</h2></a></Link>
                     <div className={styles.columnContainer}>
                         <section className={styles.firstRow}>
-                            <TranslationSwitch className={styles.flagSelect}/>
-                            <ThemeSwitch/>
+                            <TranslationSwitch className={styles.flagSelect} alignToRight={true}/>
+                            <ThemeSwitch alignToRight={true}/>
                         </section>
                         <section className={styles.secondRow}>
                             <HeaderSection content=""/>
@@ -54,6 +54,7 @@ export const Header = ({content}: HeaderProps) => {
                 <Link href="#"><a><h3>Third</h3></a></Link>
                 <Link href="#"><a><h3>Fourth</h3></a></Link>
                 <ThemeSwitch/>
+                <TranslationSwitch  />
             </div>
         </>)
 }

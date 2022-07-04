@@ -17,13 +17,34 @@
 .select button{
     padding: 4px;
     margin: 0;
-    border: none;
+    border-color: var(--primary);
+    color: var(--primary);
 }
 
 .select button>span{
     margin:0;
     padding: 0;
 }
-.select button::after, .select button[aria-expanded="true"]::after{
-    display: none;
+.select button[aria-expanded="true"]{
+    color: var(--primary-color);
+}
+.select button::after{
+    border-top: 5px solid var(--primary);
+}
+
+.select button[aria-expanded="true"]::after{
+    border-bottom: 5px solid var(--primary-color);
+}
+
+@media (min-width: 720px){
+    .select button::after, .select button[aria-expanded="true"]::after{
+        display: none;
+    }
+
+    .select button{
+        border: none;
+    }
+    .select button>span>span:nth-child(2){
+        display: none;
+    }
 }
