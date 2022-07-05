@@ -3,15 +3,9 @@ import ThemeSwitch from "./ThemeSwitch/themeswitch";
 import styles from "./header.module.css"
 import Link from "next/link";
 import {useEffect, useState} from "react";
-import { HamburgerSqueeze } from 'react-animated-burgers'
+import { Squash as Hamburger } from 'hamburger-react'
 import {TranslationSwitch} from "./TranslationSwitch/translationswitch";
 import {useTranslation} from "react-i18next";
-
-// unused
-const Separator = () => {
-    return (<div className={styles.separator}></div>);
-}
-
 
 interface HeaderProps{
     content: string
@@ -28,7 +22,7 @@ export const Header = ({content}: HeaderProps) => {
     }, []);
 
     let toggleButton = () => {
-        setState({scroll: state.scroll, burgerActive: !state.burgerActive});
+        setState({...state, burgerActive: !state.burgerActive});
     }
 
     return (
@@ -44,8 +38,10 @@ export const Header = ({content}: HeaderProps) => {
                         <section className={styles.secondRow}>
                             <HeaderSection content=""/>
                         </section>
-                        <section className={styles.mobileRow}>
-                            <HamburgerSqueeze className={state.burgerActive? styles.mBurgerActive : styles.mBurger} isActive={state.burgerActive} toggleButton={toggleButton} />
+                        <section className={[styles.mobileRow, state.burgerActive? styles.mBurgerActive : styles.mBurger].join(" ")}>
+                            <Hamburger rounded
+                                       toggled={state.burgerActive}
+                                       toggle={()=>toggleButton()}/>
                         </section>
                     </div>
                 </nav>

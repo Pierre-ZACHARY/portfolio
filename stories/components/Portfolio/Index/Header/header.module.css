@@ -95,19 +95,13 @@
     }
 }
 
-.mBurger, .mBurgerActive{
-    padding: 0 !important;
-    margin: 10px !important;
-    height: 24px;
+.mBurger{
+    color: var(--primary);
+}
+.mBurgerActive{
+    color: var(--primary-color);
 }
 
-.mBurger span, .mBurger span::before, .mBurger span::after{
-    background-color: var(--primary);
-}
-
-.mBurgerActive span, .mBurgerActive span::before, .mBurgerActive span::after{
-    background-color: var(--primary-color);
-}
 
 .mobileMenuContainer{
     height: 100%;
