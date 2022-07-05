@@ -7,7 +7,7 @@ import { HamburgerSqueeze } from 'react-animated-burgers'
 import {TranslationSwitch} from "./TranslationSwitch/translationswitch";
 import {useTranslation} from "react-i18next";
 
-
+// unused
 const Separator = () => {
     return (<div className={styles.separator}></div>);
 }
