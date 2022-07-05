@@ -24,7 +24,7 @@ export const Header = ({content}: HeaderProps) => {
     let toggleButton = () => {
         setState({...state, burgerActive: !state.burgerActive});
     }
-
+//
     return (
         <>
             <div className={[styles.navcontainer, state.scroll>0 ? styles.notOnTop : styles.onTop].join(" ")}>
