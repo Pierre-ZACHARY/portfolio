@@ -144,3 +144,8 @@
     padding: 0;
     margin-right: 10px;
 }
+
+.themeSelect{
+    display: flex;
+    align-items: center;
+}

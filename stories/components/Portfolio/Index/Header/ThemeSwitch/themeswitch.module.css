@@ -38,7 +38,7 @@
     transition: background-color 1s cubic-bezier(0, 0, 0.2, 1);
     display: flex;
     align-items: center;
-    padding: 5px;
+    padding: 4px;
     outline: none !important;
 }
 
@@ -83,6 +83,7 @@
 
 .option{
     color: var(--primary);
+    background: none !important;
     font-size: var(--font-medium);
     display: flex !important;
     flex-wrap: nowrap;
@@ -117,4 +118,8 @@
     font-size: var(--font-medium);
     color: var(--primary);
     margin: 0 0 0 10px;
+}
+
+.menuOpen.buttonLabel{
+    color: var(--primary-color);
 }

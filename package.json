@@ -7,7 +7,7 @@
     "build": "next build",
     "start": "next start",
     "lint": "next lint",
-    "storybook": "start-storybook -p 6006",
+    "storybook": "start-storybook -p 6006 --quiet -s ./public",
     "build-storybook": "build-storybook -o docs-build -s ./stories/assets"
   },
   "dependencies": {
@@ -18,7 +18,9 @@
     "classnames": "^2.3.1",
     "date-fns": "^2.28.0",
     "gray-matter": "^4.0.3",
-    "i18next": "^21.8.11",
+    "i18next": "^21.8.12",
+    "i18next-browser-languagedetector": "^6.1.4",
+    "i18next-http-backend": "^1.4.1",
     "next": "12.1.6",
     "next-i18next": "^11.0.0",
     "next-themes": "^0.2.0",
@@ -55,6 +57,7 @@
     "eslint-plugin-storybook": "^0.5.13",
     "sass": "^1.53.0",
     "storybook-addon-next": "^1.6.6",
+    "storybook-react-i18next": "^1.1.2",
     "typescript": "4.7.4"
   }
 }

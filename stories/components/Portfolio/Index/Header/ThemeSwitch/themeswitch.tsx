@@ -82,7 +82,7 @@ export const ThemeSwitch = ({className = "", alignToRight = false}: ThemeSwitchP
 
     const CustomValueContainer = ({children, ...props}:  any) => {
         const {} = props;
-        return(<ValueContainer {...props} className={styles.valueContainer} onBlur={HandleBlur}><button onClick={toggleMenu} onTouchEnd={toggleMenu} onBlur={HandleBlur} autoFocus={true}>{getOption(theme)!.icon}<p className={styles.buttonLabel}>{getOption(theme)!.label}</p></button></ValueContainer>)
+        return(<ValueContainer {...props} className={styles.valueContainer} onBlur={HandleBlur}><button onClick={toggleMenu} onTouchEnd={toggleMenu} onBlur={HandleBlur} autoFocus={true}>{getOption(theme)!.icon}<p className={[styles.buttonLabel, state.open ? styles.menuOpen : null].join(" ")}>{getOption(theme)!.label}</p></button></ValueContainer>)
     }
 
     const CustomMenu = ({children, ...props}: any) => {

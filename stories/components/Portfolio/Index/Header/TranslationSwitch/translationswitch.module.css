@@ -28,18 +28,13 @@
 .select button[aria-expanded="true"]{
     color: var(--primary-color);
 }
-.select button::after{
-    border-top: 5px solid var(--primary);
-}
 
-.select button[aria-expanded="true"]::after{
-    border-bottom: 5px solid var(--primary-color);
-}
 
+.select button::after, .select button[aria-expanded="true"]::after{
+    display: none;
+}
 @media (min-width: 720px){
-    .select button::after, .select button[aria-expanded="true"]::after{
-        display: none;
-    }
+
 
     .select button{
         border: none;

@@ -37,7 +37,7 @@ export const Header = ({content}: HeaderProps) => {
                     <div className={styles.columnContainer}>
                         <section className={styles.firstRow}>
                             <TranslationSwitch className={styles.flagSelect} alignToRight={true}/>
-                            <ThemeSwitch alignToRight={true}/>
+                            <ThemeSwitch alignToRight={true} className={styles.themeSelect}/>
                         </section>
                         <section className={styles.secondRow}>
                             <HeaderSection content=""/>

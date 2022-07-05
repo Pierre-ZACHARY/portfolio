@@ -1,7 +1,8 @@
 import {ComponentMeta, ComponentStory} from "@storybook/react";
 import React from "react";
 import {TranslationSwitch} from "./translationswitch";
-import {useTranslation} from "next-i18next";
+import {useTranslation} from "react-i18next";
+//import {useTranslation} from "next-i18next";
 
 
 
@@ -10,7 +11,7 @@ function TradTest () {
 
     return(
         <>
-            <p>{t('testing')}</p>
+            <p>{t("common:testing")}</p>
         </>
     )
 }
@@ -35,6 +36,4 @@ const Template: ComponentStory<typeof TranslationSwitch> = (args) =>{
 };
 
 export const Default = Template.bind({});
-Default.args = {
-    content: ""
-}
+
