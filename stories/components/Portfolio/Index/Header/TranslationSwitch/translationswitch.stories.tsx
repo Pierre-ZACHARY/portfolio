@@ -2,7 +2,6 @@ import {ComponentMeta, ComponentStory} from "@storybook/react";
 import React from "react";
 import {TranslationSwitch} from "./translationswitch";
 import {useTranslation} from "react-i18next";
-//import {useTranslation} from "next-i18next";
 
 
 

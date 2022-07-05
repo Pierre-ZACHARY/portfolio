@@ -5,6 +5,7 @@ import {faCircleHalfStroke, faComputer, faMoon, faSun} from "@fortawesome/free-s
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import styles from "./themeswitch.module.css"
 import {SelectComponents} from "react-select/dist/declarations/src/components";
+import {useTranslation} from "react-i18next";
 
 const { Option, ValueContainer, Menu } = components;
 
@@ -51,6 +52,7 @@ interface ThemeSwitchProps{
 
 
 export const ThemeSwitch = ({className = "", alignToRight = false}: ThemeSwitchProps) => {
+    const {t} = useTranslation()
     const [state, setState] = useState({mounted: false, open: false})
     const { theme, setTheme } = useTheme()
     const selectRef = useRef();
@@ -64,10 +66,10 @@ export const ThemeSwitch = ({className = "", alignToRight = false}: ThemeSwitchP
     }
 
     const options: OptionType[] = [
-        { value: "system", label: "System", icon: <FontAwesomeIcon icon={faComputer} className={styles.optionIcon}/>  },
-        { value: "dark", label: "Dark", icon: <FontAwesomeIcon icon={faMoon} className={styles.optionIcon}/> },
-        { value: "light", label: "Light", icon: <FontAwesomeIcon icon={faSun} className={styles.optionIcon} />  },
-        { value: "oled", label: "OLED", icon: <FontAwesomeIcon icon={faCircleHalfStroke} className={styles.optionIcon} />  },
+        { value: "system", label: t("header:system"), icon: <FontAwesomeIcon icon={faComputer} className={styles.optionIcon}/>  },
+        { value: "dark", label: t("header:dark"), icon: <FontAwesomeIcon icon={faMoon} className={styles.optionIcon}/> },
+        { value: "light", label: t("header:light"), icon: <FontAwesomeIcon icon={faSun} className={styles.optionIcon} />  },
+        { value: "oled", label: t("header:oled"), icon: <FontAwesomeIcon icon={faCircleHalfStroke} className={styles.optionIcon} />  },
     ];
 
     const getOption = (value: string | undefined) => {

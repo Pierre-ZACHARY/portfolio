@@ -1,10 +1,8 @@
-import {Provider} from "react-redux";
-import {store} from "../../../../../redux/store";
+
 import styles from "./header.module.css";
 import {ComponentMeta, ComponentStory} from "@storybook/react";
 import React from "react";
 import {Header} from "./header";
-import {ThemeProvider} from "next-themes";
 
 export default {
     title: 'Portfolio/Index/Components/Header',

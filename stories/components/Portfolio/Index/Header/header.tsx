@@ -5,6 +5,7 @@ import Link from "next/link";
 import {useEffect, useState} from "react";
 import { HamburgerSqueeze } from 'react-animated-burgers'
 import {TranslationSwitch} from "./TranslationSwitch/translationswitch";
+import {useTranslation} from "react-i18next";
 
 
 const Separator = () => {
@@ -17,6 +18,7 @@ interface HeaderProps{
 }
 
 export const Header = ({content}: HeaderProps) => {
+    const { t } = useTranslation();
 
     const [state, setState] = useState({scroll: 0, burgerActive: false});
     useEffect(() => {
@@ -49,10 +51,10 @@ export const Header = ({content}: HeaderProps) => {
                 </nav>
             </div>
             <div className={[state.burgerActive? styles.mobileMenuDisplay : styles.mobileMenuHide, styles.mobileMenuContainer].join(" ")}>
-                <Link href="#"><a><h3>First</h3></a></Link>
-                <Link href="#"><a><h3>Second</h3></a></Link>
-                <Link href="#"><a><h3>Third</h3></a></Link>
-                <Link href="#"><a><h3>Fourth</h3></a></Link>
+                <Link href="#"><a><h3>{t("header:section1")}</h3></a></Link>
+                <Link href="#"><a><h3>{t("header:section2")}</h3></a></Link>
+                <Link href="#"><a><h3>{t("header:section3")}</h3></a></Link>
+                <Link href="#"><a><h3>{t("header:section4")}</h3></a></Link>
                 <ThemeSwitch/>
                 <TranslationSwitch  />
             </div>

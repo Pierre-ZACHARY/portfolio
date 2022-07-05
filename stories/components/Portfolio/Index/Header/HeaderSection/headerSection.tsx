@@ -3,6 +3,8 @@ import {useEffect, useRef, useState} from "react";
 import cn from "classnames";
 import {useAppDispatch, useAppSelector} from "../../../../../../redux/hooks";
 import {executeAction, headerSectionAction} from "./headerSectionAction";
+import {useTranslation} from "react-i18next";
+import i18next from "i18next";
 
 interface HeaderSectionProps{
     content: string
@@ -10,11 +12,10 @@ interface HeaderSectionProps{
 
 
 export const HeaderSection = ({content}: HeaderSectionProps) => {
-    const [state, setState] = useState({left:0, width:0});
+    const { t } = useTranslation();
+    const [state, setState] = useState({left:0, width:0, langageChanged: true});
 
     const dispatch = useAppDispatch();
-
-    const runOnceRef = useRef(false);
 
     const customAnimation =  (target: Element) => {
         let nav = document.getElementsByClassName(cn({[stylesSass.navbar]: true}))[0];
@@ -35,7 +36,7 @@ export const HeaderSection = ({content}: HeaderSectionProps) => {
                         width: [`${currentWidth}` + "px" , `${targetLeft-currentLeft+targetWidth}` + "px"]
                     }, {duration: 200});
                     setTimeout(()=>{
-                        setState({left: currentLeft, width: targetLeft-currentLeft+targetWidth})
+                        setState({...state, left: currentLeft, width: targetLeft-currentLeft+targetWidth})
                     },200);
                     nav.getElementsByClassName(cn([stylesSass.line]))[0].animate({
                         left: [`${currentLeft}` + "px" ,`${targetLeft}` + "px"],
@@ -48,36 +49,45 @@ export const HeaderSection = ({content}: HeaderSectionProps) => {
                         width: [`${currentWidth}` + "px", `${currentLeft-targetLeft+currentWidth}` + "px"]
                     }, {duration:200});
                     setTimeout(()=>{
-                        setState({left: targetLeft, width: currentLeft-targetLeft+currentWidth})
+                        setState({...state, left: targetLeft, width: currentLeft-targetLeft+currentWidth})
                     },200);
                     nav.getElementsByClassName(cn([stylesSass.line]))[0].animate({
                         width: [`${currentLeft-targetLeft+currentWidth}` + "px", `${targetWidth}` + "px"]
                     }, {delay: 200, duration: 100});
                 }
                 setTimeout(()=> {
-                    setState({left: targetLeft, width: targetWidth});
+                    setState({...state, left: targetLeft, width: targetWidth});
                 }, 300);
                 targetParent.classList.add(cn([stylesSass.active]));
             }
         }
     }
 
+    const setUpLine = () => {
+        setState({...state, langageChanged: true});
+    }
+
+    i18next.on('languageChanged', function(lng) {
+        setUpLine();
+    })
+
+
     useEffect(() => {
         // code to run after render goes here
         let nav = document.getElementsByClassName(cn({[stylesSass.navbar]: true}))[0];
-        if(nav && !runOnceRef.current){ // after first render
+        if(nav && state.langageChanged){ // after first render
             let active = nav.getElementsByClassName(cn({[stylesSass.active]: true}));
+            let active0 : HTMLElement = active[0] as HTMLElement;
             if(active.length) {
-                runOnceRef.current = true;
-                setState({left: active[0].clientLeft, width: active[0].clientWidth});
+                // first setup after page load / after each langageChange
+                setState({left: active0.offsetLeft, width: active0.clientWidth, langageChanged: false});
             }
         }
-    }, []);
+
+    }, [state]);
 
     const line = <div className={stylesSass.line} style={{left: state.left, width: state.width}}/>;
-    // @ts-ignore
-    const handleClick = (e:  MouseEvent<HTMLAnchorElement, MouseEvent>) => {
-
+    const handleClick = (e:  any) => {
         const target = e.target as Element;
         let nav = document.getElementsByClassName(cn({[stylesSass.navbar]: true}))[0];
         customAnimation(target);
@@ -104,14 +114,15 @@ export const HeaderSection = ({content}: HeaderSectionProps) => {
     const selected_index: number = useAppSelector(state => state.headerSection.selected);
     selectIndex(selected_index);
 
+
     return (
       <>
           <section className={stylesSass.navbar}>
               <ul>
-                  <li className={stylesSass.active}><a href="#" onClick={((e) => handleClick(e))}>First</a></li>
-                  <li><a href="#" onClick={((e) => handleClick(e))}>Second</a></li>
-                  <li><a href="#" onClick={((e) => handleClick(e))}>Third</a></li>
-                  <li><a href="#" onClick={((e) => handleClick(e))}>Fourth</a></li>
+                  <li className={stylesSass.active}><a href="#" onClick={((e) => handleClick(e))}>{t("header:section1")}</a></li>
+                  <li><a href="#" onClick={((e) => handleClick(e))}>{t("header:section2")}</a></li>
+                  <li><a href="#" onClick={((e) => handleClick(e))}>{t("header:section3")}</a></li>
+                  <li><a href="#" onClick={((e) => handleClick(e))}>{t("header:section4")}</a></li>
               </ul>
               {line}
           </section>
