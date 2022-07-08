@@ -83,7 +83,7 @@
     align-items: flex-end;
     flex-direction: column;
 }
-@media (max-width: 720px){
+@media (max-width: 820px){
     .firstRow, .secondRow{
         display: none;
     }

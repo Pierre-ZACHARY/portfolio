@@ -5,7 +5,6 @@ import {serverSideTranslations} from "next-i18next/serverSideTranslations";
 import {useTranslation} from "next-i18next";
 
 export default function Index({ allPostsData}: any) {
-    //const { t } = useTranslation('footer');
 
     return (
         <>
@@ -18,7 +17,7 @@ export async function getStaticProps({ locale }: any) {
     const allPostsData = getSortedPostsData();
     return {
         props: {
-            ...(await serverSideTranslations(locale, ['common'])),
+            ...(await serverSideTranslations(locale, ['common', 'header'])),
             allPostsData,
         },
     };
