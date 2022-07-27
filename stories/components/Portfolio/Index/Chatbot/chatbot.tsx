@@ -18,7 +18,7 @@ const badge_expanded = [90, 50];
 const query = "(max-width: 768px)";
 
 
-const ws = new WebSocket("ws://chatbot.pierre-zachary.fr/CHANNEL_ID")
+const ws = new WebSocket("wss://portfolio-chatbot-discordpy.herokuapp.com/CHANNEL_ID")
 
 const bot: Author = {name: "Bot", avatar_url: "https://images.emojiterra.com/google/android-11/512px/1f916.png"};
 
