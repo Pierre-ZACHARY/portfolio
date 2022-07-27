@@ -1,0 +1,19 @@
+.dotLine{
+    display: flex;
+    position: absolute;
+    flex-wrap: nowrap;
+    justify-content: space-evenly;
+    width: 100%;
+    align-items: center;
+    height: 100%;
+}
+
+.circle{
+    width: 80%;
+}
+
+.circleContainer{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}

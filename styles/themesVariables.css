@@ -1,27 +1,33 @@
 :root {
     /* Your default theme */
     --background: white;
+    --background-highlight: #c7f2ff;
     --foreground: black;
     --primary: black;
     --secondary: rgba(51, 51, 51, 0.6);
-    --primary-color: #0581e8;
+    --primary-color: rgb(5, 129, 232);
+    --primary-color-rgb: 5, 129, 232;
     --secondary-color: #00ec5c;
 }
 
 [data-theme='dark'] {
     --background: #1E2025;
+    --background-highlight: #373b44;
     --foreground: white;
     --primary: white;
     --secondary: #AEB0B6;
-    --primary-color: #EFC9A3;
+    --primary-color:  rgb(239, 201, 163);
+    --primary-color-rgb:  239, 201, 163;
     --secondary-color: #00DAC6;
 }
 
 [data-theme='oled'] {
     --background: #000000;
+    --background-highlight: #313131;
     --foreground: #d5d5d5;
     --primary: #d5d5d5;
     --secondary: #AEB0B6;
-    --primary-color: #EFC9A3;
+    --primary-color:  rgb(239, 201, 163);
+    --primary-color-rgb:  239, 201, 163;
     --secondary-color: #00DAC6;
 }
