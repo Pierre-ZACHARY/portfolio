@@ -209,7 +209,7 @@ export const Chatbot = ({args}: any) => {
                     <div style={{width: "100%", marginBottom: "auto"}}>
                         <input className={styles.nameInput}
                                type="text"
-                               placeholder="Your name here"
+                               placeholder={t("chatbot:yournameplaceholder")}
                                value={state.inputValue}
                                onChange={(e)=>{setState({...state, inputValue: e.target.value})}}
                                onBlur={(e)=>onBlurNameInput(e)}/>

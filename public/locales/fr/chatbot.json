@@ -2,5 +2,6 @@
   "giveyourinfo": "N'hésitez pas à me laisser vos coordonnées si vous ne recevez pas de réponse immédiate",
   "thanks": "Merci",
   "welcome": "Merci pour votre message! J'en ai été notifié",
-  "whatsyourname": "Comment puis-je vous appeler?"
+  "whatsyourname": "Comment puis-je vous appeler?",
+  "yournameplaceholder": "Ecrivez votre nom ici..."
 }
