@@ -11,6 +11,11 @@ import {Dotline} from "./Dotline/dotline";
 import {useTranslation} from "react-i18next";
 
 
+const size = [100, 60];
+const badge = [30, 20];
+const offset = [7, 3];
+const badge_expanded = [90, 50];
+const query = "(max-width: 768px)";
 
 
 const ws = new WebSocket("ws://chatbot.pierre-zachary.fr/CHANNEL_ID")
@@ -22,27 +27,33 @@ export const Chatbot = ({args}: any) => {
     const { t } = useTranslation();
     const dispatch = useAppDispatch();
     const [state, setState] = useState({
-        width: "100px",
-        height: "100px",
-        bottom: "5%",
-        right: "5%",
         isopen: false,
-        badge_top: "-7px",
-        badge_right: "-7px",
         preview_key: "",
         welcome_msg: false,
         user_name: "",
         whatsyourname: false,
         canAskForInfo: false,
-        inputValue: ""
+        inputValue: "",
+        isSmall : window.matchMedia(query).matches,
+        didMount: false,
+        padding: "5%",
     });
 
 
     const open = (e: any) => {
         executeChatBotAction(dispatch, ChatbotAction.Read);
         if(!state.isopen){
-            setState({...state, width: "100%", height: "100%", isopen: true,  bottom: "0%", right: "0%", badge_right: "7px", badge_top: "7px"})
+            setState({...state,
+                isopen: true,
+                padding: "0%"})
         }
+    }
+
+    const close = (e: any)=>{
+        executeChatBotAction(dispatch, ChatbotAction.Read);
+        setState({...state,
+            isopen: false,
+            padding: "5%"})
     }
 
     const handleSubmit = (e: FormEvent) => {
@@ -97,16 +108,15 @@ export const Chatbot = ({args}: any) => {
 
     }
 
-    const close = (e: any)=>{
-        executeChatBotAction(dispatch, ChatbotAction.Read);
-        setState({...state, width: "100px", height: "100px", isopen: false, bottom: "5%", right: "5%", badge_right: "-7px", badge_top: "-7px"})
-    }
-
     const redux_state: ChatbotState = useAppSelector(state => state.chatbot);
 
     useEffect(()=>{
         const messageView = document.getElementById("messageView");
         messageView!.scrollTop = messageView!.scrollHeight;
+        if(!state.didMount){
+            window.matchMedia(query).addEventListener('change', e => setState({...state, isSmall: e.matches}));
+            setState({...state, didMount: true});
+        }
 
         if(!state.welcome_msg && redux_state.msgList.length == 1 && redux_state.msgList[0].fromUser){
             setState({...state, welcome_msg: true});
@@ -158,7 +168,6 @@ export const Chatbot = ({args}: any) => {
         }
     }, [state, redux_state.msgList, dispatch, t]);
 
-
     const onBlurNameInput = (e: any) => {
         if(e.target.value && e.target.value != ""){
             ws.send(JSON.stringify({"set_name": e.target.value}));
@@ -171,9 +180,25 @@ export const Chatbot = ({args}: any) => {
 
     const show_preview = redux_state.msgList.length && !redux_state.msgList[redux_state.msgList.length-1].read;
 
+
+    const mediaquery = state.isSmall ? 1 : 0;
+    const badge_offset = state.isopen ? offset[mediaquery]+"px" : "-"+offset[mediaquery]+"px";
+    const widget_size = state.isopen ? "100%" : size[mediaquery]+"px";
+    const padding = state.isopen ? "0" : "5%";
+
     return (
         <>
-            <motion.div animate={{width: state.width, height: state.height, bottom: state.bottom, right: state.right}} className={[styles.container, state.isopen ? styles.containeropen : null].join(" ")} onClick={(e)=>open(e)}>
+            <motion.div initial={{
+                bottom: "5%",
+                right: "5%"
+            }}
+                        animate={{
+                width: widget_size,
+                height: widget_size,
+                bottom: state.padding ,
+                right: state.padding}}
+                        className={[styles.container, state.isopen ? styles.containeropen : null].join(" ")}
+                        onClick={(e)=>open(e)}>
                 <div className={styles.closedContent}>
                     <div className={styles.absoluteContainer}>
                         <FontAwesomeIcon icon={faComment} className={styles.commentSvg}/>
@@ -207,16 +232,18 @@ export const Chatbot = ({args}: any) => {
 
                 <motion.div
                     animate={{
-                        top: state.badge_top,
-                        right: state.badge_right,
-                        width: show_preview ? "90px" : "30px"}}
+                        top: badge_offset,
+                        right: badge_offset,
+                        width: state.isopen ? 30 : show_preview ? badge_expanded[mediaquery]+"px" : badge[mediaquery],
+                        height: state.isopen ? 30 : badge[mediaquery],
+                }}
                     className={[show_preview ? styles.containerBadgeHasMessage : null, styles.containerbadge].join(" ")}
                     onClick={(e)=>close(e)}
                     >
                     {show_preview ?
                         <motion.div
                                     key={state.preview_key} // Pour forcer React à recréer la div à chaque message ...
-                                    initial={{x: 90}}
+                                    initial={{x: badge_expanded[mediaquery]}}
                                     animate={{x: "-100%"}}
                                     transition={{
                                         repeat: Infinity,

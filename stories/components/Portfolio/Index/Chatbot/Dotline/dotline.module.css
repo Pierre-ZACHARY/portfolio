@@ -9,11 +9,18 @@
 }
 
 .circle{
-    width: 80%;
+    color: var(--background-highlight);
+    height: 15px;
 }
 
 .circleContainer{
     display: flex;
     justify-content: center;
     align-items: center;
+}
+
+@media (max-width: 768px){
+    .circle{
+        height: 10px;
+    }
 }

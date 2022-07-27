@@ -35,7 +35,7 @@
 .containerbadge{
     border-radius: 25px;
     background-color: #FF0000;
-    height: 30px;
+    /*height: 30px;*/
     /*width: 30px;*/
     position: absolute;
     display: flex;
@@ -45,7 +45,7 @@
     cursor: pointer;
     overflow: hidden;
     max-width: 90%;
-    min-width: 30px;
+    /*min-width: 30px;*/
 }
 
 .containerBadgeHasMessage{
@@ -74,12 +74,12 @@
 
 .textinput{
     border: none;
-    background-color: rgba(255,255,255,0.5);
+    background-color: var(--background);
     border-radius: 10px;
     height: 50px;
     width: 100%;
     font-size: var(--font-medium);
-    color: var(--background);
+    color: var(--primary);
 }
 
 .submitbutton{
@@ -110,7 +110,7 @@
 }
 
 .submitbuttonSVG{
-    color: var(--primary);
+    color: white;
     height: var(--font-medium);
 }
 
