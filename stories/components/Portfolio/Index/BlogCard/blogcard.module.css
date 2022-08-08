@@ -1,9 +1,5 @@
 
-:root {
-    --card-height: 300px;
-    --card-width: calc(var(--card-height) / 1.5);
-    --card-border-size: 4px;
-}
+
 
 .mostViewed{
 
@@ -23,12 +19,15 @@
 }
 
 .card {
+    --card-height: 300px;
+    --card-width: calc(var(--card-height) / 1.5);
+    --card-border-size: 4px;
     /*background: #191c29;*/
     /*background: linear-gradient(180deg, rgba(255, 255, 255, 0.03) 50%, rgba(0, 0, 0, 0.9) 100%);*/
     background-size: cover;
     width: var(--card-width);
     height: var(--card-height);
-    padding: 3px;
+    /*padding: 3px;*/
     position: relative;
     border-radius: 6px;
     /*text-align: center;*/
@@ -53,13 +52,13 @@
 }
 .cardBorder{
     content: "";
-    width: calc(var(--card-width) + 2 * var(--card-border-size));
-    height: calc(var(--card-height) + 2 * var(--card-border-size));
+    width: calc(100% + 8px);
+    height: calc(100% + 8px);
     border-radius: 8px;
     position: absolute;
     z-index: -1;
-    top: calc(var(--card-border-size) * -1);
-    left: calc(var(--card-border-size) * -1);
+    top: -4px;
+    left: -4px;
     overflow: hidden;
 }
 

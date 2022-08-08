@@ -1,0 +1,129 @@
+@import url('https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.1.1/css/fontawesome.min.css');
+
+.select{
+    height: 25px;
+    padding: 0;
+    transition: background-color 1s cubic-bezier(0, 0, 0.2, 1);
+}
+
+.select button{
+    padding: 0;
+    margin: 0;
+}
+.select div{
+    width: fit-content;
+    z-index: 1;
+    background-color: rgba(0,0,0,0);
+}
+
+.valueContainer{
+    padding: 0 !important;
+    background-color: rgba(0,0,0,0);
+}
+
+.optionIcon{
+    color: var(--primary-color);
+    font-size: inherit;
+    width: var(--font-medium);
+    margin-right: 20px;
+}
+.valueContainer>button>.optionIcon{
+    margin: 0;
+    width: unset;
+}
+.valueContainer{
+    border: solid 1px var(--primary) !important;
+    border-radius: 4px;
+}
+
+.valueContainer>button{
+    border: none;
+    background-color: var(--background) !important;
+    transition: background-color 1s cubic-bezier(0, 0, 0.2, 1);
+    display: flex;
+    align-items: center;
+    padding: 4px;
+    outline: none !important;
+}
+
+.valueContainer:focus, .valueContainer:hover, .valueContainer:visited, .valueContainer:active{
+    background-color: var(--background);
+    border: solid 1px var(--primary-color);
+}
+
+@media (min-width: 720px){
+    .valueContainer{
+        border: none !important;
+        outline: none !important;
+    }
+    .valueContainer:focus, .valueContainer:hover, .valueContainer:visited, .valueContainer:active{
+        border: none;
+    }
+    .buttonLabel{
+        display: none;
+    }
+}
+.valueContainer>button:hover{
+    cursor: pointer;
+}
+
+.optionLabel{
+    cursor: pointer;
+    padding: 0;
+    margin: 0;
+    font-size: var(--font-small);
+    color: var(--primary);
+}
+
+.select>div{
+    margin: 0;
+}
+.select:nth-child(3){
+    margin-left: -50px;
+}
+.option:hover .optionLabel{
+    color: var(--primary-color);
+}
+
+.option{
+    color: var(--primary);
+    background: none !important;
+    font-size: var(--font-medium);
+    display: flex !important;
+    flex-wrap: nowrap;
+    align-items: center;
+}
+
+@media (max-width: 720px){
+    .select{
+        width: unset;
+        padding: 0;
+    }
+}
+
+.Menu{
+    position: relative;
+    margin-top: 5px;
+}
+
+.Menu>div{
+    border-radius: 4px;
+    background-color: var(--background);
+    transition: background-color 1s cubic-bezier(0, 0, 0.2, 1);
+}
+
+.alignToRight.Menu{
+    position: absolute;
+    right: -25px;
+    border: solid var(--primary) 1px;
+}
+
+.buttonLabel{
+    font-size: var(--font-medium);
+    color: var(--primary);
+    margin: 0 0 0 10px;
+}
+
+.menuOpen.buttonLabel{
+    color: var(--primary-color);
+}

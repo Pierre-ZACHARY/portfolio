@@ -50,3 +50,33 @@
 .lightText {
     color: #666;
 }
+
+.margin{
+    margin: 18px;
+    position: sticky;
+    top: 0;
+    width: 50%;
+}
+
+.margin img{
+    object-position: top;
+    object-fit: contain;
+}
+
+.article{
+    padding: 1em;
+    position: relative;
+    background-color: var(--background);
+}
+@media (max-width: 760px) {
+    .margin{
+        margin: 0;
+        width: 100%;
+    }
+    .margin img{
+        object-fit: cover !important;
+        object-position: 0 50% !important;
+        max-height: 300px;
+        width: 100%;
+    }
+}

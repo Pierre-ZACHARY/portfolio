@@ -8,6 +8,11 @@ body {
   font-size: 18px;
   background-color: var(--background);
   transition: background-color 1s cubic-bezier(0, 0, 0.2, 1);
+  color: var(--primary)
+}
+
+html:focus-within{
+  scroll-behavior: smooth;
 }
 
 * {
@@ -53,4 +58,34 @@ img {
     --font-medium: 22px;
     --font-small: 16px;
   }
+}
+
+section{
+  max-width: unset !important;
+}
+
+button{
+  background-color: var(--primary-color);
+  color: var(--background);
+  border-radius: 20px;
+  border: none;
+  padding: 10px 30px;
+  margin: 20px;
+  font-size: 1em;
+}
+
+button:hover{
+  cursor: pointer;
+}
+
+.swiper-button-disabled{
+  display: none !important;
+}
+
+.swiper-pagination span{
+  background-color: var(--primary);
+}
+
+.swiper-button-next:after, .swiper-button-prev:after{
+  color: var(--secondary-color);
 }

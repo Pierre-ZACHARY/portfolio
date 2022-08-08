@@ -1,0 +1,49 @@
+.select{
+    padding-bottom: 0px !important;
+}
+
+.select ul{
+    background-color: var(--background);
+    color: var(--primary);
+    border-color: var(--primary);
+    transition: background-color 1s cubic-bezier(0, 0, 0.2, 1);
+}
+
+.select li, .select li span{
+    font-size: var(--font-small);
+}
+
+.select li:hover{
+    background-color: var(--background);
+    color: var(--primary-color);
+    transition: background-color 1s cubic-bezier(0, 0, 0.2, 1);
+}
+.select button{
+    padding: 4px;
+    margin: 0;
+    border-color: var(--primary);
+    color: var(--primary);
+}
+
+.select button>span{
+    margin:0;
+    padding: 0;
+}
+.select button[aria-expanded="true"]{
+    color: var(--primary-color);
+}
+
+
+.select button::after, .select button[aria-expanded="true"]::after{
+    display: none;
+}
+@media (min-width: 720px){
+
+
+    .select button{
+        border: none;
+    }
+    .select button>span>span:nth-child(2){
+        display: none;
+    }
+}

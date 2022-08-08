@@ -1,7 +1,7 @@
 import { configureStore } from '@reduxjs/toolkit'
 import counterReducer from "../stories/components/ReduxExample/Counter/counterReducer";
-import headerSectionReducer from "../stories/components/Portfolio/Index/Header/HeaderSection/headerSectionReducer";
-import chatbotReducer from "../stories/components/Portfolio/Index/Chatbot/chatbotReducer";
+import headerSectionReducer from "../stories/components/Portfolio/Layout/Header/HeaderSection/headerSectionReducer";
+import chatbotReducer from "../stories/components/Portfolio/Layout/Chatbot/chatbotReducer";
 
 
 export const store =  configureStore({

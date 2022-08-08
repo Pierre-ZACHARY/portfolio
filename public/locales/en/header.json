@@ -4,9 +4,10 @@
   "french": "Français",
   "light": "Light",
   "oled": "OLED",
-  "section1": "First",
-  "section2": "Second",
-  "section3": "Third",
-  "section4": "Fourth",
+  "section1": "Introduction",
+  "section2": "Skills",
+  "section3": "Blog",
+  "section4": "Shop",
+  "section5": "Contact",
   "system": "System"
 }

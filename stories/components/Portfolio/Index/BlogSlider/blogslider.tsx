@@ -10,11 +10,26 @@ import "swiper/css/navigation";
 import {Blogcard} from "../BlogCard/blogcard";
 
 
-interface BlogsliderProps {
-    content: string
+interface BlogSlideI{
+    title: string,
+    id: string,
+    date: string,
+    thumbnailUrl: string,
+    lastupdated: boolean,
 }
 
-export const Blogslider = ({content}: BlogsliderProps) => {
+export interface BlogsliderProps {
+    content: BlogSlideI[]
+}
+
+export const Blogslider = ({content = [{
+        id: "dadza",
+        title: "Bonjour",
+        date: "2020-01-01",
+        thumbnailUrl: "",
+        lastupdated: true,
+    }]}: BlogsliderProps) => {
+    console.log(content);
     return (
         <>
             <Swiper
@@ -44,14 +59,22 @@ export const Blogslider = ({content}: BlogsliderProps) => {
                 pagination={{ clickable: true, dynamicBullets: true }}
                 scrollbar={{ draggable: true }}
                 onSwiper={(swiper) => console.log(swiper)}
-                onSlideChange={() => console.log('slide change')}
                 className={styles.swiper}
             >
-                <SwiperSlide className={styles.swiperslides}><Blogcard cardtitle="Slide 1" datestringiso="2000-01-01" description="Description" imagesrc={cardbg.src} lastupdated={false} mostviewed={true}/></SwiperSlide>
-                <SwiperSlide className={styles.swiperslides}><Blogcard cardtitle="Slide 2" datestringiso="2000-01-01" description="Description" imagesrc={cardbg.src} lastupdated={false} mostviewed={false}/></SwiperSlide>
-                <SwiperSlide className={styles.swiperslides}><Blogcard cardtitle="Slide 3" datestringiso="2000-01-01" description="Description" imagesrc={cardbg.src} lastupdated={true} mostviewed={false}/></SwiperSlide>
-                <SwiperSlide className={styles.swiperslides}><Blogcard cardtitle="Slide 4" datestringiso="2000-01-01" description="Description" imagesrc={cardbg.src} lastupdated={false} mostviewed={false}/></SwiperSlide>
-                <SwiperSlide className={styles.swiperslides}><Blogcard cardtitle="Slide 5" datestringiso="2000-01-01" description="Description" imagesrc={cardbg.src} lastupdated={false} mostviewed={false}/></SwiperSlide>
+                {content.map((slide, key) =>
+                        (<SwiperSlide key={key}
+                                     className={styles.swiperslides}>
+                                <Blogcard cardtitle={slide.title}
+                                          id={slide.id}
+                                          datestringiso={slide.date}
+                                          description="Description"
+                                          imagesrc={slide.thumbnailUrl}
+                                          lastupdated={slide.lastupdated}
+                                          mostviewed={false}/>
+                        </SwiperSlide>)
+                    )
+                }
+
             </Swiper>
         </>
     );

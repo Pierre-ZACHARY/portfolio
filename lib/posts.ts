@@ -9,7 +9,7 @@ const postsDirectory = path.join(process.cwd(), '/pages/posts/markdown' );
 export function getSortedPostsData() {
     // Get file names under /posts
     const fileNames = fs.readdirSync(postsDirectory);
-    const allPostsData = fileNames.map((fileName) => {
+    let allPostsData = fileNames.map((fileName) => {
         // Remove ".md" from file name to get id
         const id = fileName.replace(/\.md$/, '');
 
@@ -23,11 +23,12 @@ export function getSortedPostsData() {
         // Combine the data with the id
         return {
             id,
+            lastupdated: false,
             ...matterResult.data,
         };
     });
     // Sort posts by date
-    return allPostsData.sort(({ date: a }: any, { date: b }: any) => {
+    allPostsData = allPostsData.sort(({ date: a }: any, { date: b }: any) => {
         if (a < b) {
             return 1;
         } else if (a > b) {
@@ -36,6 +37,8 @@ export function getSortedPostsData() {
             return 0;
         }
     });
+    allPostsData[0].lastupdated = true;
+    return allPostsData;
 }
 
 export function getAllPostIds() {

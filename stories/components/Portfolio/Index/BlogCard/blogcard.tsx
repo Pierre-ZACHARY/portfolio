@@ -3,6 +3,8 @@ import styles from "./blogcard.module.css"
 import cn from "classnames";
 import {backgroundImages} from "polished";
 import {format, parseISO} from "date-fns";
+import Link from "next/link";
+import { motion } from "framer-motion";
 
 
 interface BlogcardProps {
@@ -12,6 +14,7 @@ interface BlogcardProps {
     mostviewed: boolean;
     lastupdated: boolean;
     datestringiso: string;
+    id: string;
 }
 
 export const Blogcard = ({
@@ -21,6 +24,7 @@ export const Blogcard = ({
                              mostviewed,
                              lastupdated,
                              datestringiso,
+                             id,
                              ...props
                          }: BlogcardProps) => {
     let infotext = ""
@@ -41,22 +45,27 @@ export const Blogcard = ({
     const formated_date = format(date, 'LLLL d, yyyy');
     return (
         <>
-            <div className={[styles.card, cn({
-                [styles.mostViewed]: mostviewed,
-                [styles.lastUpdated]: lastupdated,
-            })].join(" ")} >
-                <div style={{backgroundImage: `url(${imagesrc})`}}/>
-                <div className={styles.cardBorder}><div className={styles.cardBorderChild}></div></div>
-                <div className={styles.cardGradient}>
-                    {info}
-                    <h5 className={styles.cardDate}>{formated_date}</h5>
-                    <hr className={styles.hrRounded}/>
-                    <h3 className={styles.cardTitle}>{cardtitle}</h3>
-                </div>
-                <div className={styles.cardShadow}><div className={styles.cardShadowChild}></div></div>
+            <Link  href={"/posts/"+id}>
+                <a>
+                    <div className={[styles.card, cn({
+                        [styles.mostViewed]: mostviewed,
+                        [styles.lastUpdated]: lastupdated,
+                    })].join(" ")} >
+                        <div className={styles.cardBorder}><div className={styles.cardBorderChild}></div></div>
+                        <div className={styles.cardGradient}>
+                            {info}
+                            <h5 className={styles.cardDate}>{formated_date}</h5>
+                            <hr className={styles.hrRounded}/>
+                            <motion.h3 layoutId={id} className={styles.cardTitle}>{cardtitle}</motion.h3>
+                        </div>
+                        <div style={{width: "100%", height:"100%", borderRadius: "6px", overflow: "hidden"}}>
+                            <motion.img layoutId={id+"-img"} src={imagesrc} alt="post thumbnail"/>
+                        </div>
+                        <div className={styles.cardShadow}><div className={styles.cardShadowChild}></div></div>
 
-            </div>
-
+                    </div>
+                </a>
+            </Link>
         </>
     );
 }

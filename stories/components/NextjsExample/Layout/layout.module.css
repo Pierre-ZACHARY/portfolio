@@ -1,7 +1,6 @@
 .container {
-    max-width: 36rem;
-    padding: 0 1rem;
-    margin: 3rem auto 6rem;
+    max-width: 1080px;
+    margin: 0 auto 0;
 }
 
 .header {
@@ -11,5 +10,27 @@
 }
 
 .backToHome {
-    margin: 3rem 0 0;
+    margin: 0 0 0;
+}
+
+.layoutMain{
+    display: flex;
+    gap: 3em;
+}
+
+@media (max-width: 760px) {
+    .layoutMain {
+        display: block;
+    }
+
+    .backToHome a {
+        position: absolute;
+        top: 0;
+        z-index: 1;
+        margin: 18px;
+        color: var(--background);
+        background-color: var(--primary-color);
+        padding: 5px 15px;
+        border-radius: 20px;
+    }
 }

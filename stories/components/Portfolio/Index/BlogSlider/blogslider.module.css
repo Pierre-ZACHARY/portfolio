@@ -1,7 +1,9 @@
 .swiper{
-    padding: 100px 50px !important;
+    padding: 50px 50px 100px 50px !important;
+    z-index: 0 !important;
 }
 .swiperslides{
     display: flex;
     justify-content: center;
 }
+

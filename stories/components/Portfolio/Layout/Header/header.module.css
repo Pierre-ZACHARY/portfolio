@@ -1,0 +1,153 @@
+
+/* for storybook only */
+.decoratorPageHeight{
+    height: 2000px;
+}
+
+.navBar{
+    display: flex;
+    max-width: var(--max-width);
+    margin: auto;
+    padding: 0 20px;
+    width: 100%;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.navcontainer{
+    position: fixed;
+    top: 0;
+    width: 100%;
+    box-shadow: 0px 0px 8px rgba(0,0,0,0);
+    background-color: var(--background);
+    transition: box-shadow 0.3s ease-in-out;
+}
+
+.notOnTop{
+    box-shadow: 0px 0px 8px rgba(0,0,0,.6);
+}
+
+.separator{
+    width: 2px;
+    background-color: var(--secondary);
+    height: 100%;
+    margin: 0 15px;
+}
+
+.firstRow{
+    margin: 0;
+    padding: 0;
+    display: flex;
+    justify-content: end;
+    width: fit-content;
+    align-items: center;
+    max-width: unset;
+}
+.secondRow{
+    max-width: unset;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: unset;
+}
+
+.logo{
+    margin: 0;
+    color: var(--primary);
+    white-space: nowrap;
+    font-size: var(--font-xlarge);
+    transition: color 0.3s cubic-bezier(0.22, 0.61, 0.36, 1);
+}
+
+.logoLink{
+    transition: opacity 1s;
+    opacity: 0;
+}
+
+.logoLink:hover .logo{
+    color: var(--secondary-color);
+
+}
+.logoLink:hover{
+    text-decoration: none;
+}
+
+.mobileRow{
+    display: none;
+    max-width: unset;
+    justify-content: flex-end;
+    align-items: center;
+    width: 100%;
+    padding: unset;
+}
+.columnContainer{
+    display: flex;
+    align-items: flex-end;
+    flex-direction: column;
+}
+@media (max-width: 820px){
+    .firstRow, .secondRow{
+        display: none;
+    }
+    .mobileRow{
+        display: flex;
+    }
+    .navBar{
+        padding: 10px;
+    }
+}
+
+.mBurger{
+    color: var(--primary);
+}
+.mBurgerActive{
+    color: var(--primary-color);
+}
+
+
+.mobileMenuContainer{
+    height: 100%;
+    width: 100%;
+    position: fixed;
+    top: 64px;
+    background-color: var(--background);
+    transition: background-color 1s cubic-bezier(0, 0, 0.2, 1);
+}
+
+.mobileMenuContainer h3{
+    color: var(--primary);
+    margin: 0;
+}
+.mobileMenuContainer>*{
+    margin: 13px 0;
+}
+.mobileMenuContainer a:hover{
+    text-decoration: none;
+}
+
+.mobileMenuDisplay{
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-wrap: wrap;
+}
+
+.mobileMenuHide{
+    display: none;
+}
+
+.flagSelect{
+    padding: 0;
+    margin-right: 10px;
+}
+
+.themeSelect{
+    display: flex;
+    align-items: center;
+}
+
+.firstRow svg{
+    height: 15px !important;
+}

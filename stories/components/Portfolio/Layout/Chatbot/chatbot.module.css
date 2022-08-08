@@ -1,0 +1,171 @@
+
+.container{
+    border-radius: 25px;
+    background-color: var(--background-highlight);
+    position: fixed;
+    max-width: 500px;
+    max-height: 500px;
+}
+
+.closedContent{
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 15%;
+}
+.containeropen>.closedContent{
+    display: none;
+}
+
+.container:hover{
+    cursor: pointer;
+}
+
+.content{
+    color: #1E2025;
+    margin: 0;
+}
+
+.containeropen:hover {
+    cursor: initial;
+}
+
+.containerbadge{
+    border-radius: 25px;
+    background-color: #FF0000;
+    /*height: 30px;*/
+    /*width: 30px;*/
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    padding: 3px;
+    cursor: pointer;
+    overflow: hidden;
+    max-width: 90%;
+    /*min-width: 30px;*/
+}
+
+.containerBadgeHasMessage{
+    justify-content: flex-start;
+    /*width: fit-content;*/
+}
+
+.openContent{
+    display: none;
+    justify-content: flex-end;
+    align-items: center;
+    height: 100%;
+    width: 100%;
+    padding: 15px;
+    flex-direction: column;
+}
+
+.containeropen>.openContent{
+    display: flex;
+}
+
+.chatform{
+    width: 100%;
+    display: flex;
+}
+
+.textinput{
+    border: none;
+    background-color: var(--background);
+    border-radius: 10px;
+    height: 50px;
+    width: 100%;
+    font-size: var(--font-medium);
+    color: var(--primary);
+}
+
+.submitbutton{
+    border: none;
+    border-radius: 10px;
+    height: 50px;
+    width: 50px;
+    background-color: black;
+    padding: 0;
+    margin: 0 0 0 15px;
+}
+
+.messageView{
+    width: 100%;
+    padding: 15px 3px;
+    overflow-y: scroll;
+    display: flex;
+    flex-direction: column;
+}
+
+.messageView::-webkit-scrollbar {
+    background: rgba(0,0,0,0);
+    width: 10px;
+}
+
+.messageView::-webkit-scrollbar-thumb {
+    background: rgba(250,250,250,0.3);
+    border-radius: 10px;
+}
+
+.submitbuttonSVG{
+    color: white;
+    height: var(--font-medium);
+}
+
+.closeMenu{
+    color: white;
+    display: none;
+}
+
+.containeropen .closeMenu{
+    display: initial;
+}
+
+.badgeTextPreview{
+    margin:0;
+    white-space: nowrap;
+    font-size: var(--font-small);
+}
+
+.scrollingTextContainer{
+}
+
+
+.commentSvg{
+    color: var(--primary-color);
+    height: 100%;
+    position: absolute;
+}
+
+.messageViewTypingContainer{
+    position: relative;
+    width: 75px;
+    /*height: 40px;*/ /*done with custom <p>*/
+    display: none;
+    background-color: var(--primary-color);
+    border-radius: 10px;
+    box-shadow: 0px 0px 4px -1px black;
+    margin: 10px 0 0px auto;
+}
+
+.messageViewTypingContainer.isTyping{
+    display: block;
+}
+
+.absoluteContainer{
+    position: relative;
+    width: 100%;
+    height: 100%;
+}
+
+
+.nameInput{
+    background: none;
+    border: none;
+    font-size: var(--font-medium);
+    color: var(--secondary-color);
+    width: 100%;
+}

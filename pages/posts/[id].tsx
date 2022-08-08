@@ -3,15 +3,30 @@ import {getAllPostIds, getPostData} from "../../lib/posts";
 import Head from "next/head";
 import Date from '../../stories/components/NextjsExample/Date/date';
 import utilStyles from "/styles/utils.module.css";
+import { motion } from "framer-motion";
+import Image from "next/image";
+import styles from "../../stories/components/NextjsExample/Layout/layout.module.css";
+import Link from "next/link";
 
 export default function Post({ postData }: any) {
+    console.log(postData);
     return (
         <Layout>
             <Head>
                 <title>{postData.title}</title>
             </Head>
-            <article>
-                <h1 className={utilStyles.headingXl}>{postData.title}</h1>
+            <nav className={utilStyles.margin}>
+                <div className={styles.backToHome}>
+                    <Link href="/#third">
+                        <a>← Back to home</a>
+                    </Link>
+                </div>
+                <div style={{position: "relative", width: "100%", height: "100%", minHeight: "300px"}}>
+                    <motion.img layoutId={postData.id+"-img"} src={postData.thumbnailUrl} alt="post thumbnail"/>
+                </div>
+            </nav>
+            <article className={utilStyles.article}>
+                <motion.h1 layoutId={postData.id} className={utilStyles.headingXl}>{postData.title}</motion.h1>
                 <div className={utilStyles.lightText}>
                     <Date dateString={postData.date} />
                 </div>
