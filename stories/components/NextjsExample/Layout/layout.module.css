@@ -1,5 +1,5 @@
 .container {
-    max-width: 1080px;
+    max-width: 760px;
     margin: 0 auto 0;
 }
 
@@ -10,7 +10,8 @@
 }
 
 .backToHome {
-    margin: 0 0 0;
+    margin: auto;
+    width: fit-content;
 }
 
 .layoutMain{

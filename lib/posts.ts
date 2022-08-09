@@ -6,10 +6,11 @@ import html from 'remark-html';
 
 const postsDirectory = path.join(process.cwd(), '/pages/posts/markdown' );
 
-export function getSortedPostsData() {
+export async function getSortedPostsData() {
     // Get file names under /posts
     const fileNames = fs.readdirSync(postsDirectory);
-    let allPostsData = fileNames.map((fileName) => {
+    let allPostsData = [];
+    for(let fileName of fileNames) {
         // Remove ".md" from file name to get id
         const id = fileName.replace(/\.md$/, '');
 
@@ -20,13 +21,17 @@ export function getSortedPostsData() {
         // Use gray-matter to parse the post metadata section
         const matterResult = matter(fileContents);
 
-        // Combine the data with the id
-        return {
+        const processedDescription = await remark()
+            .use(html)
+            .process(matterResult.data.description);
+        const descriptionHtml = processedDescription.toString();
+        allPostsData.push({
             id,
             lastupdated: false,
+            descriptionHtml: descriptionHtml,
             ...matterResult.data,
-        };
-    });
+        });
+    }
     // Sort posts by date
     allPostsData = allPostsData.sort(({ date: a }: any, { date: b }: any) => {
         if (a < b) {
@@ -78,6 +83,8 @@ export async function getPostData(id: string) {
         .use(html)
         .process(matterResult.content);
     const contentHtml = processedContent.toString();
+
+
 
     // Combine the data with the id and contentHtml
     return {

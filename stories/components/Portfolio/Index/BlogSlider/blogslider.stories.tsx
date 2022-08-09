@@ -15,5 +15,5 @@ const Template: ComponentStory<typeof Blogslider> = (args) => <Blogslider {...ar
 
 export const Default = Template.bind({});
 Default.args = {
-    content: ""
+    content: []
 }

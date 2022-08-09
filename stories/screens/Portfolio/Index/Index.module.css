@@ -40,7 +40,8 @@
     text-align: center;
 }
 .home p strong{
-    text-decoration: underline;
+    /*text-decoration: underline;*/
+    color: var(--primary-color)
 }
 
 .showHeaderName{

@@ -5,5 +5,7 @@
 .swiperslides{
     display: flex;
     justify-content: center;
+    --card-height: 250px;
+    width: var(--card-height) !important;
 }
 

@@ -9,7 +9,7 @@ import { motion } from "framer-motion";
 
 interface BlogcardProps {
     cardtitle: string;
-    description: string;
+    descriptionHtml: string;
     imagesrc: string;
     mostviewed: boolean;
     lastupdated: boolean;
@@ -19,7 +19,7 @@ interface BlogcardProps {
 
 export const Blogcard = ({
                              cardtitle,
-                             description,
+                             descriptionHtml,
                              imagesrc,
                              mostviewed,
                              lastupdated,
@@ -47,23 +47,28 @@ export const Blogcard = ({
         <>
             <Link  href={"/posts/"+id}>
                 <a>
-                    <div className={[styles.card, cn({
+                    <motion.div className={[styles.card, cn({
                         [styles.mostViewed]: mostviewed,
                         [styles.lastUpdated]: lastupdated,
-                    })].join(" ")} >
+                    })].join(" ")}
+                                initial={{
+                                    scale: 1,
+                                }}
+                                whileHover={{
+                                    scale: 1.05,
+                                }}
+                    >
                         <div className={styles.cardBorder}><div className={styles.cardBorderChild}></div></div>
-                        <div className={styles.cardGradient}>
+                        <div className={styles.cardBackground}>
+                            <h4 className={styles.cardTitle} style={{color: "var(--primary)"}}>{cardtitle}</h4>
+                            <h6 className={styles.cardDate} style={{color: "var(--primary)"}}>{formated_date}</h6>
+                            <div className={styles.clamp3lines} dangerouslySetInnerHTML={{ __html: descriptionHtml }} />
+
                             {info}
-                            <h5 className={styles.cardDate}>{formated_date}</h5>
-                            <hr className={styles.hrRounded}/>
-                            <motion.h3 layoutId={id} className={styles.cardTitle}>{cardtitle}</motion.h3>
-                        </div>
-                        <div style={{width: "100%", height:"100%", borderRadius: "6px", overflow: "hidden"}}>
-                            <motion.img layoutId={id+"-img"} src={imagesrc} alt="post thumbnail"/>
                         </div>
                         <div className={styles.cardShadow}><div className={styles.cardShadowChild}></div></div>
 
-                    </div>
+                    </motion.div>
                 </a>
             </Link>
         </>

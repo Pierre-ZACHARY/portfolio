@@ -2,7 +2,7 @@
 
 
 .mostViewed{
-
+    box-shadow: none !important;
     --gradient-1: #5ddcff;
     --gradient-2: #3c67e3;
     --gradient-3: #4e00c2;
@@ -11,6 +11,7 @@
     --gradient-1: #affa1b;
     --gradient-2: #b6ff3f;
     --gradient-3: #019a14;
+    box-shadow: none !important;
 }
 .lastUpdated.mostViewed{
     --gradient-1: #ec9674;
@@ -19,8 +20,7 @@
 }
 
 .card {
-    --card-height: 300px;
-    --card-width: calc(var(--card-height) / 1.5);
+    --card-width: var(--card-height);
     --card-border-size: 4px;
     /*background: #191c29;*/
     /*background: linear-gradient(180deg, rgba(255, 255, 255, 0.03) 50%, rgba(0, 0, 0, 0.9) 100%);*/
@@ -32,6 +32,7 @@
     border-radius: 6px;
     /*text-align: center;*/
     cursor: pointer;
+    box-shadow: 0 0 0 4px var(--primary-color);
 }
 .cardBorderChild, .cardShadowChild{
     background: linear-gradient(
@@ -44,10 +45,10 @@
 
 .cardBorderChild{
     position: absolute;
-    width: 380px;
-    height: 380px;
-    top: -37px;
-    left: -90px;
+    width: calc(var(--card-height) * 2);
+    height: calc(var(--card-height) * 2);
+    top: -33%;
+    left: -33%;
     border-radius: 100%;
 }
 .cardBorder{
@@ -100,7 +101,6 @@
 }
 
 .cardDate{
-    margin-top: auto;
     width: 100%;
 }
 
@@ -108,6 +108,19 @@
     overflow-wrap: anywhere;
     line-height: normal;
     margin-bottom: 2px;
+    background: linear-gradient(to right, var(--primary-color) 0%, #05f70e 100%);
+    -webkit-background-clip: text;
+    -webkit-text-fill-color: transparent;
+}
+
+.lastUpdated .cardTitle{
+    background: linear-gradient(to right, #85dd30 0%, #019d39 100%);
+    -webkit-background-clip: text;
+}
+
+.mostViewed .cardTitle{
+    background: linear-gradient(to right, #a247e4 0%, #100ef7 100%);
+    -webkit-background-clip: text;
 }
 
 .cardInfo{
@@ -117,11 +130,12 @@
     border-radius: 5px;
     font-size: 12px;
     margin-left: auto;
+    margin-top: auto;
 }
 
 
-.cardGradient{
-    background: linear-gradient(180deg, rgba(255, 255, 255, 0.03) 50%, rgba(0, 0, 0, 0.9) 100%);
+.cardBackground{
+    background: var(--background);
     position: absolute;
     bottom: 0;
     top: 0;
@@ -129,7 +143,7 @@
     left: 0;
     border-radius: 6px;
     display: flex;
-    flex-wrap: wrap;
+    /*flex-wrap: wrap;*/
     justify-content: flex-end;
     flex-direction: column;
     padding: 10px;
@@ -141,4 +155,21 @@
     margin: 5px 0px;
     border-radius: 5px;
     width: 50px;
+}
+
+.clamp3lines p{
+    display: -webkit-box;
+    -webkit-line-clamp: 6;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    color: var(--primary);
+    font-size: var(--font-small);
+}
+
+.lastUpdated .clamp3lines p, .mostViewed .clamp3lines p{
+    -webkit-line-clamp: 4;
+}
+
+.lastUpdated.mostViewed .clamp3lines p{
+    -webkit-line-clamp: 3;
 }

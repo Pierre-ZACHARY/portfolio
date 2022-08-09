@@ -17,6 +17,3 @@ export default {
 const Template: ComponentStory<typeof Index> = (args) => <Index {...args}/>;
 
 export const Default = Template.bind({});
-Default.args = {
-    content: ""
-}

@@ -1,7 +1,7 @@
 :root {
     /* Your default theme */
     --background: white;
-    --background-highlight: #e3f9ff;
+    --background-highlight: #f6f6f6;
     --foreground: black;
     --primary: black;
     --secondary: rgba(51, 51, 51, 0.6);
@@ -16,9 +16,9 @@
     --foreground: white;
     --primary: white;
     --secondary: #AEB0B6;
-    --primary-color:  rgb(239, 201, 163);
+    --secondary-color:  rgb(239, 201, 163);
     --primary-color-rgb:  239, 201, 163;
-    --secondary-color: #00DAC6;
+    --primary-color: #00DAC6;
 }
 
 [data-theme='oled'] {
@@ -27,7 +27,7 @@
     --foreground: #d5d5d5;
     --primary: #d5d5d5;
     --secondary: #AEB0B6;
-    --primary-color:  rgb(239, 201, 163);
+    --secondary-color:  rgb(239, 201, 163);
     --primary-color-rgb:  239, 201, 163;
-    --secondary-color: #00DAC6;
+    --primary-color: #00DAC6;
 }

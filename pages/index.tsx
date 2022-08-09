@@ -15,7 +15,7 @@ export default function IndexPage({ allPostsData}: any) {
 }
 
 export async function getStaticProps({ locale }: any) {
-    const allPostsData = getSortedPostsData();
+    const allPostsData = await getSortedPostsData();
     return {
         props: {
             ...(await serverSideTranslations(locale, ['common', 'header', 'index', 'chatbot'])),

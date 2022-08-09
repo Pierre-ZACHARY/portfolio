@@ -29,7 +29,7 @@ export const Header = ({content}: HeaderProps) => {
         <>
             <div className={[styles.navcontainer, state.scroll>0 ? styles.notOnTop : styles.onTop].join(" ")}>
                 <nav className={styles.navBar}>
-                    <Link href="/"><a className={styles.logoLink} id="header-name"><h2 className={styles.logo} >Pierre <strong style={{color: "var(--secondary-color)"}}>ZACHARY</strong></h2></a></Link>
+                    <Link href="/"><a className={styles.logoLink} id="header-name"><h2 className={styles.logo} >Pierre <strong style={{color: "var(--secondary-color)", backgroundColor: "var(--background-color)"}}>ZACHARY</strong></h2></a></Link>
                     <div className={styles.columnContainer}>
                         <section className={styles.firstRow}>
                             <TranslationSwitch className={styles.flagSelect} alignToRight={true}/>
