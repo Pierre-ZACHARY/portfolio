@@ -67,10 +67,7 @@ export const Index = ({blogPosts = {content: [{
     useEffect(() => {
         if(!state.mounted){
            const setScreenHeight = () => {
-               let array = document.getElementsByClassName(styles.screen);
-               for(let i = 0; i<array.length; i++){
-                   array[i].setAttribute("style", "height:"+window.innerHeight+"px");
-               }
+               document.getElementById("mobilePresentation")?.setAttribute("style", "height:"+window.innerHeight+"px");
            }
            setScreenHeight();
            window.addEventListener("resize", setScreenHeight);
@@ -114,7 +111,7 @@ export const Index = ({blogPosts = {content: [{
         <>
             <Layout>
                 <div className={styles.home} id="first" ref={Introduction}>
-                    <div className={styles.screen} >
+                    <div className={styles.screen} id="mobilePresentation">
                         <Image id="profilePicture" src={profile} alt="Profile Picture"/>
                         <h1 style={{marginTop: 20}}>Pierre Zachary</h1>
                         <a href="/cv.pdf" target="_blank"><button><FontAwesomeIcon icon={faDownload}/>  {t("index:downloadCv")}</button></a>
