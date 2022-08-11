@@ -19,7 +19,7 @@
     }
 }
 
-.home>.screen{
+.home>.screen>div{
     display: flex;
     justify-content: center;
     align-items: center;
@@ -30,7 +30,7 @@
     border-radius: 100%;
 }
 
-.home>.screen>span{
+.home>.screen>div>span{
     width: 25% !important;
     max-width: 100%;
     aspect-ratio: 1;
@@ -72,6 +72,7 @@
     color: var(--primary);
 }
 
-.home{
-    min-height: 200vh;
+#mobilePresentation{
+    padding-top: 110px;
+    min-height: 500px;
 }
