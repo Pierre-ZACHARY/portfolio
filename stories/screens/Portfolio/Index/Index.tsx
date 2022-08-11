@@ -68,9 +68,7 @@ export const Index = ({blogPosts = {content: [{
         if(!state.mounted){
            const setScreenHeight = () => {
                let elem = document.getElementById("mobilePresentation")!;
-               if(elem.style.height == '' || Number.parseInt(elem.style.height.replaceAll("px", "")) < window.innerHeight){
-                   elem.setAttribute("style", "height:"+window.innerHeight+"px; min-height: 500px");
-               }
+               elem.setAttribute("style", "height:"+window.innerHeight+"px; min-height: 500px");
            }
            setScreenHeight();
            window.addEventListener("resize", setScreenHeight);

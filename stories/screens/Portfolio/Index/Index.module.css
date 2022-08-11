@@ -71,3 +71,7 @@
     transform: translateX(-2px);
     color: var(--primary);
 }
+
+.home{
+    min-height: 200vh;
+}
