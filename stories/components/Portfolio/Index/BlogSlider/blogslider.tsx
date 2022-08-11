@@ -36,7 +36,7 @@ export const Blogslider = ({content = [{
                 // install Swiper modules
                 modules={[Keyboard, Navigation, Pagination, Scrollbar, A11y]}
                 slidesPerView={1}
-                spaceBetween={50}
+                spaceBetween={40}
                 navigation
                 keyboard={{
                     enabled: true,
@@ -44,16 +44,16 @@ export const Blogslider = ({content = [{
                 centeredSlides={true}
                 breakpoints={{
                     640: {
-                        slidesPerView: 2,
+                        slidesPerView: 1,
                     },
                     768: {
-                        slidesPerView: 3,
+                        slidesPerView: 2,
                     },
                     1024: {
-                        slidesPerView: 4,
+                        slidesPerView: 3,
                     },
                     1440: {
-                        slidesPerView: 5,
+                        slidesPerView: 4,
                     },
                 }}
                 pagination={{ clickable: true, dynamicBullets: true }}
