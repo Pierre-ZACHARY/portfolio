@@ -67,7 +67,7 @@ export const Index = ({blogPosts = {content: [{
     useEffect(() => {
         if(!state.mounted){
            const setScreenHeight = () => {
-               document.getElementById("mobilePresentation")?.setAttribute("style", "height:"+window.innerHeight+"px");
+               document.getElementById("mobilePresentation")?.setAttribute("style", "height:"+window.innerHeight+"px, min-height: 500px");
            }
            setScreenHeight();
            window.addEventListener("resize", setScreenHeight);
@@ -111,8 +111,8 @@ export const Index = ({blogPosts = {content: [{
         <>
             <Layout>
                 <div className={styles.home} id="first" ref={Introduction}>
-                    <div className={styles.screen} id="mobilePresentation" style={{minHeight: "500px"}}>
-                        <Image id="profilePicture" src={profile} alt="Profile Picture" width="100%" height="100%"/>
+                    <div className={styles.screen} id="mobilePresentation">
+                        <Image id="profilePicture" src={profile} alt="Profile Picture" width="100%" height="100%" quality={"100"}/>
                         <h1 style={{marginTop: 20}}>Pierre Zachary</h1>
                         <a href="/cv.pdf" target="_blank"><button><FontAwesomeIcon icon={faDownload}/>  {t("index:downloadCv")}</button></a>
                         <Scrolldown/>
