@@ -32,7 +32,8 @@
 
 .home>.screen>span{
     width: 25% !important;
-    max-width: 350px;
+    max-width: 100%;
+    aspect-ratio: 1;
     min-width: 150px;
     margin-top: auto !important;
 }
