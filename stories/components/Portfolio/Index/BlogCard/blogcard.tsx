@@ -10,7 +10,6 @@ import { motion } from "framer-motion";
 interface BlogcardProps {
     cardtitle: string;
     descriptionHtml: string;
-    imagesrc: string;
     mostviewed: boolean;
     lastupdated: boolean;
     datestringiso: string;
@@ -20,7 +19,6 @@ interface BlogcardProps {
 export const Blogcard = ({
                              cardtitle,
                              descriptionHtml,
-                             imagesrc,
                              mostviewed,
                              lastupdated,
                              datestringiso,

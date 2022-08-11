@@ -14,6 +14,7 @@ import {Scrolldown} from "../../../components/Portfolio/Index/ScollDown/scrolldo
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faDownload, faQuoteLeft, faQuoteRight} from "@fortawesome/free-solid-svg-icons";
 import {Blogslider, BlogsliderProps} from "../../../components/Portfolio/Index/BlogSlider/blogslider";
+import { motion } from "framer-motion";
 
 const getDimensions = (ele:any) => {
     const { height } = ele.getBoundingClientRect();
@@ -33,18 +34,19 @@ export interface IndexProps{
 
 
 interface IndexState{
-    section: number | undefined
+    section: number | undefined,
+    mounted: boolean
 }
 
 export const Index = ({blogPosts = {content: [{
         id: "dadza",
         title: "Bonjour",
         date: "2020-01-01",
-        thumbnailUrl: "",
+        descriptionHtml: "adfzaf",
         lastupdated: true,
     }]}}: IndexProps) => {
     const { t } = useTranslation();
-    const [state, setState] = useState<IndexState>({section: undefined});
+    const [state, setState] = useState<IndexState>({section: undefined, mounted: false});
     const dispatch = useAppDispatch();
     const Skills = useRef(null);
     const Blog = useRef(null);
@@ -60,7 +62,20 @@ export const Index = ({blogPosts = {content: [{
         { section: 4, ref: Contact },
     ]
 
+
+
     useEffect(() => {
+        if(!state.mounted){
+           const setScreenHeight = () => {
+               let array = document.getElementsByClassName(styles.screen);
+               for(let i = 0; i<array.length; i++){
+                   array[i].setAttribute("style", "height:"+window.innerHeight+"px");
+               }
+           }
+           setScreenHeight();
+           window.addEventListener("resize", setScreenHeight);
+           setState({...state, mounted: true});
+        }
         const handleScroll = () => {
             const scrollPosition = window.scrollY + 75;
 
@@ -93,7 +108,7 @@ export const Index = ({blogPosts = {content: [{
         return () => {
             window.removeEventListener("scroll", handleScroll);
         };
-    }, [state.section]);
+    }, [state.section, state.mounted]);
 
     return (
         <>
@@ -108,9 +123,9 @@ export const Index = ({blogPosts = {content: [{
                     </div>
                     <div className={styles.screen}>
                         <div className={styles.presentationContainer}>
-                            <p id="presentation">
+                            <motion.p id="presentation">
                                 Bonjour et bienvenue sur mon site ! Je m'appelle Pierre Zachary, j'ai 21 ans et je suis en dernière année d'études d'informatique, <strong>spécialisé dans le développement cross-platforme, la performance et la sécurité</strong>. J'ai créé ce site pour montrer une partie de mes compétences et vous informer des autres. N'hésitez pas à me <strong>contacter par mail ou via le widget de chat</strong> en direct présent en bas à droite de votre écran.
-                            </p>
+                            </motion.p>
                         </div>
                     </div>
                 </div>

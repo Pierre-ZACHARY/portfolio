@@ -15,7 +15,6 @@ interface BlogSlideI{
     id: string,
     date: string,
     descriptionHtml: string,
-    thumbnailUrl: string,
     lastupdated: boolean,
 }
 
@@ -27,7 +26,6 @@ export const Blogslider = ({content = [{
         id: "dadza",
         title: "Bonjour",
         date: "2020-01-01",
-        thumbnailUrl: "",
     descriptionHtml: "La description :)",
         lastupdated: true,
     }]}: BlogsliderProps) => {
@@ -70,7 +68,6 @@ export const Blogslider = ({content = [{
                                           id={slide.id}
                                           datestringiso={slide.date}
                                           descriptionHtml={slide.descriptionHtml}
-                                          imagesrc={slide.thumbnailUrl}
                                           lastupdated={slide.lastupdated}
                                           mostviewed={false}/>
                         </SwiperSlide>)

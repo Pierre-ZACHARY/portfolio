@@ -1,6 +1,6 @@
 
 .screen{
-    min-height: 100vh;
+    min-height: 500px;
     max-width: var(--max-width);
     margin: auto;
     padding: 110px 20px 0 20px;
