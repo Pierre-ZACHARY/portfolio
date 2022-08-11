@@ -14,10 +14,8 @@ interface TranslationswitchProps{
 
 export const TranslationSwitch = ({ className="", alignToRight=false}: TranslationswitchProps) => {
     const { t, i18n } = useTranslation();
-    const dispatch  = useAppDispatch();
     const router = useRouter();
     const [state, setState] = useState({selected:"FR", mounted: false});
-    const selected_index: number = useAppSelector(state => state.headerSection.selected);
 
     if(i18n.language == "fr" && state.selected!= "FR"){
         setState({...state, selected: "FR"});

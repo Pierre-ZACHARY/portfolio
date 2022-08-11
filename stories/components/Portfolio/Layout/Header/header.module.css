@@ -114,6 +114,10 @@
     top: 64px;
     background-color: var(--background);
     transition: background-color 1s cubic-bezier(0, 0, 0.2, 1);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    flex-wrap: wrap;
 }
 
 .mobileMenuContainer h3{
@@ -128,14 +132,11 @@
 }
 
 .mobileMenuDisplay{
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    flex-wrap: wrap;
+    visibility: visible;
 }
 
 .mobileMenuHide{
-    display: none;
+    visibility: hidden;
 }
 
 .flagSelect{

@@ -1,11 +1,11 @@
 import {HeaderSection} from "./HeaderSection/headerSection";
-import ThemeSwitch from "./ThemeSwitch/themeswitch";
 import styles from "./header.module.css"
 import Link from "next/link";
 import {useEffect, useState} from "react";
 import { Squash as Hamburger } from 'hamburger-react'
-import {TranslationSwitch} from "./TranslationSwitch/translationswitch";
 import {useTranslation} from "react-i18next";
+import {ThemeSwitch, TranslationSwitch} from "./IconSwitch/IconSwitch";
+import {LayoutGroup} from "framer-motion";
 
 interface HeaderProps{
     content: string
@@ -32,8 +32,10 @@ export const Header = ({content}: HeaderProps) => {
                     <Link href="/"><a className={styles.logoLink} id="header-name"><h2 className={styles.logo} >Pierre <strong style={{color: "var(--secondary-color)", backgroundColor: "var(--background-color)"}}>ZACHARY</strong></h2></a></Link>
                     <div className={styles.columnContainer}>
                         <section className={styles.firstRow}>
-                            <TranslationSwitch className={styles.flagSelect} alignToRight={true}/>
-                            <ThemeSwitch alignToRight={true} className={styles.themeSelect}/>
+                            <LayoutGroup id="desktop-icons-switchs">
+                                <TranslationSwitch/>
+                                <ThemeSwitch/>
+                            </LayoutGroup>
                         </section>
                         <section className={styles.secondRow}>
                             <HeaderSection content=""/>
@@ -52,8 +54,12 @@ export const Header = ({content}: HeaderProps) => {
                 <Link href="#third"><a><h3>{t("header:section3")}</h3></a></Link>
                 <Link href="#fourth"><a><h3>{t("header:section4")}</h3></a></Link>
                 <Link href="#fifth"><a><h3>{t("header:section5")}</h3></a></Link>
-                <ThemeSwitch/>
-                <TranslationSwitch  />
+                <div style={{width: "100%", display: "flex", justifyContent: "center", alignItems: "center"}}>
+                    <LayoutGroup  id="mobile-icons-switchs">
+                        <TranslationSwitch/>
+                        <ThemeSwitch/>
+                    </LayoutGroup>
+                </div>
             </div>
         </>)
 }
