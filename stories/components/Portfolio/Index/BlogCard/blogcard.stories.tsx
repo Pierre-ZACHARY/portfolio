@@ -20,8 +20,7 @@ Default.args = {
     cardtitle: "Default card",
     mostviewed: false,
     lastupdated: false,
-    description: "",
-    imagesrc: cardbg.src,
+    descriptionHtml: "",
     datestringiso: "2020-01-01"
 }
 
@@ -30,8 +29,7 @@ MostViewed.args = {
     cardtitle: "MostViewed",
     mostviewed: true,
     lastupdated: false,
-    description: "",
-    imagesrc: cardbg.src,
+    descriptionHtml: "",
     datestringiso: "2020-02-15"
 }
 
@@ -40,8 +38,7 @@ LastUpdated.args = {
     cardtitle: "Last Updated",
     mostviewed: false,
     lastupdated: true,
-    description: "",
-    imagesrc: cardbg.src,
+    descriptionHtml: "",
     datestringiso: "2020-01-01"
 }
 
@@ -51,7 +48,6 @@ LastUpdatedAndMostViewed.args = {
     cardtitle: "LastUpdatedAndMostViewed",
     mostviewed: true,
     lastupdated: true,
-    description: "",
-    imagesrc: cardbg.src,
+    descriptionHtml: "",
     datestringiso: "2020-01-01"
 }
