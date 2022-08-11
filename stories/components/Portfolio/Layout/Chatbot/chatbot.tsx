@@ -92,8 +92,6 @@ export const Chatbot = ({args}: any) => {
     const redux_state: ChatbotState = useAppSelector(state => state.chatbot);
 
     useEffect(()=>{
-        const messageView = document.getElementById("messageView");
-        messageView!.scrollTop = messageView!.scrollHeight;
         if(!state.didMount){
             window.matchMedia(query).addEventListener('change', e => setState({...state, isSmall: e.matches}));
             setState({...state, didMount: true, isSmall: window.matchMedia(query).matches});
@@ -114,6 +112,10 @@ export const Chatbot = ({args}: any) => {
                     executeChatBotAction(dispatch, ChatbotAction.Typing);
                 }
             }
+        }
+        else{
+            const messageView = document.getElementById("messageView");
+            messageView!.scrollTop = messageView!.scrollHeight;
         }
 
         if(!state.welcome_msg && redux_state.msgList.length == 1 && redux_state.msgList[0].fromUser){
@@ -183,6 +185,10 @@ export const Chatbot = ({args}: any) => {
     const badge_offset = state.isopen ? offset[mediaquery]+"px" : "-"+offset[mediaquery]+"px";
     const widget_size = state.isopen ? "100%" : size[mediaquery]+"px";
     const padding = state.isopen ? "0" : "5%";
+
+    if(!state.didMount){
+        return null;
+    }
 
     return (
         <>

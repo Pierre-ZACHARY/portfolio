@@ -67,7 +67,10 @@ export const Index = ({blogPosts = {content: [{
     useEffect(() => {
         if(!state.mounted){
            const setScreenHeight = () => {
-               document.getElementById("mobilePresentation")?.setAttribute("style", "height:"+window.innerHeight+"px; min-height: 500px");
+               let elem = document.getElementById("mobilePresentation")!;
+               if(elem.style.height == '' || Number.parseInt(elem.style.height.replaceAll("px", "")) < window.innerHeight){
+                   elem.setAttribute("style", "height:"+window.innerHeight+"px; min-height: 500px");
+               }
            }
            setScreenHeight();
            window.addEventListener("resize", setScreenHeight);
