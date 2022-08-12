@@ -32,6 +32,10 @@ export const ThemeSwitch = () => {
         }
     });
 
+    if(!mounted){ // on a besoin de connaitre le theme pour faire le rendu, ça sert à rien de le faire sur le serveur
+        return null;
+    }
+
     const options: OptionType[] = [
         { key: "system",
             icon: <span title={t("header:system")}><FontAwesomeIcon icon={faComputer} className={styles.optionIcon} /></span>,
