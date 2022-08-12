@@ -6,6 +6,7 @@ import { Squash as Hamburger } from 'hamburger-react'
 import {useTranslation} from "react-i18next";
 import {ThemeSwitch, TranslationSwitch} from "./IconSwitch/IconSwitch";
 import {LayoutGroup} from "framer-motion";
+import { HeaderSectionV2 } from "./HeaderSection/HeaderSectionV2";
 
 interface HeaderProps{
     content: string
@@ -33,12 +34,12 @@ export const Header = ({content}: HeaderProps) => {
                     <div className={styles.columnContainer}>
                         <section className={styles.firstRow}>
                             <LayoutGroup id="desktop-icons-switchs">
-                                <TranslationSwitch/>
                                 <ThemeSwitch/>
+                                <TranslationSwitch/>
                             </LayoutGroup>
                         </section>
                         <section className={styles.secondRow}>
-                            <HeaderSection content=""/>
+                            <HeaderSectionV2 keyList={["first", "second", "third", "fourth", "fifth"]}/>
                         </section>
                         <section className={[styles.mobileRow, state.burgerActive? styles.mBurgerActive : styles.mBurger].join(" ")}>
                             <Hamburger rounded

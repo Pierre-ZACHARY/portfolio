@@ -105,10 +105,10 @@ export const Index = ({blogPosts = {content: [{
 
     if(state.mounted){
         if(selected_index != 0){
-            document.getElementById("header-name")?.classList.add("showHeaderName");
+            document.getElementById("header-name")?.classList.add(styles.showHeaderName);
         }
         else{
-            document.getElementById("header-name")?.classList.remove("showHeaderName");
+            document.getElementById("header-name")?.classList.remove(styles.showHeaderName);
         }
     }
 

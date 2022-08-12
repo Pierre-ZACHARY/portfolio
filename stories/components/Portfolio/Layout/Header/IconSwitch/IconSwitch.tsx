@@ -62,7 +62,7 @@ export const TranslationSwitch = () => {
         {key: "fr", onClick: () => handleSelect("fr"), icon: <div style={{position: "relative", width: "100%", height: "100%"}}><Image alt={"french flag"} title={"Français"} src={fr_flag} layout={'fill'} objectFit={'contain'} /></div>},
         {key: "en", onClick: () => handleSelect("en"), icon: <div style={{position: "relative", width: "100%", height: "100%"}}><Image alt={"english flag"} title={"English"} src={gb_flag} layout={'fill'} objectFit={'contain'} /></div>},
     ]
-    return (<><IconSwitch optionList={options} defaultSelectedKey={i18n.language ? i18n.language : "fr"}/></>);
+    return <IconSwitch optionList={options} defaultSelectedKey={i18n.language ? i18n.language : "fr"}/>;
 }
 
 
@@ -79,17 +79,17 @@ export const IconSwitch = (props: IconSwitchProps) => {
 
     return (
         <>
-            <motion.div id={styles["mainContainer"]}
-                        layout
-                        className={isOpen ? styles.mainContainerOpen : ""}
+            <motion.div layout
+                        className={[isOpen ? styles.mainContainerOpen : "", styles.mainContainer].join(" ")}
                         tabIndex={0}
-                        onBlur={()=>toggleMenu(false)}>
+                        onBlur={()=>toggleMenu(false)}
+                        initial={{y:0}}>
                 {props.optionList.map( (e, k) => {
                     if(isOpen){
                         return (
-                            <motion.div key={k} layoutId={e.key+"container"} layout={"position"} onClick={() => {toggleMenu(false); e.onClick(); setSelected(e.key)}}>
+                            <motion.div key={k} layoutId={e.key+"container"} layout={"position"}  onClick={() => {toggleMenu(false); e.onClick(); setSelected(e.key)}}>
                                 <div style={{position: "relative"}}>
-                                    {hovered == e.key ? <motion.div layoutId={"activeThemeHighlight"} id={styles["hoverTheme"]}></motion.div> : null}
+                                    {hovered == e.key ? <motion.div layoutId={"activeThemeHighlight"} className={styles.hoverTheme}></motion.div> : null}
                                     <div className={[styles.innerContainer, e.key == selected ? styles.activeTheme : null].join(" ")} onPointerEnter={(event) => setHovered(e.key)}>
                                         {e.icon}
                                     </div>

@@ -1,6 +1,6 @@
 .navbar
   position: relative
-  padding: 12px 0
+  padding: 6px 0
   margin: 0
   .line
     height: 2px
@@ -13,8 +13,10 @@
     margin: 0
     list-style: none
     display: flex
+    gap: 20px
     li
-      margin: 0 40px 0 0
+      //margin: 0 40px 0 0
+      flex-direction: column
       opacity: .4
       transition: all 0.4s ease
       &:hover
@@ -40,7 +42,6 @@
 .contactLi
   background-color: var(--primary-color)
   opacity: 1 !important
-  padding: 3px 9px
   border-radius: 10px
   a
     color: var(--background) !important
@@ -48,3 +49,26 @@
     background-color: var(--background)
     a
       color: var(--primary-color) !important
+
+.highlightContainer
+  position: relative
+  padding: 3px 9px
+  display: flex
+  align-items: center
+  justify-content: center
+#highlight
+  background-color: #7F7F7F80
+  position: absolute
+  pointer-events: none
+  top: 0
+  left: 0
+  border-radius: 9px
+  width: 100%
+  height: 100%
+#sectionLine
+  background-color: var(--primary-color)
+  border-radius: 6px
+  width: 100%
+  height: 3px
+  position: absolute
+  bottom: -11px
