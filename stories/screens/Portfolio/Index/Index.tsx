@@ -15,18 +15,9 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faDownload, faQuoteLeft, faQuoteRight} from "@fortawesome/free-solid-svg-icons";
 import {Blogslider, BlogsliderProps} from "../../../components/Portfolio/Index/BlogSlider/blogslider";
 import { motion } from "framer-motion";
+import { getDimensions } from "lib/utils";
 
-const getDimensions = (ele:any) => {
-    const { height } = ele.getBoundingClientRect();
-    const offsetTop = ele.offsetTop;
-    const offsetBottom = offsetTop + height;
 
-    return {
-        height,
-        offsetTop,
-        offsetBottom,
-    };
-};
 
 export interface IndexProps{
     blogPosts: BlogsliderProps
@@ -63,42 +54,44 @@ export const Index = ({blogPosts = {content: [{
         { section: 4, ref: Contact },
     ]
 
+    let previousSection = 0;
 
+    const handleScroll = () => {
+        const scrollPosition = window.scrollY + 75;
+
+        const selected = sectionRefs.find(({ section, ref }) => {
+            const ele = ref.current;
+            if (ele) {
+                const { offsetBottom, offsetTop } = getDimensions(ele);
+                return scrollPosition > offsetTop && scrollPosition < offsetBottom;
+            }
+        });
+
+
+        if (selected && selected.section != previousSection) {
+            previousSection = selected.section;
+            executeHeaderSectionAction(dispatch, headerSectionAction.Select, selected.section);
+        }
+    };
+
+    const setScreenHeight = () => {
+        let elem = document.getElementById(styles["mobilePresentation"])!;
+        elem.setAttribute("style", "height:"+window.innerHeight+"px;");
+    }
 
     useEffect(() => {
         if(!state.mounted){
-           const setScreenHeight = () => {
-               let elem = document.getElementById(styles["mobilePresentation"])!;
-               elem.setAttribute("style", "height:"+window.innerHeight+"px;");
-           }
            setScreenHeight();
            window.addEventListener("resize", setScreenHeight);
-
-           let previousSection = 0;
-            const handleScroll = () => {
-                const scrollPosition = window.scrollY + 75;
-
-                const selected = sectionRefs.find(({ section, ref }) => {
-                    const ele = ref.current;
-                    if (ele) {
-                        const { offsetBottom, offsetTop } = getDimensions(ele);
-                        return scrollPosition > offsetTop && scrollPosition < offsetBottom;
-                    }
-                });
-
-
-                if (selected && selected.section != previousSection) {
-                    previousSection = selected.section;
-                    executeHeaderSectionAction(dispatch, headerSectionAction.Select, selected.section);
-                }
-            };
-
-            handleScroll();
-            window.addEventListener("scroll", handleScroll);
+           handleScroll();
+           window.addEventListener("scroll", handleScroll);
            setState({...state, mounted: true});
         }
 
-
+        return () => {
+            window.removeEventListener("scroll", handleScroll); // this event listener is removed after the new route loads
+            window.removeEventListener("resize", setScreenHeight);
+        }
     }, []);
 
     const selected_index: number = useAppSelector(state => state.headerSection.selected);

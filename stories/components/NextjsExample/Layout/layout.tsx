@@ -29,8 +29,10 @@ export default function Layout({ children, home }: any) {
             <header className={styles.header}>
 
             </header>
-            <main className={styles.layoutMain}>{children}</main>
-
+            <main className={styles.layoutMain}>
+                {children}
+            </main>
+            <footer></footer>
         </div>
     );
 }

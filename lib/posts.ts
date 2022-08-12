@@ -3,6 +3,7 @@ import path from 'path';
 import matter from 'gray-matter';
 import { remark } from 'remark';
 import html from 'remark-html';
+import {VFile} from "vfile";
 
 const postsDirectory = path.join(process.cwd(), '/pages/posts/markdown' );
 
@@ -84,12 +85,22 @@ export async function getPostData(id: string, locale: string = "fr") {
         .process(matterResult.content);
     const contentHtml = processedContent.toString();
 
+    const regXHeader = /(?<flag>#{1,6})\s+(?<content>.+)/g
+    const titles = Array
+            .from(
+                matterResult.content.matchAll(regXHeader)
+            )
+            .map((value: RegExpMatchArray, index ) => ({
+                heading: `h${ value.groups!.flag.length }`,
+                content: value.groups!.content,
+            }))
 
 
     // Combine the data with the id and contentHtml
     return {
         id,
         contentHtml,
+        titles,
         ...matterResult.data,
     };
 }

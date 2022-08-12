@@ -80,3 +80,35 @@
         width: 100%;
     }
 }
+
+.nav{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    height: 100vh;
+    min-width: 100px;
+    position: sticky;
+    top: 0;
+}
+.nav ul {
+    padding: 0;
+}
+
+.nav li{
+    font-size: var(--font-small);
+    margin: 5px 0;
+    line-height: 1.2;
+    list-style-type: none;
+}
+
+.mainHeading a, .subHeading a{
+    cursor: pointer;
+}
+
+.subHeading{
+
+}
+
+.currentHeading a{
+    color: var(--secondary-color) !important;
+}

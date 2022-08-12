@@ -10,7 +10,6 @@ export default function IndexPage({ allPostsData}: any) {
     return (
         <>
             <Index blogPosts={{content: allPostsData}}/>
-
         </>
     )
 }
