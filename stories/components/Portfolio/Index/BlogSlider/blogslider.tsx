@@ -29,7 +29,7 @@ export const Blogslider = ({content = [{
     descriptionHtml: "La description :)",
         lastupdated: true,
     }]}: BlogsliderProps) => {
-    console.log(content);
+    // console.log(content);
     return (
         <>
             <Swiper

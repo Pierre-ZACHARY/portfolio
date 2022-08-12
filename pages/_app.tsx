@@ -5,7 +5,9 @@ import {Provider} from "react-redux";
 import {store} from "../redux/store";
 import { ThemeProvider } from 'next-themes'
 import { appWithTranslation } from 'next-i18next';
-
+import { config } from '@fortawesome/fontawesome-svg-core'
+import '@fortawesome/fontawesome-svg-core/styles.css'
+config.autoAddCss = false
 function MyApp({ Component, pageProps }: AppProps) {
   return (<Provider store={store}>
             <ThemeProvider themes={['oled', 'light', 'dark']}>

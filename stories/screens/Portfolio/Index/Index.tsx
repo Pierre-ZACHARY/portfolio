@@ -2,7 +2,7 @@ import {Layout} from "../../../components/Portfolio/Layout/Layout";
 import styles from "./Index.module.css"
 import {useTranslation} from "react-i18next";
 import {useEffect, useRef, useState} from "react";
-import {useAppDispatch} from "../../../../redux/hooks";
+import {useAppDispatch, useAppSelector} from "../../../../redux/hooks";
 import Image from "next/image";
 import profile from "../../../../public/profile.jpg";
 
@@ -34,9 +34,10 @@ export interface IndexProps{
 
 
 interface IndexState{
-    section: number | undefined,
     mounted: boolean
 }
+
+
 
 export const Index = ({blogPosts = {content: [{
         id: "dadza",
@@ -46,7 +47,7 @@ export const Index = ({blogPosts = {content: [{
         lastupdated: true,
     }]}}: IndexProps) => {
     const { t } = useTranslation();
-    const [state, setState] = useState<IndexState>({section: undefined, mounted: false});
+    const [state, setState] = useState<IndexState>({mounted: false});
     const dispatch = useAppDispatch();
     const Skills = useRef(null);
     const Blog = useRef(null);
@@ -72,41 +73,45 @@ export const Index = ({blogPosts = {content: [{
            }
            setScreenHeight();
            window.addEventListener("resize", setScreenHeight);
+
+           let previousSection = 0;
+            const handleScroll = () => {
+                const scrollPosition = window.scrollY + 75;
+
+                const selected = sectionRefs.find(({ section, ref }) => {
+                    const ele = ref.current;
+                    if (ele) {
+                        const { offsetBottom, offsetTop } = getDimensions(ele);
+                        return scrollPosition > offsetTop && scrollPosition < offsetBottom;
+                    }
+                });
+
+
+                if (selected && selected.section != previousSection) {
+                    previousSection = selected.section;
+                    executeHeaderSectionAction(dispatch, headerSectionAction.Select, selected.section);
+                }
+            };
+
+            handleScroll();
+            window.addEventListener("scroll", handleScroll);
            setState({...state, mounted: true});
         }
-        const handleScroll = () => {
-            const scrollPosition = window.scrollY + 75;
-
-            const selected = sectionRefs.find(({ section, ref }) => {
-                const ele = ref.current;
-                if (ele) {
-                    const { offsetBottom, offsetTop } = getDimensions(ele);
-                    return scrollPosition > offsetTop && scrollPosition < offsetBottom;
-                }
-            });
 
 
+    }, []);
 
-            if (selected && selected.section !== state.section) {
-                setState({...state, section: selected.section});
-                if(selected.section!=0){
-                    document.getElementById("header-name")!.classList.add(styles.showHeaderName);
-                }
-                else{
-                    document.getElementById("header-name")!.classList.remove(styles.showHeaderName);
-                }
-                executeHeaderSectionAction(dispatch, headerSectionAction.Select, selected.section);
-            } else if (!selected && state.section) {
-                setState({...state, section: undefined});
-            }
-        };
+    const selected_index: number = useAppSelector(state => state.headerSection.selected);
 
-        handleScroll();
-        window.addEventListener("scroll", handleScroll);
-        return () => {
-            window.removeEventListener("scroll", handleScroll);
-        };
-    }, [state.section, state.mounted]);
+    if(state.mounted){
+        if(selected_index != 0){
+            document.getElementById("header-name")?.classList.add("showHeaderName");
+        }
+        else{
+            document.getElementById("header-name")?.classList.remove("showHeaderName");
+        }
+    }
+
 
     return (
         <>

@@ -15,6 +15,25 @@ html:focus-within{
   scroll-behavior: smooth;
 }
 
+section {
+  font-family: 'Nunito Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-size: 14px;
+  line-height: 24px;
+  padding: 48px 20px;
+  margin: 0 auto;
+  max-width: 600px;
+  color: #333;
+}
+
+section h2 {
+  font-weight: 900;
+  font-size: 32px;
+  line-height: 1;
+  margin: 0 0 4px;
+  display: inline-block;
+  vertical-align: top;
+}
+
 * {
   box-sizing: border-box;
 }
@@ -108,3 +127,19 @@ svg:not(:root).svg-inline--fa, svg:not(:host).svg-inline--fa {
   overflow: visible;
   box-sizing: content-box;
 }
+
+svg {
+  display: inline-block;
+  vertical-align: top;
+}
+
+h1 {
+  font-weight: 900;
+  font-size: 20px;
+  line-height: 1;
+  margin: 6px 0 6px 10px;
+  display: inline-block;
+  vertical-align: top;
+}
+
+

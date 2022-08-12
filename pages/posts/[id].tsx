@@ -3,19 +3,19 @@ import {getAllPostIds, getPostData} from "../../lib/posts";
 import Head from "next/head";
 import Date from '../../stories/components/NextjsExample/Date/date';
 import utilStyles from "/styles/utils.module.css";
-import { motion } from "framer-motion";
-import Image from "next/image";
-import styles from "../../stories/components/NextjsExample/Layout/layout.module.css";
-import Link from "next/link";
-import {useRouter} from "next/router";
+import {useTranslation} from "next-i18next";
+import {serverSideTranslations} from "next-i18next/serverSideTranslations";
 
 export default function Post({ postData }: any) {
-    console.log(postData);
+    // console.log(postData);
 
-    const router = useRouter();
-    const { offset = 0 } = router.query
+    // const router = useRouter();
+    // const { offset = 0 } = router.query
 
-    console.log(offset)
+    // console.log(offset)
+
+    const {t} = useTranslation();
+
 
     return (
         <Layout>
@@ -33,20 +33,31 @@ export default function Post({ postData }: any) {
     );
 }
 
-export async function getStaticPaths() {
+export const getStaticPaths = async ({ locales }: {locales: string[]}) => {
     // Return a list of possible value for id
-    const paths = getAllPostIds();
+    const paths = locales.map((locale) => {
+        const localeIds = getAllPostIds(locale);
+
+        return localeIds.map((path) =>{
+            return {
+                params: {id: path.params.id},
+                locale
+            }
+        });
+    }).flat();
     return {
         paths,
         fallback: false,
     };
 }
 
-export async function getStaticProps({ params }: any) {
+export async function getStaticProps({ locale, params }: any) {
     // Fetch necessary data for the blog post using params.id
-    const postData = await getPostData(params.id);
+    const postData = await getPostData(params.id, locale);
+
     return {
         props: {
+            ...(await serverSideTranslations(locale, ['common'])),
             postData,
         },
     };

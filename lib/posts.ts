@@ -6,16 +6,16 @@ import html from 'remark-html';
 
 const postsDirectory = path.join(process.cwd(), '/pages/posts/markdown' );
 
-export async function getSortedPostsData() {
+export async function getSortedPostsData(locale: string = "fr") {
     // Get file names under /posts
-    const fileNames = fs.readdirSync(postsDirectory);
+    const fileNames = fs.readdirSync(path.join(postsDirectory, locale));
     let allPostsData = [];
     for(let fileName of fileNames) {
         // Remove ".md" from file name to get id
         const id = fileName.replace(/\.md$/, '');
 
         // Read markdown file as string
-        const fullPath = path.join(postsDirectory, fileName);
+        const fullPath = path.join(path.join(postsDirectory, locale), fileName);
         const fileContents = fs.readFileSync(fullPath, 'utf8');
 
         // Use gray-matter to parse the post metadata section
@@ -46,8 +46,8 @@ export async function getSortedPostsData() {
     return allPostsData;
 }
 
-export function getAllPostIds() {
-    const fileNames = fs.readdirSync(postsDirectory);
+export function getAllPostIds(locale: string = "fr") {
+    const fileNames = fs.readdirSync(path.join(postsDirectory, locale));
 
     // Returns an array that looks like this:
     // [
@@ -66,13 +66,13 @@ export function getAllPostIds() {
         return {
             params: {
                 id: fileName.replace(/\.md$/, ''),
-            },
+            }
         };
     });
 }
 
-export async function getPostData(id: string) {
-    const fullPath = path.join(postsDirectory, `${id}.md`);
+export async function getPostData(id: string, locale: string = "fr") {
+    const fullPath = path.join(postsDirectory, locale, `${id}.md`);
     const fileContents = fs.readFileSync(fullPath, 'utf8');
 
     // Use gray-matter to parse the post metadata section
