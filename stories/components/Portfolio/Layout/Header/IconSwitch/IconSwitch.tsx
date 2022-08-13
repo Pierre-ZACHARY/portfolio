@@ -54,7 +54,7 @@ export const TranslationSwitch = () => {
     const router = useRouter();
 
     const handleSelect = (code: string) => {
-        router.push('.', '.', { locale: code }); // next
+        router.push(router.asPath, router.asPath, { locale: code }); //n
         i18n.changeLanguage(code); // react
     }
 

@@ -5,7 +5,7 @@ import {useEffect, useState} from "react";
 import { Squash as Hamburger } from 'hamburger-react'
 import {useTranslation} from "react-i18next";
 import {ThemeSwitch, TranslationSwitch} from "./IconSwitch/IconSwitch";
-import {LayoutGroup} from "framer-motion";
+import {LayoutGroup, motion} from "framer-motion";
 import { HeaderSectionV2 } from "./HeaderSection/HeaderSectionV2";
 
 interface HeaderProps{
@@ -28,7 +28,7 @@ export const Header = ({content}: HeaderProps) => {
 //
     return (
         <>
-            <div className={[styles.navcontainer, state.scroll>0 ? styles.notOnTop : styles.onTop].join(" ")}>
+            <motion.div layoutScroll className={[styles.navcontainer, state.scroll>0 ? styles.notOnTop : styles.onTop].join(" ")}>
                 <nav className={styles.navBar}>
                     <Link href="/"><a className={styles.logoLink} id="header-name"><h2 className={styles.logo} >Pierre <strong style={{color: "var(--secondary-color)", backgroundColor: "var(--background-color)"}}>ZACHARY</strong></h2></a></Link>
                     <div className={styles.columnContainer}>
@@ -48,7 +48,7 @@ export const Header = ({content}: HeaderProps) => {
                         </section>
                     </div>
                 </nav>
-            </div>
+            </motion.div>
             <div className={[state.burgerActive? styles.mobileMenuDisplay : styles.mobileMenuHide, styles.mobileMenuContainer].join(" ")}>
                 <Link href="#first"><a><h3>{t("header:section1")}</h3></a></Link>
                 <Link href="#second"><a><h3>{t("header:section2")}</h3></a></Link>

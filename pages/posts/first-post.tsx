@@ -1,7 +1,7 @@
 import Link from "next/link";
 import Head from "next/head";
 import Script from "next/script";
-import Layout from "../../stories/components/NextjsExample/Layout/layout";
+import Layout from "../../stories/components/NextjsExample/PostLayout/postlayout";
 
 
 export default function FirstPost() {

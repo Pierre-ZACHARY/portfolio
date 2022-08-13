@@ -7,7 +7,7 @@ import styles from "./headerSection.module.css"
 import {HeaderSectionV2} from "./HeaderSectionV2";
 
 export default {
-    title: 'Portfolio/Layout/Components/Header/HeaderSection',
+    title: 'Portfolio/PostLayout/Components/Header/HeaderSection',
     component: HeaderSection,
     // More on argTypes: https://storybook.js.org/docs/react/api/argtypes
     argTypes: { },

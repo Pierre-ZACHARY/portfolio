@@ -4,7 +4,7 @@ import {Chatbot} from "./chatbot";
 
 
 export default {
-    title: 'Portfolio/Layout/Components/Chatbot',
+    title: 'Portfolio/PostLayout/Components/Chatbot',
     component: Chatbot,
     // More on argTypes: https://storybook.js.org/docs/react/api/argtypes
     argTypes: { },

@@ -6,7 +6,7 @@ import {IconSwitch, ThemeSwitch, TranslationSwitch} from "./IconSwitch";
 
 
 export default {
-    title: 'Portfolio/Layout/Components/Header/IconSwitch',
+    title: 'Portfolio/PostLayout/Components/Header/IconSwitch',
     component: IconSwitch,
     // More on argTypes: https://storybook.js.org/docs/react/api/argtypes
 } as ComponentMeta<typeof IconSwitch>;

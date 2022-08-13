@@ -17,7 +17,7 @@ function TradTest () {
 
 
 export default {
-    title: 'Portfolio/Layout/Components/Header/TranslationSwitch',
+    title: 'Portfolio/PostLayout/Components/Header/TranslationSwitch',
     component: TranslationSwitch,
     // More on argTypes: https://storybook.js.org/docs/react/api/argtypes
     argTypes: { },

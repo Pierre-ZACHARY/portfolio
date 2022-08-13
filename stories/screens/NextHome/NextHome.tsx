@@ -4,7 +4,7 @@ import Image from "next/image";
 import styles from "./Home.module.css";
 import profilePic from '../../../public/vercel.svg'
 import Link from "next/link";
-import Layout, {siteTitle} from "../../components/NextjsExample/Layout/layout";
+import Layout, {siteTitle} from "../../components/NextjsExample/PostLayout/postlayout";
 import utilStyles from "/styles/utils.module.css";
 import {Component} from "react";
 import Date from '../../components/NextjsExample/Date/date';

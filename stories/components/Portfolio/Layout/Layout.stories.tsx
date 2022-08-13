@@ -4,7 +4,7 @@ import React from "react";
 import { Layout } from "./Layout";
 
 export default {
-    title: 'Portfolio/Layout/Layout',
+    title: 'Portfolio/PostLayout/PostLayout',
     component: Layout,
     // More on argTypes: https://storybook.js.org/docs/react/api/argtypes
     argTypes: { },

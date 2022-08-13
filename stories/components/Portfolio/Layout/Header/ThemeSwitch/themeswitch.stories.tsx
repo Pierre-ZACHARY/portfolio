@@ -4,7 +4,7 @@ import {ComponentMeta, ComponentStory} from "@storybook/react";
 import React from "react";
 
 export default {
-    title: 'Portfolio/Layout/Components/Header/ThemeSwitch',
+    title: 'Portfolio/PostLayout/Components/Header/ThemeSwitch',
     component: ThemeSwitch,
     // More on argTypes: https://storybook.js.org/docs/react/api/argtypes
     argTypes: { },

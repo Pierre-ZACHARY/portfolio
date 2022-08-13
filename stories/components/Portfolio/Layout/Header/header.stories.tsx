@@ -5,7 +5,7 @@ import React from "react";
 import {Header} from "./header";
 
 export default {
-    title: 'Portfolio/Layout/Components/Header',
+    title: 'Portfolio/PostLayout/Components/Header',
     component: Header,
     // More on argTypes: https://storybook.js.org/docs/react/api/argtypes
     argTypes: { },

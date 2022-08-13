@@ -54,7 +54,7 @@ export const Index = ({blogPosts = {content: [{
         { section: 4, ref: Contact },
     ]
 
-    let previousSection = 0;
+    let previousSection: number | undefined = undefined;
 
     const handleScroll = () => {
         const scrollPosition = window.scrollY + 75;
@@ -68,7 +68,7 @@ export const Index = ({blogPosts = {content: [{
         });
 
 
-        if (selected && selected.section != previousSection) {
+        if ( selected && (!previousSection || selected.section != previousSection)) {
             previousSection = selected.section;
             executeHeaderSectionAction(dispatch, headerSectionAction.Select, selected.section);
         }

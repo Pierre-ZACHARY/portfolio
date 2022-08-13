@@ -33,7 +33,11 @@ export const HeaderSectionV2 = ({keyList}: HeaderSectionV2Props) => {
                                                onPointerEnter={()=>setHovered(value)}
 
                                     >
-                                        {hovered == value ? <motion.span  layoutId={"sectionHighlight"} id={stylesSass["highlight"]} initial={{opacity: 1, y: 0}} exit={{opacity: 0}} transition={{delay: 0.5,
+                                        {hovered == value ? <motion.span  layoutId={"sectionHighlight"}
+                                                                          id={stylesSass["highlight"]}
+                                                                          initial={{opacity: 1, y: 0}}
+                                                                          exit={{opacity: 0}}
+                                                                          transition={{
                                             opacity: { duration: 1 },
                                             default: { ease: "linear" }}}/> : null}
                                         <div style={{position: "relative"}}>
