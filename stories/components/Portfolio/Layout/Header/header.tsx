@@ -16,10 +16,15 @@ export const Header = ({content}: HeaderProps) => {
     const { t } = useTranslation();
 
     const [state, setState] = useState({scroll: 0, burgerActive: false});
+    const handleScroll = () => {
+        setState({...state, scroll: window.scrollY});
+    }
+
     useEffect(() => {
-        window.addEventListener("scroll", () => {
-            setState({scroll: window.scrollY, burgerActive: state.burgerActive});
-        });
+        window.addEventListener("scroll", handleScroll);
+        return () => {
+            window.removeEventListener("scroll", handleScroll);
+        }
     }, []);
 
     let toggleButton = () => {

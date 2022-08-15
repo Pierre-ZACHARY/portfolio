@@ -8,11 +8,43 @@ import { motion } from 'framer-motion';
 import {ThemeSwitch, TranslationSwitch} from "../../Portfolio/Layout/Header/IconSwitch/IconSwitch";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faHome} from "@fortawesome/free-solid-svg-icons";
+import {useEffect, useState} from "react";
+import {doc, onSnapshot} from "@firebase/firestore";
+import {db} from "../../../../pages/_app";
+import {useEffectOnce} from "../../../../lib/utils";
+import {useTranslation} from "next-i18next";
 
 const name = 'Pierre ZACHARY';
 export const siteTitle = 'Blog de Pierre Zachary';
 
-export default function PostLayout({ children, home }: any) {
+export default function PostLayout({ children, postId }: any) {
+
+    const {t} = useTranslation()
+
+    const [viewCount, setViewCount] = useState<number>(0);
+    const [scrollPos, setScrollPos] = useState<number>(0);
+
+    const handleScroll = () => {
+        setScrollPos(window.scrollY);
+    }
+
+    useEffect(() => {
+        window.addEventListener("scroll", handleScroll);
+        return () => {
+            window.removeEventListener("scroll", handleScroll);
+        }
+    }, []);
+
+    useEffectOnce(()=>{
+        if(postId){
+            const unsub = onSnapshot(doc(db, "posts", postId), (doc) => {
+                // console.log("Current data: ", doc.data());
+                setViewCount(doc.data()?.views);
+            });
+        }
+    });
+
+
     return (
         <div className={styles.container}>
             <Head>
@@ -31,12 +63,13 @@ export default function PostLayout({ children, home }: any) {
                 <meta name="twitter:card" content="summary_large_image" />
                 <title>{siteTitle}</title>
             </Head>
-            <motion.nav layoutScroll className={styles.postHeaderNav}>
+            <motion.nav layoutScroll className={[styles.postHeaderNav, scrollPos>0 ? styles.notOnTop : styles.onTop].join(" ")}>
                 <div className={styles.navContainer}>
                     <section>
                         <Link href={"/"}><a><button style={{padding: "9px 15px", borderRadius: "9px", margin: 0}}><span><FontAwesomeIcon icon={faHome}/> Home</span></button></a></Link>
                     </section>
                     <section style={{display: "flex"}}>
+                        <motion.p layout={"position"} title={t("common:viewCount")} style={{fontSize: "var(--font-small)", margin: "auto 5px", color: "var(--primary)"}}>{viewCount} 👀</motion.p>
                         <ThemeSwitch/>
                         <TranslationSwitch/>
                     </section>

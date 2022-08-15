@@ -1,3 +1,7 @@
 {
-  "downloadCv": "View my Resume"
+  "downloadCv": "View my Resume",
+  "Welcome": "Hi",
+  "IntroHtml": "Welcome on my website, it allow me to <strong>show</strong> and <strong>inform</strong> you about my productions.",
+  "Intro2Html": "J’ai utilisé seulement des solutions d’hébergement <strong>gratuites</strong>, aucun plugin ou logiciel tier payant.",
+  "Intro3Html": "N’hésitez pas à me <strong>contacter</strong> via le widget dédié à cet effet en bas à droite de votre écran, par mail ou sur les réseaux sociaux."
 }

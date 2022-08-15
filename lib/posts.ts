@@ -4,6 +4,8 @@ import matter from 'gray-matter';
 import { remark } from 'remark';
 import html from 'remark-html';
 import {VFile} from "vfile";
+import {addDoc, collection, doc, getDoc, getDocs} from "@firebase/firestore";
+import {db} from "../pages/_app";
 
 const postsDirectory = path.join(process.cwd(), '/pages/posts/markdown' );
 
@@ -11,6 +13,7 @@ export async function getSortedPostsData(locale: string = "fr") {
     // Get file names under /posts
     const fileNames = fs.readdirSync(path.join(postsDirectory, locale));
     let allPostsData = [];
+    let mostViewedIndex = undefined;
     for(let fileName of fileNames) {
         // Remove ".md" from file name to get id
         const id = fileName.replace(/\.md$/, '');
@@ -26,13 +29,27 @@ export async function getSortedPostsData(locale: string = "fr") {
             .use(html)
             .process(matterResult.data.description);
         const descriptionHtml = processedDescription.toString();
+
+        let viewCount = 0;
+        const docRef = doc(db, "posts", id);
+        const docSnap = await getDoc(docRef);
+        if (docSnap.exists()) {
+            console.log("Document data:", docSnap.data());
+            viewCount = docSnap.data().views;
+        }
+        if(!mostViewedIndex || viewCount>mostViewedIndex){
+            mostViewedIndex = allPostsData.length;
+        }
         allPostsData.push({
             id,
             lastupdated: false,
+            viewCount,
+            mostViewed: false,
             descriptionHtml: descriptionHtml,
             ...matterResult.data,
         });
     }
+    if(mostViewedIndex) allPostsData[mostViewedIndex].mostViewed = true;
     // Sort posts by date
     allPostsData = allPostsData.sort(({ date: a }: any, { date: b }: any) => {
         if (a < b) {
@@ -73,6 +90,12 @@ export function getAllPostIds(locale: string = "fr") {
 }
 
 export async function getPostData(id: string, locale: string = "fr") {
+
+    // const docRef = await addDoc(collection(db, "posts/"+id), {
+    //     views: 0
+    // });
+
+
     const fullPath = path.join(postsDirectory, locale, `${id}.md`);
     const fileContents = fs.readFileSync(fullPath, 'utf8');
 

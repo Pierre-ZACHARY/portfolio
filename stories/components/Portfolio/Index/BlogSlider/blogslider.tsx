@@ -16,6 +16,8 @@ interface BlogSlideI{
     date: string,
     descriptionHtml: string,
     lastupdated: boolean,
+    viewCount: number,
+    mostViewed: boolean
 }
 
 export interface BlogsliderProps {
@@ -26,8 +28,10 @@ export const Blogslider = ({content = [{
         id: "dadza",
         title: "Bonjour",
         date: "2020-01-01",
-    descriptionHtml: "La description :)",
+        descriptionHtml: "La description :)",
         lastupdated: true,
+        viewCount: 0,
+        mostViewed: false
     }]}: BlogsliderProps) => {
     // console.log(content);
     return (
@@ -69,7 +73,7 @@ export const Blogslider = ({content = [{
                                           datestringiso={slide.date}
                                           descriptionHtml={slide.descriptionHtml}
                                           lastupdated={slide.lastupdated}
-                                          mostviewed={false}/>
+                                          mostviewed={slide.mostViewed}/>
                         </SwiperSlide>)
                     )
                 }

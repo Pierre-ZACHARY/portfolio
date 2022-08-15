@@ -1,3 +1,7 @@
 {
-  "downloadCv": "Voir mon CV"
+  "downloadCv": "Voir mon CV",
+  "Welcome": "Bonjour",
+  "IntroHtml": "Bienvenue sur mon site, celui-ci me permet de vous <strong>montrer</strong> et vous <strong>informer</strong> de mes réalisations.",
+  "Intro2Html": "J’ai utilisé seulement des solutions d’hébergement <strong>gratuites</strong>, aucun plugin ou logiciel tier payant.",
+  "Intro3Html": "N’hésitez pas à me <strong>contacter</strong> via le widget dédié à cet effet en bas à droite de votre écran, par mail ou sur les réseaux sociaux."
 }

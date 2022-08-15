@@ -123,6 +123,11 @@
     -webkit-background-clip: text;
 }
 
+.mostViewed.lastUpdated .cardTitle{
+    background: linear-gradient(to right, #e7450a 0%, #f7c10e 100%);
+    -webkit-background-clip: text;
+}
+
 .cardInfo{
     background: #333333;
     width: fit-content;
