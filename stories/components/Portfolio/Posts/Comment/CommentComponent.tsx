@@ -45,7 +45,7 @@ export const CommentComponent = ({comment, level = 0 }: CommentComponentProps) =
                 <section className={styles.replies}>
                     <ul>
                         {comment.replies.map((rep)=>{
-                          return(<li key={rep.id}><CommentComponent comment={rep} level={level+1}/></li>)
+                            return(<li key={rep.id}><p>↳</p><CommentComponent comment={rep} level={level+1}/></li>)
                         })}
                     </ul>
                 </section>

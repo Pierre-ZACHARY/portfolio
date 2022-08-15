@@ -64,7 +64,7 @@ export default function PostLayout({ children, postId }: any) {
             <motion.nav layoutScroll className={[styles.postHeaderNav, scrollPos>0 ? styles.notOnTop : styles.onTop].join(" ")}>
                 <div className={styles.navContainer}>
                     <section>
-                        <Link href={"/"}><a><button style={{padding: "9px 15px", borderRadius: "9px", margin: 0}}><span><FontAwesomeIcon icon={faHome}/> Home</span></button></a></Link>
+                        <Link href={"/"}><a><button style={{padding: "9px 15px", borderRadius: "9px", margin: 0, backgroundColor: "var(--background-highlight)", color: "var(--secondary-color)"}}><span><FontAwesomeIcon icon={faHome}/> Home</span></button></a></Link>
                     </section>
                     <section style={{display: "flex"}}>
                         <motion.p layout={"position"} title={t("common:viewCount")} style={{fontSize: "var(--font-small)", margin: "auto 5px", color: "var(--primary)"}}>{viewCount} 👀</motion.p>
