@@ -1,4 +1,4 @@
-import {getAllPostIds, getPostData} from "../../lib/posts";
+import {getAllPostIds, getPostData, getSortedPostsData} from "../../lib/posts";
 import Head from "next/head";
 import Date from '../../stories/components/NextjsExample/Date/date';
 import utilStyles from "/styles/utils.module.css";
@@ -26,6 +26,7 @@ import {app, db} from "../_app";
 import {runTransaction} from "@firebase/firestore";
 import firebase from "firebase/compat";
 import FirestoreDataConverter = firebase.firestore.FirestoreDataConverter;
+import {Blogslider} from "../../stories/components/Portfolio/Index/BlogSlider/blogslider";
 
 interface PostDb{
     id: string,
@@ -73,7 +74,7 @@ async function updateViews(id: string): Promise<number | void> {
     }
 }
 
-export default function Post({ postData }: any) {
+export default function Post({allPostsData, postData }: any) {
     const {t} = useTranslation();
 
     const [currentIndex, setCurrentIndex] = useState<number>(0);
@@ -115,7 +116,15 @@ export default function Post({ postData }: any) {
 
 
     return (
+
         <PostLayout postId={postData.id}>
+            <Head>
+                <title>{postData.title}</title>
+                <meta
+                    name="description"
+                    content={postData.description}
+                />
+            </Head>
             <div className={utilStyles.deskPadding}>
                 <motion.nav layoutScroll className={utilStyles.nav}>
                     <ul>
@@ -128,20 +137,14 @@ export default function Post({ postData }: any) {
                         })}
                     </ul>
                 </motion.nav>
-                <Head>
-                    <title>{postData.title}</title>
-                    <meta
-                        name="description"
-                        content={postData.description}
-                    />
-                </Head>
                 <article className={utilStyles.article}>
                     <h1 className={utilStyles.headingXl}>{postData.title}</h1>
                     <div className={utilStyles.lightText}>
                         <Date dateString={postData.date} />
                     </div>
                     <div id={"mdContent"} dangerouslySetInnerHTML={{ __html: postData.contentHtml }}/>
-                    <Link href={"/"}><a className={styles.backToHome}>← Retour</a></Link>
+                    <Link href={"/"}><a className={styles.backToHome}>← {t("common:backToHome")}</a></Link>
+                    <Blogslider content={allPostsData}/>
                 </article>
             </div>
 
@@ -193,11 +196,13 @@ export const getStaticPaths = async ({ locales }: {locales: string[]}) => {
 export async function getStaticProps({ locale, params }: any) {
     // Fetch necessary data for the blog post using params.id
     const postData = await getPostData(params.id, locale);
+    const allPostsData = await getSortedPostsData(locale);
 
     return {
         props: {
             ...(await serverSideTranslations(locale, ['common', 'header'])),
             postData,
+            allPostsData,
         },
     };
 }

@@ -3,9 +3,9 @@
     z-index: 0 !important;
 }
 .swiperslides{
-    display: flex;
-    justify-content: center;
+    /*display: flex;*/
+    /*justify-content: center;*/
     --card-height: 250px;
-    /*width: var(--card-height) !important;*/
+    width: var(--card-height) !important;
 }
 
