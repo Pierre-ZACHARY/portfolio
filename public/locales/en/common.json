@@ -2,5 +2,11 @@
   "section1": "Hey!",
   "testing": "Hello There!",
   "viewCount": "View Count",
-  "backToHome": "Back To Home"
+  "backToHome": "Back To Home",
+  "otherPosts": "See also",
+  "comments": "Comments",
+  "reply": "Reply",
+  "mostFav": "Upvotes",
+  "orderByDate": "Date",
+  "sortby": "Sort by"
 }

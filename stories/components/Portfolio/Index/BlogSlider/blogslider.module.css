@@ -1,11 +1,17 @@
 .swiper{
-    padding: 50px 50px 100px 50px !important;
+    padding: 20px 50px 100px 50px !important;
     z-index: 0 !important;
 }
 .swiperslides{
     /*display: flex;*/
     /*justify-content: center;*/
     --card-height: 250px;
-    width: var(--card-height) !important;
+    /*width: var(--card-height) !important;*/
 }
 
+@media(max-width: 760px){
+    .swiper{
+        padding: 20px 4px 100px 4px !important;
+        z-index: 0 !important;
+    }
+}

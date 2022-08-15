@@ -30,19 +30,17 @@ export default function PostLayout({ children, postId }: any) {
 
     useEffect(() => {
         window.addEventListener("scroll", handleScroll);
+        const unsub = onSnapshot(doc(db, "posts", postId), (doc) => {
+            // console.log("Current data: ", doc.data());
+            setViewCount(doc.data()?.views);
+        });
         return () => {
             window.removeEventListener("scroll", handleScroll);
+            unsub();
         }
     }, []);
 
-    useEffectOnce(()=>{
-        if(postId){
-            const unsub = onSnapshot(doc(db, "posts", postId), (doc) => {
-                // console.log("Current data: ", doc.data());
-                setViewCount(doc.data()?.views);
-            });
-        }
-    });
+
 
 
     return (

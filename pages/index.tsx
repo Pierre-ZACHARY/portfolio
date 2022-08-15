@@ -21,5 +21,6 @@ export async function getStaticProps({ locale }: any) {
             ...(await serverSideTranslations(locale, ['common', 'header', 'index', 'chatbot'])),
             allPostsData,
         },
+        revalidate: 1800, // In seconds
     };
 }

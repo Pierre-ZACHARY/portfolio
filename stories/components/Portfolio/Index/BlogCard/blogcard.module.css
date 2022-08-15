@@ -20,6 +20,7 @@
 }
 
 .card {
+    margin: auto;
     --card-width: var(--card-height);
     --card-border-size: 4px;
     /*background: #191c29;*/

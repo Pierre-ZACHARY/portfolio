@@ -1,7 +1,10 @@
 .container {
     margin: 0 auto 0;
     --max-width: 960px;
+    width: 100%;
 }
+
+
 
 .container article{
     max-width: var(--max-width);
@@ -76,3 +79,9 @@
     }
 }
 
+
+@media (min-width: 2300px){
+    .container{
+        --max-width: 1500px;
+    }
+}

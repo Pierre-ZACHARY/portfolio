@@ -8,6 +8,7 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faArrowRight, faCircle} from "@fortawesome/free-solid-svg-icons";
 import styles from "../../stories/components/NextjsExample/PostLayout/postlayout.module.css";
 import {useEffect, useRef, useState} from "react";
+import {Comment} from "lib/Comment";
 import {getDimensions, useEffectOnce} from "lib/utils";
 import Link from "next/link";
 import {motion} from "framer-motion";
@@ -16,8 +17,8 @@ import {
     addDoc,
     collection,
     doc,
-    DocumentData,
-    getDocs,
+    DocumentData, DocumentReference,
+    getDocs, onSnapshot,
     QueryDocumentSnapshot,
     setDoc,
     SnapshotOptions
@@ -27,6 +28,7 @@ import {runTransaction} from "@firebase/firestore";
 import firebase from "firebase/compat";
 import FirestoreDataConverter = firebase.firestore.FirestoreDataConverter;
 import {Blogslider} from "../../stories/components/Portfolio/Index/BlogSlider/blogslider";
+import {DisplayComments} from "../../stories/components/Portfolio/Posts/DisplayComments/DisplayComments";
 
 interface PostDb{
     id: string,
@@ -81,7 +83,7 @@ export default function Post({allPostsData, postData }: any) {
 
     const handleScroll = () => {
         const scrollPosition = window.scrollY+150;
-        const nodeList = document.getElementById("mdContent")!.querySelectorAll("h1, h2, h3, h4, h5, h6");
+        const nodeList = document.querySelectorAll("#Summary h1, #Summary h2, #Summary h3, #otherPosts h1, #comments h1");
         if(nodeList && nodeList.length){
             let prev = 0;
             for(let i = 0; i<nodeList.length; i++){
@@ -95,7 +97,7 @@ export default function Post({allPostsData, postData }: any) {
     }
 
     useEffect(()=>{
-        const nodeList = document.getElementById("mdContent")!.querySelectorAll("h1, h2, h3, h4, h5, h6");
+        const nodeList = document.getElementById("Summary")!.querySelectorAll("h1, h2, h3, h4, h5, h6");
         for(let i = 0; i<nodeList!.length; i++){
             nodeList[i]!.setAttribute("id", i.toString())
         }
@@ -111,7 +113,7 @@ export default function Post({allPostsData, postData }: any) {
     });
 
     const onClickScrollTo = (index: number) =>{
-        document.getElementById("mdContent")!.querySelectorAll("h1, h2, h3, h4, h5, h6")[index].scrollIntoView()
+        document.getElementById("Summary")!.querySelectorAll("h1, h2, h3")[index].scrollIntoView()
     }
 
 
@@ -125,7 +127,7 @@ export default function Post({allPostsData, postData }: any) {
                     content={postData.description}
                 />
             </Head>
-            <div className={utilStyles.deskPadding}>
+            <div className={utilStyles.deskPadding} >
                 <motion.nav layoutScroll className={utilStyles.nav}>
                     <ul>
                         {postData.titles.map(({heading, content}:{heading: string, content: string}, index: number)=>{
@@ -135,6 +137,18 @@ export default function Post({allPostsData, postData }: any) {
                                 <a onClick={()=>onClickScrollTo(index)}>{content}</a>
                             </li>
                         })}
+                        <li className={currentIndex == postData.titles.length ? utilStyles.currentHeading : ""}>
+                            <a href={"#otherPosts"}>
+                                {currentIndex == postData.titles.length ? <motion.div layout={"position"} layoutId={"arrow"} style={{position: "absolute", left: "-20px"}}><FontAwesomeIcon style={{color: "var(--secondary-color)"}} icon={faArrowRight}/></motion.div> : null}
+                                {t("common:otherPosts")}
+                            </a>
+                        </li>
+                        <li className={currentIndex == postData.titles.length+1 ? utilStyles.currentHeading : ""}>
+                            <a href={"comments"}>
+                                {currentIndex == postData.titles.length+1 ? <motion.div layout={"position"} layoutId={"arrow"} style={{position: "absolute", left: "-20px"}}><FontAwesomeIcon style={{color: "var(--secondary-color)"}} icon={faArrowRight}/></motion.div> : null}
+                                {t("common:comments")}
+                            </a>
+                        </li>
                     </ul>
                 </motion.nav>
                 <article className={utilStyles.article}>
@@ -142,9 +156,15 @@ export default function Post({allPostsData, postData }: any) {
                     <div className={utilStyles.lightText}>
                         <Date dateString={postData.date} />
                     </div>
-                    <div id={"mdContent"} dangerouslySetInnerHTML={{ __html: postData.contentHtml }}/>
+                    <div id={"Summary"} dangerouslySetInnerHTML={{ __html: postData.contentHtml }}/>
                     <Link href={"/"}><a className={styles.backToHome}>← {t("common:backToHome")}</a></Link>
-                    <Blogslider content={allPostsData}/>
+
+                    <div id={"otherPosts"}><h1>{t("common:otherPosts")} :</h1></div>
+                    <div id={"BlogSlider"}>
+                        <Blogslider content={allPostsData} />
+                    </div>
+                    <div id={"#comments"}><h1>{t("common:comments")} :</h1></div>
+                    <DisplayComments postId={postData.id}/>
                 </article>
             </div>
 
@@ -154,39 +174,15 @@ export default function Post({allPostsData, postData }: any) {
 
 export const getStaticPaths = async ({ locales }: {locales: string[]}) => {
     // Return a list of possible value for id
-    const idArray: string[] = [];
-    const querySnapshot = await getDocs(collection(db, "posts"));
-    querySnapshot.forEach((doc) => {
-        console.log(`${doc.id} => ${doc.data()}`);
-        idArray.push(doc.id);
-    });
-    const addList: string[] = [];
     const paths = locales.map((locale) => {
         const localeIds = getAllPostIds(locale);
-
         return localeIds.map((path) =>{
-            if(path.params.id in idArray){
-                // On retire les documents déjà existant dans firebase
-                addList.push(path.params.id);
-            }
             return {
                 params: {id: path.params.id},
                 locale
             }
         });
     }).flat();
-    for(let i = 0; i<addList.length; i++){
-        try {
-            const docRef = await addDoc(collection(db, "posts"), {
-                id: addList[i],
-                view: 0
-            });
-
-            console.log("Document written with ID: ", docRef.id);
-        } catch (e) {
-            console.error("Error adding document: ", e);
-        }
-    }
     return {
         paths,
         fallback: false,
@@ -204,6 +200,7 @@ export async function getStaticProps({ locale, params }: any) {
             postData,
             allPostsData,
         },
+        revalidate: 1800, // In seconds
     };
 }
 

@@ -40,26 +40,27 @@ export const Blogslider = ({content = [{
                 // install Swiper modules
                 modules={[Keyboard, Navigation, Pagination, Scrollbar, A11y]}
                 slidesPerView={"auto"}
+                centerInsufficientSlides={true}
                 spaceBetween={40}
                 navigation
                 keyboard={{
                     enabled: true,
                 }}
                 // centeredSlides={true}
-                // breakpoints={{
-                //     640: {
-                //         slidesPerView: 1,
-                //     },
-                //     768: {
-                //         slidesPerView: 2,
-                //     },
-                //     1024: {
-                //         slidesPerView: 3,
-                //     },
-                //     1440: {
-                //         slidesPerView: 4,
-                //     },
-                // }}
+                breakpoints={{
+                    640: {
+                        slidesPerView: 1,
+                    },
+                    955: {
+                        slidesPerView: 2,
+                    },
+                    1230: {
+                        slidesPerView: 3,
+                    },
+                    1850: {
+                        slidesPerView: 4,
+                    }
+                }}
                 pagination={{ clickable: true}}
                 scrollbar={{ draggable: true }}
                 onSwiper={(swiper) => console.log(swiper)}
