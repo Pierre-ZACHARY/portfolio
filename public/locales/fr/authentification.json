@@ -1,6 +1,9 @@
 {
   "alreadyhave": "Vous avez déjà un compte ?",
+  "areYouSure": "Êtes-vous certain de vouloir supprimer votre compte ?",
+  "chooseBetweenAvatar": "Ou choisissez parmis",
   "confirm": "Confirmer le mot de passe",
+  "dangerZone": "Zone Dangereuse",
   "doesntMatch": "Les mots de passes ne correspondent pas",
   "donthave": "Vous n'avez pas de compte ?",
   "email": "Adresse e-mail",
@@ -8,6 +11,7 @@
   "emailInvalid": "Entrez une adresse email valide",
   "forgotpassword": "Mot de passe oublié ?",
   "goodbye": "Au revoir !",
+  "inProgress": "En cours...",
   "loginScreenTitle": "Connexion",
   "password": "Mot de passe",
   "passwordTooWeak": "Votre mot de passe doit contenir au moins 6 caractères",
@@ -16,6 +20,8 @@
   "resetSent": "Email de récupération envoyé !",
   "signOut": "Déconnexion",
   "signUp": "Inscription",
+  "uploadFile": "Choisissez votre photo",
   "username": "Nom d'utilisateur",
+  "validate": "Valider",
   "wrongPassword": "Mot de passe incorrect"
 }

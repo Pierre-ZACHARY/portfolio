@@ -17,7 +17,7 @@ export const LoginScreen = ({onSignUp = undefined} : {onSignUp: Function |undefi
     const [errorMessage, setErrorMessage] = useState(undefined);
     const [passwordResetSent, setPasswordResetSent] = useState(false);
     const [emailInvalid, setEmailInvalid] = useState(false);
-    const emailRef = useRef();
+    const emailRef = useRef(null);
     const auth = getAuth();
 
     const handleSignUp = () => {
@@ -109,7 +109,7 @@ export const LoginScreen = ({onSignUp = undefined} : {onSignUp: Function |undefi
                     <h1>{t("authentification:loginScreenTitle")}</h1>
                     {errorMessage ? <p>{errorMessage}</p> : null}
                     {emailInvalid ? <p>{t("authentification:emailInvalid")}</p> : null}
-                    <label><FontAwesomeIcon icon={faAt}/><input ref={emailRef.current} type={"text"} placeholder={t("authentification:email")}/></label>
+                    <label><FontAwesomeIcon icon={faAt}/><input ref={emailRef} type={"text"} placeholder={t("authentification:email")}/></label>
                     <label><FontAwesomeIcon icon={faKey}/><input type={"password"} placeholder={t("authentification:password")}/></label>
                     <a onClick={()=>handleReset()}>{passwordResetSent ? t("authentification:resetSent") : t("authentification:forgotpassword")}</a>
                     <button type={"submit"}>{loading ? <FontAwesomeIcon  icon={faSpinner} className={"fa-spin"}/> : <FontAwesomeIcon  icon={faRightToBracket}/>} {t("authentification:loginScreenTitle")}</button>

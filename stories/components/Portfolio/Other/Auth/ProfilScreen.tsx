@@ -1,11 +1,26 @@
-import {useEffect, useState} from "react";
+import React, {FormEvent, useEffect, useRef, useState} from "react";
 import {useEffectOnce} from "../../../../../lib/utils";
-import {getAuth, onAuthStateChanged, updateProfile, User, signOut} from "@firebase/auth";
+import {
+    getAuth,
+    onAuthStateChanged,
+    updateProfile,
+    User,
+    signOut,
+    reauthenticateWithCredential,
+    EmailAuthProvider,
+    ProviderId, updatePassword, updateEmail, deleteUser
+} from "@firebase/auth";
 import styles from "./ProfilScreen.module.sass"
 import {motion, PanInfo} from "framer-motion";
 import {useTranslation} from "next-i18next";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faArrowLeft, faChevronRight, faPencil } from "@fortawesome/free-solid-svg-icons";
+import {
+    faArrowLeft, faCheck,
+    faChevronRight, faLock, faLockOpen,
+    faPencil,
+    faPenToSquare, faSpinner,
+    faTriangleExclamation
+} from "@fortawesome/free-solid-svg-icons";
 import {DocumentData, DocumentReference, onSnapshot, doc, DocumentSnapshot, setDoc} from "@firebase/firestore";
 import {db} from "../../../../../pages/_app";
 import Image from "next/image";
@@ -34,16 +49,27 @@ enum SignOutState {
 export const ProfilScreen = () => {
 
     const [userInfo, setUserInfo] = useState<UserInfo | undefined>(undefined);
+    const [user, setUser] = useState<User | null>(null);
     const [editUsername, setEditUsername] = useState(false);
+    const [dangerZoneOpen, setDangerZoneOpen] = useState(false);
     const [editAvatar, setEditAvatar] = useState(false);
+    const [editMail, setEditMail] = useState(false);
+    const [editPassword, setEditPassword] = useState(false);
+    const [wrongPassword, setWrongPassword] = useState(false);
     const [progress, setProgress] = useState(0);
+    const [loadingChange, setLoadingChange] = useState({current: 0, total: 0});
     const [signOutState, setSignOutState] = useState<SignOutState>(SignOutState.Inactive);
     const auth = getAuth();
     const {t} = useTranslation();
+    const currentPassInputRef = useRef<HTMLInputElement | null>(null);
+    const newPassInputRef = useRef<HTMLInputElement | null>(null);
+    const newEmailInputRef = useRef<HTMLInputElement | null>(null);
+
 
 
     useEffect(()=>{
         const unsub = onAuthStateChanged(auth, (user) => {
+            setUser(user);
             if (user) {
                 // User is signed in, see docs for a list of available properties
                 // https://firebase.google.com/docs/reference/js/firebase.User
@@ -55,8 +81,9 @@ export const ProfilScreen = () => {
                     else{
                         // No UserInfo Yet
                         console.log("no userinfo yet");
+                        console.log(user.email);
                         setDoc(doc(db, "users", user.uid), {
-                            username: user.displayName ?? "User",
+                            username: user.displayName ?? (user.email?.split("@")[0] ?? "User"),
                             avatarUrl: user.photoURL,
                         }).then((ref) =>{
                             console.log(ref);
@@ -142,6 +169,7 @@ export const ProfilScreen = () => {
                 getDownloadURL(task.snapshot.ref).then((downloadURL) => {
                     console.log('File available at', downloadURL);
                     setDoc(userInfo!.ref, {username: userInfo.username, avatarUrl: downloadURL});
+                    setProgress(0);
                     setEditAvatar(false);
                 });
             }
@@ -183,106 +211,120 @@ export const ProfilScreen = () => {
 
     const selectAvatar = (index: number) => {
         if(!userInfo) return;
-        setDoc(userInfo!.ref, {username: userInfo.username, avatarUrl: avatar[index]});
+        setDoc(userInfo!.ref, {username: userInfo.username, avatarUrl: avatar[index]}).then();
         setEditAvatar(false);
     }
 
     const style = { "--progress": progress+"%" } as React.CSSProperties;
 
+    const handleDangerEdit = () => {
+        const mdp = currentPassInputRef.current!.value;
+        const user = auth.currentUser;
+        setLoadingChange({current: 0, total: 1});
+        if(user && mdp){
+            reauthenticateWithCredential(user, EmailAuthProvider.credential(user.email!, mdp)).then(() => {
+                // User re-authenticated.
+                setWrongPassword(false);
+                let loading = loadingChange.total;
+                if(editPassword && newPassInputRef.current!.value.length){
+                    loading += 1;
+                    updatePassword(user, newPassInputRef.current!.value).then(() => {
+                        // Update successful.
+                        setEditPassword(false);
+                        setLoadingChange({current: loadingChange.current+1, total: loadingChange.total});
+                    }).catch((error) => {
+                        // An error ocurred
+                        // ...
+                        alert(error);
+                    });
+                }
+                if(editMail && newEmailInputRef.current!.value.length){
+                    loading += 1;
+                    if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(newEmailInputRef.current!.value)) alert(t("authentification:emailInvalid"));
+                    else{
+                        updateEmail(user, newEmailInputRef.current!.value).then(() => {
+                            // Email updated!
+                            // ...
+                            setEditMail(false);
+                            setLoadingChange({current: loadingChange.current+1, total: loadingChange.total});
+                        }).catch((error) => {
+                            // An error occurred
+                            // ...
+                            alert(error);
+                        });
+                    }
+                }
+                setLoadingChange({current: loadingChange.current+1, total: loading});
 
-    return (
-        <>
-            <div className={styles.main}>
-                {editAvatar ?
-                    <div className={styles.editAvatarContainer}>
-                        <section>
-                            <label htmlFor={"uploadFile"}
-                                   className={styles.uploadFile}
-                                   onDragOver={(e)=>{e.preventDefault()}}
-                                   onDragEnter={(e)=>{ // @ts-ignore
-                                       e.target.classList!.add(styles.dragging) ; e.preventDefault()}}
-                                   onDragLeave={(e)=>{ // @ts-ignore
-                                       e.target.classList!.remove(styles.dragging)}}
-                                   onDrop={(ev)=>{
-                                       // Prevent default behavior (Prevent file from being opened)
-                                       ev.preventDefault();
-                                       console.log('File(s) dropped');
-                                       // @ts-ignore
+            }).catch((error) => {
+                // An error ocurred
+                // ...
+                setLoadingChange({current: loadingChange.current+1, total: loadingChange.total});
+                setWrongPassword(true);
+            });
+        }
+    }
 
-                                       if(ev.dataTransfer.files.length>1){
-                                           alert("Only one image allowed")
-                                       }
-                                       else if(ev.dataTransfer.files.length==1){
-                                           if(ev.dataTransfer.files[0].type.startsWith('image')){
-                                               uploadFile(ev.dataTransfer.files[0]).then((t)=>{
-                                                   console.log(t);
-                                               }).catch((e)=>{
-                                                   alert(e);
-                                               })
-                                           }
-                                           else{
-                                               alert("This is not an image file");
-                                           }
-                                       }
+    const handleDeleteAccount = () => {
+        const mdp = currentPassInputRef.current!.value;
+        const user = auth.currentUser;
+        if(user && mdp){
+            reauthenticateWithCredential(user, EmailAuthProvider.credential(user.email!, mdp)).then(() => {
+                setWrongPassword(false);
+                if(confirm(t("authentification:areYouSure"))){
+                    setDoc(userInfo!.ref, {username: "Deleted User", avatarUrl: "https://firebasestorage.googleapis.com/v0/b/portfolio-3303d.appspot.com/o/496450-conception-d-39-icone-d-39-utilisateurs-gratuit-vectoriel.jpg?alt=media&token=d2e50ed0-0cde-48a7-b083-0b120f48ce66"}).then(()=>{
+                        deleteUser(user).then(() => {
+                        // User deleted.
+                    }).catch((error) => {
+                        // An error ocurred
+                        // ...
+                        alert(error);
+                    });});
 
-                                   }
-                                   }>
-                                <input type={"file"} id="uploadFile" style={{display: "none"}} onChange={(e)=>{
-                                    const fileInput = e.target;
-                                    if (!fileInput.files) {
-                                        alert("No file was chosen");
-                                        return;
-                                    }
+                }
+                else{
+                    console.log("don't delete")
+                }
+            }).catch(
+                (error)=>{setWrongPassword(true)}
+            )
+    }}
 
-                                    if (!fileInput.files || fileInput.files.length === 0) {
-                                        alert("Files list is empty");
-                                        return;
-                                    }
+    function handleChangeUsername(e: React.FocusEvent<HTMLInputElement> | FormEvent<HTMLInputElement>) {
+        setDoc(userInfo!.ref, {
+            username: (e.target as HTMLInputElement).value ?? "Username",
+            avatarUrl: userInfo?.avatarUrl
+        }).then().catch(
+            (e) => console.log(e)
+        );
+        setEditUsername(false);
+    }
 
-                                    const file = fileInput.files[0];
-
-                                    /** File validation */
-                                    if (!file.type.startsWith("image")) {
-                                        alert("Please select a valide image");
-                                        return;
-                                    }
-
-                                    uploadFile(file).then((t)=>{
-                                        console.log(t);
-                                    }).catch((e)=>{
-                                        alert(e);
-                                    })
-                                }
-                                }/>
-                                <p>{progress >0 ? "In progress..." : "Upload File"}</p>
-                                <div className={styles.progressContainer} style={style}><div></div></div>
-                            </label>
-                        </section>
-                        <section>
-                            <h1>Or Choose Between :</h1>
-                            <div className={styles.chooseAvatar}>
-                                <div>
-                                    <div>
-                                        {avatar.map((url, i) => {
-                                            return (<div key={i} onClick={()=>selectAvatar(i)}>
-                                                <Image  src={url} width={50} height={50} alt={"avatar"}/></div>)
-                                        })}
-                                    </div>
-                                </div>
-                                <p>Avatars by Vecteezy</p>
-                            </div>
-                        </section>
-                        <button onClick={()=>setEditAvatar(false)}><FontAwesomeIcon icon={faArrowLeft}/> Go Back</button>
-                    </div> : null}
-                {!editAvatar && userInfo ?
-                    <div className={styles.avatarContainer} onClick={()=>setEditAvatar(true)}>
-                        <Image src={userInfo?.avatarUrl ?? avatar[0]} alt={"Avatar"} layout={"fill"} objectFit={"contain"}/>
-                        <div className={styles.editPencil}><FontAwesomeIcon icon={faPencil}/></div>
-                    </div> : null}
-                { !editAvatar && userInfo?.username ? <h1>{userInfo?.username}</h1> : null}
-                { !editAvatar ? <button onBlur={() => setSignOutState(SignOutState.Inactive)}
-                         className={[styles.btnDanger, signOutState == SignOutState.WaitConfirm ? styles.btnDangerWaitConfirm : null].join(" ")}
-                         onClick={() => onSignOutClick()}>
+    function DefaultPage(): any {
+        return (
+            <>
+                {userInfo ?
+                <div className={styles.avatarContainer} onClick={()=>setEditAvatar(true)}>
+                    <Image src={userInfo?.avatarUrl ?? avatar[0]} alt={"Avatar"} layout={"fill"} objectFit={"contain"} priority/>
+                    <div className={styles.editPencil}><FontAwesomeIcon icon={faPencil}/></div>
+                </div> : null}
+                {userInfo?.username ?
+                    (!editUsername ?
+                        (<h1>{userInfo?.username}<FontAwesomeIcon icon={faPenToSquare} onClick={() => setEditUsername(true)}/></h1>) :
+                        (<div className={styles.editUsername}>
+                            <input type="text"
+                                   defaultValue={userInfo?.username ?? ""}
+                                   onSubmit={(e)=>handleChangeUsername(e)}
+                                   onBlur={(e)=> {
+                                       handleChangeUsername(e);
+                                   }}/>
+                            <FontAwesomeIcon icon={faPenToSquare} onClick={() => setEditUsername(false)}/>
+                        </div>)
+                    ) : null
+                }
+                <button onBlur={() => setSignOutState(SignOutState.Inactive)}
+                        className={[styles.btnDanger, signOutState == SignOutState.WaitConfirm ? styles.btnDangerWaitConfirm : null].join(" ")}
+                        onClick={() => onSignOutClick()}>
                     {{
                         [SignOutState.Inactive]: t("authentification:signOut"),
                         [SignOutState.WaitConfirm]:
@@ -295,7 +337,125 @@ export const ProfilScreen = () => {
                             </div>,
                         [SignOutState.Confirmed]: t("authentification:goodbye"),
                     }[signOutState]}
-                </button> : null}
+                </button>
+                <div className={[styles.dangerZone, dangerZoneOpen ? styles.open : null].join(" ")}>
+                    <div className={styles.dangerZoneTitleSection}><h2><FontAwesomeIcon icon={faTriangleExclamation}/> {t("authentification:dangerZone")}</h2><FontAwesomeIcon onClick={()=>setDangerZoneOpen(!dangerZoneOpen)} icon={dangerZoneOpen ? faLockOpen : faLock}/></div>
+                    <div className={styles.separator}></div>
+                    {dangerZoneOpen ? (<>
+                        {user?.providerId == "firebase" ? (<><div className={styles.inputLine}>
+                            <input ref={newEmailInputRef} defaultValue={user?.email!} disabled={!editMail}/>
+                            <input type={"checkbox"} onChange={(e) => setEditMail(e.target.checked)}
+                                   checked={editMail}/>
+                        </div>
+                            <div className={styles.inputLine}>
+                                <input type={"password"} ref={newPassInputRef} placeholder={"Change Password"} disabled={!editPassword}/>
+                                <input type={"checkbox"} onChange={(e)=>setEditPassword(e.target.checked)} checked={editPassword}/>
+                            </div>
+                            <div className={styles.separator}></div>
+                        {wrongPassword ? <p>{t("authentification:wrongPassword")}</p> : null}
+                            <div className={styles.inputLine}>
+                                <input type={"password"} ref={currentPassInputRef} placeholder={"Current Password"} />
+                            </div></>) : null}
+                            <div className={styles.inputLine}>
+                                <a onClick={()=>handleDeleteAccount()}>Delete your account</a>
+                            </div>
+                            <button onClick={()=>handleDangerEdit()}>{loadingChange.current<loadingChange.total && loadingChange.total>0 ? <FontAwesomeIcon icon={faSpinner} className={"fa-spin"}/> : ( loadingChange.total>0 ? <FontAwesomeIcon icon={faCheck}/> : null)} {t("authentification:validate")}</button>
+                        </>) : null}
+                </div>
+            </>
+        );
+    }
+
+    function EditAvatar(): any {
+        return (
+            <div className={styles.editAvatarContainer}>
+                <section>
+                    <label htmlFor={"uploadFile"}
+                           className={styles.uploadFile}
+                           onDragOver={(e)=>{e.preventDefault()}}
+                           onDragEnter={(e)=>{ // @ts-ignore
+                               e.target.classList!.add(styles.dragging) ; e.preventDefault()}}
+                           onDragLeave={(e)=>{ // @ts-ignore
+                               e.target.classList!.remove(styles.dragging)}}
+                           onDrop={(ev)=>{
+                               // Prevent default behavior (Prevent file from being opened)
+                               ev.preventDefault();
+                               console.log('File(s) dropped');
+                               // @ts-ignore
+
+                               if(ev.dataTransfer.files.length>1){
+                                   alert("Only one image allowed")
+                               }
+                               else if(ev.dataTransfer.files.length==1){
+                                   if(ev.dataTransfer.files[0].type.startsWith('image')){
+                                       uploadFile(ev.dataTransfer.files[0]).then((t)=>{
+                                           console.log(t);
+                                       }).catch((e)=>{
+                                           alert(e);
+                                       })
+                                   }
+                                   else{
+                                       alert("This is not an image file");
+                                   }
+                               }
+
+                           }
+                           }>
+                        <input type={"file"} id="uploadFile" style={{display: "none"}} onChange={(e)=>{
+                            const fileInput = e.target;
+                            if (!fileInput.files) {
+                                alert("No file was chosen");
+                                return;
+                            }
+
+                            if (!fileInput.files || fileInput.files.length === 0) {
+                                alert("Files list is empty");
+                                return;
+                            }
+
+                            const file = fileInput.files[0];
+
+                            /** File validation */
+                            if (!file.type.startsWith("image")) {
+                                alert("Please select a valide image");
+                                return;
+                            }
+
+                            uploadFile(file).then((t)=>{
+                                console.log(t);
+                            }).catch((e)=>{
+                                alert(e);
+                            })
+                        }
+                        }/>
+                        <p>{progress >0 ? t("authentification:inProgress") : t("authentification:uploadFile")}</p>
+                        <div className={styles.progressContainer} style={style}><div></div></div>
+                    </label>
+                </section>
+                <section>
+                    <h1>{t("authentification:chooseBetweenAvatar")} :</h1>
+                    <div className={styles.chooseAvatar}>
+                        <div>
+                            <div>
+                                {avatar.map((url, i) => {
+                                    return (<div key={i} onClick={()=>selectAvatar(i)}>
+                                        <Image  src={url} width={50} height={50} alt={"avatar"}/></div>)
+                                })}
+                            </div>
+                        </div>
+                        <p>Avatars by Vecteezy</p>
+                    </div>
+                </section>
+                <button onClick={()=>setEditAvatar(false)}><FontAwesomeIcon icon={faArrowLeft}/> Go Back</button>
+            </div>
+        )
+    }
+
+
+    return (
+        <>
+            <div className={styles.main}>
+                {!editAvatar ? <DefaultPage/> : <EditAvatar/>}
             </div>
         </>
     )

@@ -45,7 +45,6 @@ export const SignUpScreen = ({onLogin = undefined} : {onLogin: Function |undefin
                     .then((userCredential) => {
                         // Signed in
                         const user = userCredential.user;
-                        console.log(user);
                         setLoading(false);
                     })
                     .catch((error) => {

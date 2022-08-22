@@ -1,17 +1,99 @@
 .main
   padding: 30px
   max-width: min(calc(100vw - 8em), 300px)
+  min-width: 280px
   margin: auto
   display: flex
   align-items: center
   gap: 10px
   flex-direction: column
+  .dangerZone
+    background-color: var(--background-highlight)
+    width: 100%
+    padding: 5px 0 0 0
+    border-radius: 9px 9px 0 0
+    margin-top: 0.67em
+    display: flex
+    flex-direction: column
+    gap: 10px
+    p
+      margin: 0
+      color: red
+      width: 100%
+      text-align: center
+      padding: 0 10px
+      font-size: var(--font-small)
+    .inputLine
+      padding: 0 10px
+      display: flex
+      justify-content: center
+      gap: 10px
+      width: 100%
+      a
+        font-size: var(--font-small)
+        color: red
+        cursor: pointer
+      input:nth-child(1)
+        width: 100%
+    .dangerZoneTitleSection
+      display: flex
+      justify-content: space-between
+      flex-wrap: nowrap
+      align-items: baseline
+      padding: 0 10px
+      svg
+        color: var(--primary-color)
+        cursor: pointer
+      h2
+        display: flex
+        align-items: baseline
+        margin: 5px
+        line-height: unset
+        gap: 5px
+        font-size: var(--font-small)
+        svg
+          color: var(--primary)
+    &.open
+      border-radius: 9px
+    .separator
+      width: 100%
+      height: 2px
+      background-color: var(--primary)
+      opacity: 0.3
+
+
+  .editUsername
+    display: flex
+    gap: 10px
+    width: 100%
+    position: relative
+    align-items: center
+    input
+      font-size: var(--font-large)
+      font-weight: 900
+      width: 100%
+    svg
+      color: var(--primary-color)
+      cursor: pointer
+      height: var(--font-large) !important
+
+  h1
+    text-align: center
+    display: flex
+    font-size: var(--font-large)
+    font-weight: 900
+    gap: 10px
+    svg
+      color: var(--primary-color)
+      cursor: pointer
+      height: 1em !important
   .editAvatarContainer
     display: flex
     flex-direction: column
     justify-content: center
     align-items: center
     max-width: inherit
+    min-width: inherit
     padding: 0 30px
     button
       display: flex
@@ -20,7 +102,9 @@
       gap: 5px
     section
       .uploadFile
-        border: 3px dashed white
+        margin: auto
+        border: 3px dashed var(--primary)
+        background-color: var(--background-highlight)
         border-radius: 9px
         width: 200px
         height: 200px
@@ -50,6 +134,7 @@
       padding: 0 30px
       margin: 0
       max-width: inherit !important
+      min-width: inherit !important
       .chooseAvatar
         &>div
           width: 100%
@@ -81,6 +166,7 @@
         color: var(--primary)
         font-size: var(--font-medium)
         margin-bottom: 0
+
   .avatarContainer
     position: relative
     cursor: pointer

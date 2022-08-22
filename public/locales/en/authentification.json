@@ -1,6 +1,9 @@
 {
   "alreadyhave": "Already have an account ?",
+  "areYouSure": "Are you sure you want to delete your account ?",
+  "chooseBetweenAvatar": "Or Choose Between",
   "confirm": "Confirm Password",
+  "dangerZone": "Danger Zone",
   "doesntMatch": "Passwords doesn't match",
   "donthave": "Don't have an account ?",
   "email": "Mail address",
@@ -8,6 +11,7 @@
   "emailInvalid": "Please provide a valid e-mail address",
   "forgotpassword": "Forgot Password ?",
   "goodbye": "Good Bye !",
+  "inProgress": "In progress...",
   "loginScreenTitle": "Log In",
   "password": "Password",
   "passwordTooWeak": "Password should be at least 6 characters",
@@ -16,6 +20,8 @@
   "resetSent": "Password Reset Email Sent !",
   "signOut": "Log Out",
   "signUp": "Sign Up",
+  "uploadFile": "Upload your Avatar",
   "username": "Username",
+  "validate": "Validate",
   "wrongPassword": "Wrong password"
 }

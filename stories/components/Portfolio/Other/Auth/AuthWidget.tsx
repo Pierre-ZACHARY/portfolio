@@ -39,7 +39,7 @@ export const AuthWidget = () => {
                         // No UserInfo Yet
                         console.log("no userinfo yet");
                         setDoc(doc(db, "users", user.uid), {
-                            username: user.displayName ?? "User",
+                            username: user.displayName ?? (user.email?.split("@")[0] ?? "User"),
                             avatarUrl: user.photoURL,
                         }).then((ref) =>{
                             console.log(ref);
@@ -102,7 +102,7 @@ export const AuthWidget = () => {
                 <div className={styles.svgContainer} onClick={()=>handleClick()} style={{position: "relative"}}>
                     { userInfo !== undefined && !isOpen ?
                         <div style={{position: "relative", width: "24px", height: "24px", borderRadius: "50%", overflow: "hidden"}}>
-                            <Image src={userInfo?.avatarUrl ?? "https://firebasestorage.googleapis.com/v0/b/portfolio-3303d.appspot.com/o/2289_SkVNQSBGQU1PIDEwMjgtMTIx.jpg?alt=media&token=21e67942-e97d-4356-95f5-fdc562e51e40"} alt={""} layout={"fill"} objectFit={"contain"}/>
+                            <Image src={userInfo?.avatarUrl ?? "https://firebasestorage.googleapis.com/v0/b/portfolio-3303d.appspot.com/o/2289_SkVNQSBGQU1PIDEwMjgtMTE2.jpg?alt=media&token=e5ddc175-a895-4116-b325-cc3e2364cca2"} alt={""} layout={"fill"} objectFit={"contain"}/>
                         </div> : null }
                     { userInfo === undefined && !isOpen ? <FontAwesomeIcon icon={faRightToBracket}/> : null }
                     { isOpen ? <FontAwesomeIcon icon={faClose}/> : null }
