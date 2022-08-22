@@ -1,4 +1,4 @@
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import {useEffectOnce} from "../../../../../lib/utils";
 import {getAuth, onAuthStateChanged, updateProfile, User, signOut} from "@firebase/auth";
 import styles from "./ProfilScreen.module.sass"
@@ -10,7 +10,8 @@ import {DocumentData, DocumentReference, onSnapshot, doc, DocumentSnapshot, setD
 import {db} from "../../../../../pages/_app";
 import Image from "next/image";
 import axios, { AxiosRequestConfig } from "axios";
-
+import {getDownloadURL, getStorage, ref, uploadBytes, uploadBytesResumable} from "@firebase/storage";
+import UserInfo from "../../../../../lib/UserInfo";
 
 const avatar: string[] = [
     "https://firebasestorage.googleapis.com/v0/b/portfolio-3303d.appspot.com/o/2289_SkVNQSBGQU1PIDEwMjgtMTE2.jpg?alt=media&token=e5ddc175-a895-4116-b325-cc3e2364cca2",
@@ -29,21 +30,9 @@ enum SignOutState {
     Confirmed,
 }
 
-class UserInfo{
-    username: string;
-    avatarUrl: string;
-    ref: DocumentReference<DocumentData>;
-
-    constructor(doc: DocumentSnapshot<DocumentData>) {
-        this.username = doc.data()!.username;
-        this.avatarUrl = doc.data()!.avatarUrl;
-        this.ref = doc.ref;
-    }
-}
 
 export const ProfilScreen = () => {
 
-    const [userProfil, setUserProfil] = useState<User | any | undefined>(undefined);
     const [userInfo, setUserInfo] = useState<UserInfo | undefined>(undefined);
     const [editUsername, setEditUsername] = useState(false);
     const [editAvatar, setEditAvatar] = useState(false);
@@ -53,13 +42,12 @@ export const ProfilScreen = () => {
     const {t} = useTranslation();
 
 
-    useEffectOnce(()=>{
-        onAuthStateChanged(auth, (user) => {
+    useEffect(()=>{
+        const unsub = onAuthStateChanged(auth, (user) => {
             if (user) {
                 // User is signed in, see docs for a list of available properties
                 // https://firebase.google.com/docs/reference/js/firebase.User
-                setUserProfil(user);
-                onSnapshot(doc(db, "users", user.uid), (snapshot)=>{
+                const unsub = onSnapshot(doc(db, "users", user.uid), (snapshot)=>{
                     if(snapshot.data()){
                         // UserInfo exist
                         setUserInfo(new UserInfo(snapshot));
@@ -77,13 +65,19 @@ export const ProfilScreen = () => {
                         });
                     }
                 });
+                return () => {
+                    unsub();
+                }
             } else {
                 // User is signed out
                 // ...
-                setUserProfil(undefined);
+                setUserInfo(undefined);
             }
         });
-    });
+        return () =>{
+            unsub();
+        }
+    }, [auth]);
 
     const onSignOutClick = () => {
         switch (signOutState) {
@@ -119,39 +113,79 @@ export const ProfilScreen = () => {
     }
 
     const uploadFile = async (file: File) => {
-        try {
-            let formData = new FormData();
-            formData.append("media", file);
+        const storage = getStorage();
+        const auth = getAuth();
+        if(!auth.currentUser || !userInfo) return;
+        const storageRef = ref(storage, 'avatar/'+file.name);
+        const metadata = {
+            contentType: file.type,
+            uid: auth.currentUser?.uid,
+            date: new Date().toUTCString()
+        };
+        // 'file' comes from the Blob or File API
+        const task = uploadBytesResumable(storageRef, file, metadata);
 
-            const options: AxiosRequestConfig = {
-                headers: { "Content-Type": "multipart/form-data" },
-                onUploadProgress: (progressEvent: any) => {
-                    const { loaded, total } = progressEvent;
-
-                    // Calculate the progress percentage
-                    const percentage = (loaded * 100) / total;
-                    setProgress(percentage);
-                },
-            };
-
-            const {
-                data: { data },
-            } = await axios.post<{
-                data: {
-                    url: string | string[];
-                };
-            }>("/api/upload", formData, options);
-
-            console.log("File was uploaded successfylly:", data);
-        } catch (e: any) {
-            console.error(e);
-            const error =
-                e.response && e.response.data
-                    ? e.response.data.error
-                    : "Sorry! something went wrong.";
-            alert(error);
-        }
+        task.on('state_changed',
+            (snapshot: any) => {
+                // Observe state change events such as progress, pause, and resume
+                // Get task progress, including the number of bytes uploaded and the total number of bytes to be uploaded
+                const progress = (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+                setProgress(progress);
+            },
+            (error: any) => {
+                // Handle unsuccessful uploads
+                alert(error);
+            },
+            () => {
+                // Handle successful uploads on complete
+                // For instance, get the download URL: https://firebasestorage.googleapis.com/...
+                getDownloadURL(task.snapshot.ref).then((downloadURL) => {
+                    console.log('File available at', downloadURL);
+                    setDoc(userInfo!.ref, {username: userInfo.username, avatarUrl: downloadURL});
+                    setEditAvatar(false);
+                });
+            }
+        );
+        // self-host only
+        // try {
+        //     let formData = new FormData();
+        //     formData.append("media", file);
+        //
+        //     const options: AxiosRequestConfig = {
+        //         headers: { "Content-Type": "multipart/form-data" },
+        //         onUploadProgress: (progressEvent: any) => {
+        //             const { loaded, total } = progressEvent;
+        //
+        //             // Calculate the progress percentage
+        //             const percentage = (loaded * 100) / total;
+        //             setProgress(percentage);
+        //         },
+        //     };
+        //
+        //     const {
+        //         data: { data },
+        //     } = await axios.post<{
+        //         data: {
+        //             url: string | string[];
+        //         };
+        //     }>("/api/upload", formData, options);
+        //
+        //     console.log("File was uploaded successfylly:", data);
+        // } catch (e: any) {
+        //     console.error(e);
+        //     const error =
+        //         e.response && e.response.data
+        //             ? e.response.data.error
+        //             : "Sorry! something went wrong.";
+        //     alert(error);
+        // }
     };
+
+    const selectAvatar = (index: number) => {
+        if(!userInfo) return;
+        setDoc(userInfo!.ref, {username: userInfo.username, avatarUrl: avatar[index]});
+        setEditAvatar(false);
+    }
 
     const style = { "--progress": progress+"%" } as React.CSSProperties;
 
@@ -230,7 +264,8 @@ export const ProfilScreen = () => {
                                 <div>
                                     <div>
                                         {avatar.map((url, i) => {
-                                            return (<Image key={i} src={url} width={50} height={50} alt={"avatar"}/>)
+                                            return (<div key={i} onClick={()=>selectAvatar(i)}>
+                                                <Image  src={url} width={50} height={50} alt={"avatar"}/></div>)
                                         })}
                                     </div>
                                 </div>
@@ -241,7 +276,7 @@ export const ProfilScreen = () => {
                     </div> : null}
                 {!editAvatar && userInfo ?
                     <div className={styles.avatarContainer} onClick={()=>setEditAvatar(true)}>
-                        <img src={userInfo?.avatarUrl ?? "https://cdn-icons-png.flaticon.com/512/147/147144.png"} alt={"Avatar"}/>
+                        <Image src={userInfo?.avatarUrl ?? avatar[0]} alt={"Avatar"} layout={"fill"} objectFit={"contain"}/>
                         <div className={styles.editPencil}><FontAwesomeIcon icon={faPencil}/></div>
                     </div> : null}
                 { !editAvatar && userInfo?.username ? <h1>{userInfo?.username}</h1> : null}

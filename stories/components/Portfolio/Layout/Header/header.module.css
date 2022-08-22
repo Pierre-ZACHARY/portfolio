@@ -13,6 +13,7 @@
     flex-direction: row;
     justify-content: space-between;
     align-items: center;
+    flex-wrap: nowrap;
 }
 
 .navcontainer{
@@ -88,7 +89,7 @@
     flex-direction: column;
 }
 @media (max-width: 960px){
-    .secondRow{
+    .secondRow, .home .firstRow{
         display: none;
     }
     .mobileRow{
@@ -96,6 +97,7 @@
     }
     .navBar{
         padding: 5px;
+        overflow-x: scroll;
     }
 }
 

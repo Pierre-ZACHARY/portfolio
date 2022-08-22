@@ -2,11 +2,32 @@ import {LoginScreen} from "../stories/components/Portfolio/Other/Auth/LoginScree
 import {Layout} from "../stories/components/Portfolio/Layout/Layout";
 import {getPostData, getSortedPostsData} from "../lib/posts";
 import {serverSideTranslations} from "next-i18next/serverSideTranslations";
+import {useRouter} from "next/router";
+import {useEffect} from "react";
+import {getAuth, onAuthStateChanged} from "@firebase/auth";
+import Head from "next/head";
+import {useTranslation} from "next-i18next";
 
 
-export default function login() {
+export default function Login() {
+    const router = useRouter();
+    const {t} = useTranslation();
+
+    useEffect(()=>{
+        const auth = getAuth();
+        const unsub = onAuthStateChanged(auth, (user) => {
+            if (user) router.push("/profile");
+        });
+        return ()=>{
+            unsub();
+        }
+    }, []);
+
     return (
         <>
+            <Head>
+                <title>{t("authentification:loginScreenTitle")}</title>
+            </Head>
             <Layout>
                 <LoginScreen onSignUp={undefined}/>
             </Layout>

@@ -54,7 +54,7 @@ export const Header = ({content, home,  postId = undefined, className = null}: H
     return (
         <>
 
-            <motion.div layoutScroll className={[styles.navcontainer, className, state.scroll>0 ? styles.notOnTop : styles.onTop].join(" ")}>
+            <motion.div layoutScroll className={[styles.navcontainer, className, state.scroll>0 ? styles.notOnTop : styles.onTop, home? styles.home : null].join(" ")}>
                 <nav className={styles.navBar}>
                     {home ? <Link href="/">
                         <a className={styles.logoLink} id="header-name">
@@ -65,7 +65,8 @@ export const Header = ({content, home,  postId = undefined, className = null}: H
                         </a>
                     </Link> : <Link href={"/"}><a>
                         <button style={{
-                                padding: "9px 15px",
+                                height: "34px",
+                                padding: "0 20px",
                                 borderRadius: "9px",
                                 margin: 0,
                                 backgroundColor: "var(--background-highlight)",
@@ -107,7 +108,7 @@ export const Header = ({content, home,  postId = undefined, className = null}: H
                 <Link href="#third"><a><h3>{t("header:section3")}</h3></a></Link>
                 <Link href="#fourth"><a><h3>{t("header:section4")}</h3></a></Link>
                 <Link href="#fifth"><a><h3>{t("header:section5")}</h3></a></Link>
-                <div style={{width: "100%", display: "flex", justifyContent: "center", alignItems: "center"}}>
+                <div style={{width: "100%", display: "flex", justifyContent: "center", alignItems: "center", flexWrap: "nowrap", overflowX: "scroll"}}>
                     <LayoutGroup  id="mobile-icons-switchs">
                         <AuthWidget/>
                         <TranslationSwitch/>
