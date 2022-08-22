@@ -6,7 +6,6 @@ import {useTranslation} from "next-i18next";
 import {serverSideTranslations} from "next-i18next/serverSideTranslations";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faArrowRight, faCircle} from "@fortawesome/free-solid-svg-icons";
-import styles from "../../stories/components/NextjsExample/PostLayout/postlayout.module.css";
 import {useEffect, useRef, useState} from "react";
 import {Comment} from "lib/Comment";
 import {getDimensions, useEffectOnce} from "lib/utils";
@@ -29,6 +28,7 @@ import firebase from "firebase/compat";
 import FirestoreDataConverter = firebase.firestore.FirestoreDataConverter;
 import {Blogslider} from "../../stories/components/Portfolio/Index/BlogSlider/blogslider";
 import {DisplayComments} from "../../stories/components/Portfolio/Posts/DisplayComments/DisplayComments";
+import {Layout} from "../../stories/components/Portfolio/Layout/Layout";
 
 interface PostDb{
     id: string,
@@ -119,7 +119,7 @@ export default function Post({allPostsData, postData }: any) {
 
     return (
 
-        <PostLayout postId={postData.id}>
+        <Layout postId={postData.id} headerClassName={utilStyles.layoutMaxWidth} className={utilStyles.defineMaxWidth}>
             <Head>
                 <title>{postData.title}</title>
                 <meta
@@ -157,7 +157,7 @@ export default function Post({allPostsData, postData }: any) {
                         <Date dateString={postData.date} />
                     </div>
                     <div id={"Summary"} dangerouslySetInnerHTML={{ __html: postData.contentHtml }}/>
-                    <Link href={"/"}><a className={styles.backToHome}>← {t("common:backToHome")}</a></Link>
+                    <Link href={"/"}><a className={utilStyles.backToHome}>← {t("common:backToHome")}</a></Link>
 
                     <div id={"otherPosts"}><h1>{t("common:otherPosts")} :</h1></div>
                     <div id={"BlogSlider"}>
@@ -168,7 +168,7 @@ export default function Post({allPostsData, postData }: any) {
                 </article>
             </div>
 
-        </PostLayout>
+        </Layout>
     );
 }
 
@@ -196,7 +196,7 @@ export async function getStaticProps({ locale, params }: any) {
 
     return {
         props: {
-            ...(await serverSideTranslations(locale, ['common', 'header'])),
+            ...(await serverSideTranslations(locale, ['common', 'header', 'chatbot', 'authentification'])),
             postData,
             allPostsData,
         },

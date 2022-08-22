@@ -1,0 +1,21 @@
+{
+  "alreadyhave": "Vous avez déjà un compte ?",
+  "confirm": "Confirmer le mot de passe",
+  "doesntMatch": "Les mots de passes ne correspondent pas",
+  "donthave": "Vous n'avez pas de compte ?",
+  "email": "Adresse e-mail",
+  "emailAlreadyInUse": "Un compte existe déjà avec cette adresse e-mail",
+  "emailInvalid": "Entrez une adresse email valide",
+  "forgotpassword": "Mot de passe oublié ?",
+  "goodbye": "Au revoir !",
+  "loginScreenTitle": "Connexion",
+  "password": "Mot de passe",
+  "passwordTooWeak": "Votre mot de passe doit contenir au moins 6 caractères",
+  "pleasePass": "Vous devez entrer un mot de passe",
+  "pleaseProvidePassword": "Vous devez entrer votre mot de passe",
+  "resetSent": "Email de récupération envoyé !",
+  "signOut": "Déconnexion",
+  "signUp": "Inscription",
+  "username": "Nom d'utilisateur",
+  "wrongPassword": "Mot de passe incorrect"
+}

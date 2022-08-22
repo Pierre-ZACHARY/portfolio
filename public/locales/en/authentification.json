@@ -1,0 +1,21 @@
+{
+  "alreadyhave": "Already have an account ?",
+  "confirm": "Confirm Password",
+  "doesntMatch": "Passwords doesn't match",
+  "donthave": "Don't have an account ?",
+  "email": "Mail address",
+  "emailAlreadyInUse": "This e-mail address is already registered",
+  "emailInvalid": "Please provide a valid e-mail address",
+  "forgotpassword": "Forgot Password ?",
+  "goodbye": "Good Bye !",
+  "loginScreenTitle": "Log In",
+  "password": "Password",
+  "passwordTooWeak": "Password should be at least 6 characters",
+  "pleasePass": "Please provide a password",
+  "pleaseProvidePassword": "Please provide a password",
+  "resetSent": "Password Reset Email Sent !",
+  "signOut": "Log Out",
+  "signUp": "Sign Up",
+  "username": "Username",
+  "wrongPassword": "Wrong password"
+}

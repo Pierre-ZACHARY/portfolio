@@ -117,7 +117,7 @@ export const Index = ({blogPosts = {content: [{
 
     return (
         <>
-            <Layout>
+            <Layout home paddingTop={0}>
                 <div className={styles.home} id="first" ref={Introduction}>
                     <div className={styles.screen} style={{paddingTop: 0}}>
                         <div id={styles["mobilePresentation"]}>

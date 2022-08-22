@@ -1,12 +1,12 @@
 {
-  "section1": "Bonjour",
-  "testing": "Bonjour vous!",
-  "viewCount": "Nombre de vues",
   "backToHome": "Retour",
-  "otherPosts": "Voir Aussi",
   "comments": "Commentaires",
-  "reply": "Répondre",
   "mostFav": "Upvotes",
+  "orderByDate": "Date",
+  "otherPosts": "Voir Aussi",
+  "reply": "Répondre",
+  "section1": "Bonjour",
   "sortby": "Trier par",
-  "orderByDate": "Date"
+  "testing": "Bonjour vous!",
+  "viewCount": "Nombre de vues"
 }

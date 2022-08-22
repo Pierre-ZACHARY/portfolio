@@ -1,0 +1,136 @@
+.main
+  padding: 30px
+  max-width: min(calc(100vw - 8em), 300px)
+  margin: auto
+  display: flex
+  align-items: center
+  gap: 10px
+  flex-direction: column
+  .editAvatarContainer
+    display: flex
+    flex-direction: column
+    justify-content: center
+    align-items: center
+    max-width: inherit
+    padding: 0 30px
+    button
+      display: flex
+      justify-content: center
+      align-items: center
+      gap: 5px
+    section
+      .uploadFile
+        border: 3px dashed white
+        border-radius: 9px
+        width: 200px
+        height: 200px
+        display: flex
+        align-items: center
+        justify-content: center
+        flex-direction: column
+        cursor: pointer
+        padding: 20px
+        &.dragging
+          border-color: green
+          transition: border-color 0.5s ease-in-out
+        p
+          margin-bottom: 0
+        .progressContainer
+          width: 100%
+          height: 5px
+          padding: 1px
+          --progress: 0%
+          div
+            border-radius: 20px
+            background-color: var(--primary-color)
+            height: 100%
+            width: var(--progress)
+      //max-width: unset
+      padding: 0 30px
+      margin: 0
+      max-width: inherit !important
+      .chooseAvatar
+        &>div
+          width: 100%
+          overflow-x: scroll
+          padding: 10px 0
+          &::-webkit-scrollbar
+            -webkit-appearance: scrollbarbutton-down
+            width: 7px
+            height: 4px
+          &::-webkit-scrollbar-thumb
+            border-radius: 7px
+            background-color: rgba(0, 0, 0, .5)
+            box-shadow: 0 0 1px rgba(255, 255, 255, .5)
+          &>div
+            display: flex
+            flex-wrap: nowrap
+            gap: 10px
+            width: fit-content
+            span
+              width: 50px !important
+              height: 50px !important
+              border-radius: 100%
+      p
+        font-size: var(--font-small)
+        opacity: 0.6
+        margin-top: 0
+      h1
+        font-size: var(--font-medium)
+        margin-bottom: 0
+  .avatarContainer
+    position: relative
+    cursor: pointer
+    .editPencil
+      border-radius: 100%
+      background-color: var(--primary-color)
+      display: flex
+      align-items: center
+      justify-content: center
+      position: absolute
+      bottom: 5px
+      right: 5px
+      padding: 8px
+      width: min-content
+      height: min-content
+      svg
+        color: var(--background)
+  .btnDanger
+    color: white
+    background-color: red
+    margin: 0
+    border-radius: 9px
+    width: 100%
+    max-width: 150px
+    box-shadow: 0px 0px 3px 0px #600000
+    &.btnDangerWaitConfirm
+      padding: 3px
+      min-width: 150px
+      position: relative
+    .dragContainer
+      width: fit-content
+      .drag
+        display: flex
+        align-items: center
+        justify-content: center
+        padding: 6px 9px
+        background-color: rgba(224, 224, 224, 0.4)
+        border: 2px solid rgba(224, 224, 224, 0.6)
+        border-radius: 6px
+        svg
+          color: white
+      .placeholder
+        position: absolute
+        top: 0
+        left: 0
+        width: 100%
+        display: flex
+        height: 100%
+        align-items: center
+        justify-content: center
+        pointer-events: none
+
+
+  img
+    min-width: 150px
+    min-height: 150px

@@ -8,7 +8,7 @@
     display: flex;
     max-width: var(--max-width);
     margin: auto;
-    padding: 0 20px;
+    /*padding: 0 20px;*/
     width: 100%;
     flex-direction: row;
     justify-content: space-between;
@@ -87,15 +87,15 @@
     align-items: flex-end;
     flex-direction: column;
 }
-@media (max-width: 820px){
-    .firstRow, .secondRow{
+@media (max-width: 960px){
+    .secondRow{
         display: none;
     }
     .mobileRow{
         display: flex;
     }
     .navBar{
-        padding: 10px;
+        padding: 5px;
     }
 }
 

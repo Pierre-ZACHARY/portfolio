@@ -18,7 +18,7 @@ export async function getStaticProps({ locale }: any) {
     const allPostsData = await getSortedPostsData(locale);
     return {
         props: {
-            ...(await serverSideTranslations(locale, ['common', 'header', 'index', 'chatbot'])),
+            ...(await serverSideTranslations(locale, ['common', 'header', 'index', 'chatbot', 'authentification'])),
             allPostsData,
         },
         revalidate: 1800, // In seconds

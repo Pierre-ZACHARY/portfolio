@@ -13,11 +13,13 @@ import {doc, onSnapshot} from "@firebase/firestore";
 import {db} from "../../../../pages/_app";
 import {useEffectOnce} from "../../../../lib/utils";
 import {useTranslation} from "next-i18next";
+import firebase from "firebase/compat";
+import Unsubscribe = firebase.Unsubscribe;
 
 const name = 'Pierre ZACHARY';
 export const siteTitle = 'Blog de Pierre Zachary';
 
-export default function PostLayout({ children, postId }: any) {
+export default function PostLayout({ children, postId = undefined, home=false }: any) {
 
     const {t} = useTranslation()
 
@@ -30,13 +32,17 @@ export default function PostLayout({ children, postId }: any) {
 
     useEffect(() => {
         window.addEventListener("scroll", handleScroll);
-        const unsub = onSnapshot(doc(db, "posts", postId), (doc) => {
-            // console.log("Current data: ", doc.data());
-            setViewCount(doc.data()?.views);
-        });
+        let unsub : Unsubscribe | undefined = undefined;
+        if(postId){
+            unsub = onSnapshot(doc(db, "posts", postId), (doc) => {
+                // console.log("Current data: ", doc.data());
+                setViewCount(doc.data()?.views);
+            });
+        }
+
         return () => {
             window.removeEventListener("scroll", handleScroll);
-            unsub();
+            if(unsub) unsub();
         }
     }, []);
 
@@ -64,34 +70,28 @@ export default function PostLayout({ children, postId }: any) {
             <motion.nav layoutScroll className={[styles.postHeaderNav, scrollPos>0 ? styles.notOnTop : styles.onTop].join(" ")}>
                 <div className={styles.navContainer}>
                     <section>
-                        <Link href={"/"}><a><button style={{padding: "9px 15px", borderRadius: "9px", margin: 0, backgroundColor: "var(--background-highlight)", color: "var(--secondary-color)"}}><span><FontAwesomeIcon icon={faHome}/> Home</span></button></a></Link>
+                        <Link href={"/"}>
+                            <a>
+                                <button style={{
+                                    padding: "9px 15px",
+                                    borderRadius: "9px",
+                                    margin: 0,
+                                    backgroundColor: "var(--background-highlight)",
+                                    color: "var(--secondary-color)"}}>
+                                    <span>
+                                        <FontAwesomeIcon icon={faHome}/> Home
+                                    </span></button>
+                            </a>
+                        </Link>
                     </section>
                     <section style={{display: "flex"}}>
-                        <motion.p layout={"position"} title={t("common:viewCount")} style={{fontSize: "var(--font-small)", margin: "auto 5px", color: "var(--primary)"}}>{viewCount} 👀</motion.p>
+                        {viewCount>0 ? <motion.p layout={"position"} title={t("common:viewCount")} style={{fontSize: "var(--font-small)", margin: "auto 5px", color: "var(--primary)"}}>{viewCount} 👀</motion.p> : null }
                         <ThemeSwitch/>
                         <TranslationSwitch/>
                     </section>
                 </div>
             </motion.nav>
-            {/*<header className={styles.header}>*/}
-            {/*    /!*<Link href="/">*!/*/}
-            {/*    /!*    <a>*!/*/}
-            {/*    /!*        <Image*!/*/}
-            {/*    /!*            priority*!/*/}
-            {/*    /!*            src={profilePic}*!/*/}
-            {/*    /!*            className={utilStyles.borderCircle}*!/*/}
-            {/*    /!*            height={108}*!/*/}
-            {/*    /!*            width={108}*!/*/}
-            {/*    /!*            alt={name}*!/*/}
-            {/*    /!*        />*!/*/}
-            {/*    /!*    </a>*!/*/}
-            {/*    /!*</Link>*!/*/}
-            {/*    /!*<h2 className={utilStyles.headingLg}>*!/*/}
-            {/*    /!*    <Link href="/">*!/*/}
-            {/*    /!*        <a className={utilStyles.colorInherit}>{name}</a>*!/*/}
-            {/*    /!*    </Link>*!/*/}
-            {/*    /!*</h2>*!/*/}
-            {/*</header>*/}
+
             <main className={styles.layoutMain}>
                 {children}
             </main>

@@ -65,7 +65,9 @@
 
 .article{
     margin: auto;
+    padding-top: 2em;
     position: relative;
+    max-width: var(--max-width);
 }
 
 
@@ -108,6 +110,28 @@
     width: 100%;
 }
 
+.backToHome {
+    margin: auto;
+    width: fit-content;
+}
+
+.layoutMaxWidth nav{
+    max-width: var(--max-width);
+    margin: 0 auto 0;
+    padding: 0;
+}
+
+.defineMaxWidth{
+    --max-width: 960px;
+}
+
+@media (min-width: 2000px) {
+    .defineMaxWidth{
+        --max-width: 1500px;
+    }
+}
+
+
 @media (max-width: 760px) {
     .margin{
         margin: 0;
@@ -121,5 +145,8 @@
     }
     .deskPadding{
         padding: 0;
+    }
+    .nav{
+        display: none;
     }
 }

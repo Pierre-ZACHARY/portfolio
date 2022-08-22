@@ -7,23 +7,43 @@ import {useTranslation} from "react-i18next";
 import {ThemeSwitch, TranslationSwitch} from "./IconSwitch/IconSwitch";
 import {LayoutGroup, motion} from "framer-motion";
 import { HeaderSectionV2 } from "./HeaderSection/HeaderSectionV2";
+import {AuthWidget} from "../../Other/Auth/AuthWidget";
+import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {faHome} from "@fortawesome/free-solid-svg-icons";
+import {doc, onSnapshot} from "@firebase/firestore";
+import {db} from "../../../../../pages/_app";
+import firebase from "firebase/compat";
+import Unsubscribe = firebase.Unsubscribe;
 
 interface HeaderProps{
-    content: string
+    content: string,
+    home: boolean,
+    postId: string | undefined,
+    className: string | null
 }
 
-export const Header = ({content}: HeaderProps) => {
+export const Header = ({content, home,  postId = undefined, className = null}: HeaderProps) => {
     const { t } = useTranslation();
 
     const [state, setState] = useState({scroll: 0, burgerActive: false});
+    const [viewCount, setViewCount] = useState<number>(0);
+
     const handleScroll = () => {
         setState({...state, scroll: window.scrollY});
     }
 
     useEffect(() => {
         window.addEventListener("scroll", handleScroll);
+        let unsub : Unsubscribe | undefined = undefined;
+        if(postId){
+            unsub = onSnapshot(doc(db, "posts", postId), (doc) => {
+                // console.log("Current data: ", doc.data());
+                setViewCount(doc.data()?.views);
+            });
+        }
         return () => {
             window.removeEventListener("scroll", handleScroll);
+            if(unsub) unsub();
         }
     }, []);
 
@@ -33,24 +53,51 @@ export const Header = ({content}: HeaderProps) => {
 //
     return (
         <>
-            <motion.div layoutScroll className={[styles.navcontainer, state.scroll>0 ? styles.notOnTop : styles.onTop].join(" ")}>
+
+            <motion.div layoutScroll className={[styles.navcontainer, className, state.scroll>0 ? styles.notOnTop : styles.onTop].join(" ")}>
                 <nav className={styles.navBar}>
-                    <Link href="/"><a className={styles.logoLink} id="header-name"><h2 className={styles.logo} >Pierre <strong style={{color: "var(--secondary-color)", backgroundColor: "var(--background-color)"}}>ZACHARY</strong></h2></a></Link>
+                    {home ? <Link href="/">
+                        <a className={styles.logoLink} id="header-name">
+                            <h2 className={styles.logo}>Pierre <strong style={{
+                                color: "var(--secondary-color)",
+                                backgroundColor: "var(--background-color)"
+                            }}>ZACHARY</strong></h2>
+                        </a>
+                    </Link> : <Link href={"/"}><a>
+                        <button style={{
+                                padding: "9px 15px",
+                                borderRadius: "9px",
+                                margin: 0,
+                                backgroundColor: "var(--background-highlight)",
+                                color: "var(--secondary-color)"}}>
+                                    <span style={{
+                                        display: "flex",
+                                        gap: "5px",
+                                        alignItems: "baseline",
+                                        fontSize: "var(--font-small)"
+                                    }}>
+                                        <FontAwesomeIcon icon={faHome}/> Home
+                                    </span>
+                        </button>
+                        </a>
+                    </Link>}
                     <div className={styles.columnContainer}>
                         <section className={styles.firstRow}>
                             <LayoutGroup id="desktop-icons-switchs">
+                                {viewCount>0 ? <motion.p layout={"position"} title={t("common:viewCount")} style={{fontSize: "var(--font-small)", margin: "auto 5px", color: "var(--primary)"}}>{viewCount} 👀</motion.p> : null }
+                                <AuthWidget/>
                                 <ThemeSwitch/>
                                 <TranslationSwitch/>
                             </LayoutGroup>
                         </section>
-                        <section className={styles.secondRow}>
+                        {home ? <section className={styles.secondRow}>
                             <HeaderSectionV2 keyList={["first", "second", "third", "fourth", "fifth"]}/>
-                        </section>
-                        <section className={[styles.mobileRow, state.burgerActive? styles.mBurgerActive : styles.mBurger].join(" ")}>
+                        </section> : null}
+                        { home ? <section className={[styles.mobileRow, state.burgerActive? styles.mBurgerActive : styles.mBurger].join(" ")}>
                             <Hamburger rounded
                                        toggled={state.burgerActive}
                                        toggle={()=>toggleButton()}/>
-                        </section>
+                        </section> : null}
                     </div>
                 </nav>
             </motion.div>
@@ -62,6 +109,7 @@ export const Header = ({content}: HeaderProps) => {
                 <Link href="#fifth"><a><h3>{t("header:section5")}</h3></a></Link>
                 <div style={{width: "100%", display: "flex", justifyContent: "center", alignItems: "center"}}>
                     <LayoutGroup  id="mobile-icons-switchs">
+                        <AuthWidget/>
                         <TranslationSwitch/>
                         <ThemeSwitch/>
                     </LayoutGroup>
