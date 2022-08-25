@@ -1,24 +1,75 @@
 import styles from "./LoginScreen.module.sass"
 import {useTranslation} from "next-i18next";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faArrowRight, faAt, faKey, faRightToBracket, faSpinner} from "@fortawesome/free-solid-svg-icons";
+import {faArrowRight, faAt, faKey, faRightToBracket, faSpinner } from "@fortawesome/free-solid-svg-icons";
 import {motion} from "framer-motion";
 import {useRouter} from "next/router";
-import {FormEvent, useRef, useState} from "react";
-import {getAuth, sendPasswordResetEmail, signInWithEmailAndPassword} from "@firebase/auth";
+import {FormEvent, useEffect, useRef, useState} from "react";
+import {
+    getAuth, getRedirectResult,
+    GoogleAuthProvider,
+    sendPasswordResetEmail, signInWithCredential,
+    signInWithEmailAndPassword,
+    signInWithRedirect
+} from "@firebase/auth";
+import {faGoogle} from "@fortawesome/free-brands-svg-icons";
+import Script from "next/script";
 
 
+declare var google: any
 
 export const LoginScreen = ({onSignUp = undefined} : {onSignUp: Function |undefined}) => {
 
     const {t} = useTranslation();
     const router = useRouter()
+    const [id_token, setId_token] = useState(null)
+    const [googleScriptLoaded, setGoogleScriptLoaded] = useState(false)
     const [loading, setLoading] = useState(false);
     const [errorMessage, setErrorMessage] = useState(undefined);
     const [passwordResetSent, setPasswordResetSent] = useState(false);
     const [emailInvalid, setEmailInvalid] = useState(false);
     const emailRef = useRef(null);
     const auth = getAuth();
+
+    const handleGoogleSignIn = () => {
+        const provider = new GoogleAuthProvider();
+        signInWithRedirect(auth, provider).then(r => {
+            console.log(r);
+            getRedirectResult(auth)
+                .then((result) => {
+                    if(result){
+                        // This gives you a Google Access Token. You can use it to access Google APIs.
+                        const credential = GoogleAuthProvider.credentialFromResult(result);
+                        if(credential){
+                            const token = credential.accessToken;
+                            // The signed-in user info.
+                            const user = result.user;
+                            console.log(user);
+                        }
+                        else{
+                            alert("Google Provider error : No credential given");
+                        }
+
+                    }
+                    else{
+                        alert("Unknown user");
+                    }
+
+                }).catch((error) => {
+                // Handle Errors here.
+                const errorCode = error.code;
+                const errorMessage = error.message;
+                alert(errorMessage);
+                // The email of the user's account used.
+                const email = error.customData.email;
+                // The AuthCredential type that was used.
+                const credential = GoogleAuthProvider.credentialFromError(error);
+                // ...
+            });
+        });
+
+    }
+
 
     const handleSignUp = () => {
         if(onSignUp) onSignUp()
@@ -98,8 +149,35 @@ export const LoginScreen = ({onSignUp = undefined} : {onSignUp: Function |undefi
                         setErrorMessage(errorMessage);
                 }
             });
-
     }
+
+    const handleGoogleCredentialResponse = (response : any) => {
+        setId_token(response.credential)
+    }
+
+    useEffect(() => {
+        if (id_token) {
+            // Sign in with credential from the Google user.
+            signInWithCredential(auth, GoogleAuthProvider.credential(id_token))
+                .catch((error) => {
+                    console.error(error)
+                })
+        }
+    }, [auth, id_token])
+
+
+    useEffect(() => {
+        // @ts-ignore
+        const google = window.google;
+        google.accounts.id.initialize({
+            client_id: '1065332303972-9m6kfer2t2slptj0p06s9ej36gvd49rv.apps.googleusercontent.com',
+            prompt_parent_id: "g_id_onload",
+            context: "signin",
+            callback: handleGoogleCredentialResponse
+        });
+        google.accounts.id.prompt();
+
+    }, [googleScriptLoaded]);
 
     return (
 
@@ -115,7 +193,13 @@ export const LoginScreen = ({onSignUp = undefined} : {onSignUp: Function |undefi
                     <button type={"submit"}>{loading ? <FontAwesomeIcon  icon={faSpinner} className={"fa-spin"}/> : <FontAwesomeIcon  icon={faRightToBracket}/>} {t("authentification:loginScreenTitle")}</button>
                 </form>
                 <p>{t("authentification:donthave")}<br/><a onClick={()=>handleSignUp()}><FontAwesomeIcon icon={faArrowRight}/> {t("authentification:signUp")}</a></p>
+                <p>Or, sign in with :</p>
+                <div id="g_id_onload"
+                     style={{position: "relative", width: "fit-content", margin: "auto" }}>
+                </div>
             </div>
+            <Script src="https://accounts.google.com/gsi/client" async defer onLoad={()=>setGoogleScriptLoaded(true)}></Script>
+
         </>
 
     )
