@@ -144,7 +144,7 @@ export default function Post({allPostsData, postData }: any) {
                             </a>
                         </li>
                         <li className={currentIndex == postData.titles.length+1 ? utilStyles.currentHeading : ""}>
-                            <a href={"comments"}>
+                            <a href={"#comments"}>
                                 {currentIndex == postData.titles.length+1 ? <motion.div layout={"position"} layoutId={"arrow"} style={{position: "absolute", left: "-20px"}}><FontAwesomeIcon style={{color: "var(--secondary-color)"}} icon={faArrowRight}/></motion.div> : null}
                                 {t("common:comments")}
                             </a>
@@ -163,7 +163,7 @@ export default function Post({allPostsData, postData }: any) {
                     <div id={"BlogSlider"}>
                         <Blogslider content={allPostsData} />
                     </div>
-                    <div id={"#comments"}><h1>{t("common:comments")} :</h1></div>
+                    <div id={"comments"}><h1>{t("common:comments")} :</h1></div>
                     <DisplayComments postId={postData.id}/>
                 </article>
             </div>
@@ -192,7 +192,8 @@ export const getStaticPaths = async ({ locales }: {locales: string[]}) => {
 export async function getStaticProps({ locale, params }: any) {
     // Fetch necessary data for the blog post using params.id
     const postData = await getPostData(params.id, locale);
-    const allPostsData = await getSortedPostsData(locale);
+    const allPostsData = (await getSortedPostsData(locale)).filter(f => f.id !== params.id);
+
 
     return {
         props: {

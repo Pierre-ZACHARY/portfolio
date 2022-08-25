@@ -14,6 +14,7 @@ export async function getSortedPostsData(locale: string = "fr") {
     const fileNames = fs.readdirSync(path.join(postsDirectory, locale));
     let allPostsData = [];
     let mostViewedIndex = undefined;
+    let mostViewedNumber = 0;
     for(let fileName of fileNames) {
         // Remove ".md" from file name to get id
         const id = fileName.replace(/\.md$/, '');
@@ -36,10 +37,12 @@ export async function getSortedPostsData(locale: string = "fr") {
         if (docSnap.exists()) {
             console.log("Document data:", docSnap.data());
             viewCount = docSnap.data().views;
+            if(viewCount>mostViewedNumber){
+                mostViewedIndex = allPostsData.length ?? 0;
+                mostViewedNumber = viewCount;
+            }
         }
-        if(!mostViewedIndex || viewCount>mostViewedIndex){
-            mostViewedIndex = allPostsData.length;
-        }
+
         allPostsData.push({
             id,
             lastupdated: false,
@@ -49,7 +52,9 @@ export async function getSortedPostsData(locale: string = "fr") {
             ...matterResult.data,
         });
     }
-    if(mostViewedIndex) allPostsData[mostViewedIndex].mostViewed = true;
+    if(mostViewedIndex!=undefined) {
+        allPostsData[mostViewedIndex].mostViewed = true;
+    }
     // Sort posts by date
     allPostsData = allPostsData.sort(({ date: a }: any, { date: b }: any) => {
         if (a < b) {

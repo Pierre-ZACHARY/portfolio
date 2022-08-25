@@ -19,6 +19,7 @@ export const DisplayComments = ({postId}: DisplayCommentsProps) => {
     const {t} = useTranslation();
     const [commentsDistant, setCommentsDistant] = useState<Comment[]>([]);
 
+
     useEffect(()=>{
         const unsub = onSnapshot(collection(db, "posts", postId, "comments"), (collection) => {
             let comments: Comment[] = [];
@@ -31,7 +32,7 @@ export const DisplayComments = ({postId}: DisplayCommentsProps) => {
         return () => {
             unsub();
         }
-    }, []);
+    }, [postId]);
 
     let comments = commentsDistant.sort((a: Comment, b: Comment) => {
         switch(orderBy){
