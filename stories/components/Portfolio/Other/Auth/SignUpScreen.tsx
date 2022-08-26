@@ -94,13 +94,16 @@ export const SignUpScreen = ({onLogin = undefined} : {onLogin: Function |undefin
     useEffect(() => {
         // @ts-ignore
         const google = window.google;
-        google.accounts.id.initialize({
-            client_id: '1065332303972-9m6kfer2t2slptj0p06s9ej36gvd49rv.apps.googleusercontent.com',
-            prompt_parent_id: "g_id_onload",
-            context: "signup",
-            callback: handleGoogleCredentialResponse
-        });
-        google.accounts.id.prompt();
+        if(google){
+            google.accounts.id.initialize({
+                client_id: '1065332303972-9m6kfer2t2slptj0p06s9ej36gvd49rv.apps.googleusercontent.com',
+                prompt_parent_id: "g_id_onload",
+                context: "signup",
+                callback: handleGoogleCredentialResponse
+            });
+            google.accounts.id.prompt();
+        }
+
 
     }, [googleScriptLoaded]);
 

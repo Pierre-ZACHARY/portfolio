@@ -17,6 +17,7 @@
   "passwordTooWeak": "Votre mot de passe doit contenir au moins 6 caractères",
   "pleasePass": "Vous devez entrer un mot de passe",
   "pleaseProvidePassword": "Vous devez entrer votre mot de passe",
+  "relogToDelete": "Vous devez à nouveau vous identifier pour supprimer votre compte",
   "resetSent": "Email de récupération envoyé !",
   "signOut": "Déconnexion",
   "signUp": "Inscription",

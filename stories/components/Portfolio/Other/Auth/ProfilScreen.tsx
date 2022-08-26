@@ -8,7 +8,7 @@ import {
     signOut,
     reauthenticateWithCredential,
     EmailAuthProvider,
-    ProviderId, updatePassword, updateEmail, deleteUser
+    ProviderId, updatePassword, updateEmail, deleteUser, AuthCredential, OAuthCredential
 } from "@firebase/auth";
 import styles from "./ProfilScreen.module.sass"
 import {motion, PanInfo} from "framer-motion";
@@ -27,6 +27,7 @@ import Image from "next/image";
 import axios, { AxiosRequestConfig } from "axios";
 import {getDownloadURL, getStorage, ref, uploadBytes, uploadBytesResumable} from "@firebase/storage";
 import UserInfo from "../../../../../lib/UserInfo";
+import handleGoogleSignIn from "../../../../../lib/handleGoogleSignIn";
 
 const avatar: string[] = [
     "https://firebasestorage.googleapis.com/v0/b/portfolio-3303d.appspot.com/o/2289_SkVNQSBGQU1PIDEwMjgtMTE2.jpg?alt=media&token=e5ddc175-a895-4116-b325-cc3e2364cca2",
@@ -266,10 +267,28 @@ export const ProfilScreen = () => {
     }
 
     const handleDeleteAccount = () => {
-        const mdp = currentPassInputRef.current!.value;
         const user = auth.currentUser;
-        if(user && mdp){
-            reauthenticateWithCredential(user, EmailAuthProvider.credential(user.email!, mdp)).then(() => {
+
+        if(user){
+            let credential: AuthCredential | null = null;
+            switch(user.providerData[0].providerId){
+                case "password":
+                    const mdp = currentPassInputRef.current!.value;
+                    credential = EmailAuthProvider.credential(user.email!, mdp);
+                    break;
+                default:
+                    const resp = confirm(t("authentification:relogToDelete"))
+                    if(resp){
+                        handleGoogleSignIn().then((cred: OAuthCredential | null)=>{
+                            if(!cred){
+                                return;
+                            }
+                            credential=cred;
+                            console.log(cred);
+                        })
+                    }
+            }
+            reauthenticateWithCredential(user, credential!).then(() => {
                 setWrongPassword(false);
                 if(confirm(t("authentification:areYouSure"))){
                     setDoc(userInfo!.ref, {username: "Deleted User", avatarUrl: "https://firebasestorage.googleapis.com/v0/b/portfolio-3303d.appspot.com/o/496450-conception-d-39-icone-d-39-utilisateurs-gratuit-vectoriel.jpg?alt=media&token=d2e50ed0-0cde-48a7-b083-0b120f48ce66"}).then(()=>{
@@ -342,7 +361,7 @@ export const ProfilScreen = () => {
                     <div className={styles.dangerZoneTitleSection}><h2><FontAwesomeIcon icon={faTriangleExclamation}/> {t("authentification:dangerZone")}</h2><FontAwesomeIcon onClick={()=>setDangerZoneOpen(!dangerZoneOpen)} icon={dangerZoneOpen ? faLockOpen : faLock}/></div>
                     <div className={styles.separator}></div>
                     {dangerZoneOpen ? (<>
-                        {user?.providerId == "firebase" ? (<><div className={styles.inputLine}>
+                        {user?.providerData[0].providerId == "password" ? (<><div className={styles.inputLine}>
                             <input ref={newEmailInputRef} defaultValue={user?.email!} disabled={!editMail}/>
                             <input type={"checkbox"} onChange={(e) => setEditMail(e.target.checked)}
                                    checked={editMail}/>

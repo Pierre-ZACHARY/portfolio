@@ -31,45 +31,6 @@ export const LoginScreen = ({onSignUp = undefined} : {onSignUp: Function |undefi
     const emailRef = useRef(null);
     const auth = getAuth();
 
-    const handleGoogleSignIn = () => {
-        const provider = new GoogleAuthProvider();
-        signInWithRedirect(auth, provider).then(r => {
-            console.log(r);
-            getRedirectResult(auth)
-                .then((result) => {
-                    if(result){
-                        // This gives you a Google Access Token. You can use it to access Google APIs.
-                        const credential = GoogleAuthProvider.credentialFromResult(result);
-                        if(credential){
-                            const token = credential.accessToken;
-                            // The signed-in user info.
-                            const user = result.user;
-                            console.log(user);
-                        }
-                        else{
-                            alert("Google Provider error : No credential given");
-                        }
-
-                    }
-                    else{
-                        alert("Unknown user");
-                    }
-
-                }).catch((error) => {
-                // Handle Errors here.
-                const errorCode = error.code;
-                const errorMessage = error.message;
-                alert(errorMessage);
-                // The email of the user's account used.
-                const email = error.customData.email;
-                // The AuthCredential type that was used.
-                const credential = GoogleAuthProvider.credentialFromError(error);
-                // ...
-            });
-        });
-
-    }
-
 
     const handleSignUp = () => {
         if(onSignUp) onSignUp()
@@ -169,13 +130,17 @@ export const LoginScreen = ({onSignUp = undefined} : {onSignUp: Function |undefi
     useEffect(() => {
         // @ts-ignore
         const google = window.google;
-        google.accounts.id.initialize({
-            client_id: '1065332303972-9m6kfer2t2slptj0p06s9ej36gvd49rv.apps.googleusercontent.com',
-            prompt_parent_id: "g_id_onload",
-            context: "signin",
-            callback: handleGoogleCredentialResponse
-        });
-        google.accounts.id.prompt();
+        if(google){
+            google.accounts.id.initialize({
+                client_id: '1065332303972-9m6kfer2t2slptj0p06s9ej36gvd49rv.apps.googleusercontent.com',
+                prompt_parent_id: "g_id_onload",
+                context: "signin",
+                cancel_on_tap_outside: false,
+                callback: handleGoogleCredentialResponse
+            });
+            google.accounts.id.prompt();
+        }
+
 
     }, [googleScriptLoaded]);
 

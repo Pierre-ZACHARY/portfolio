@@ -17,6 +17,7 @@
   "passwordTooWeak": "Password should be at least 6 characters",
   "pleasePass": "Please provide a password",
   "pleaseProvidePassword": "Please provide a password",
+  "relogToDelete": "You must re-authenticate to delete your account.",
   "resetSent": "Password Reset Email Sent !",
   "signOut": "Log Out",
   "signUp": "Sign Up",
