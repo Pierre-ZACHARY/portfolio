@@ -9,6 +9,10 @@ import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faComment, faPaperPlane, faXmark} from "@fortawesome/free-solid-svg-icons";
 import {Dotline} from "./Dotline/dotline";
 import {useTranslation} from "react-i18next";
+import {getAuth} from "@firebase/auth";
+import {doc, getDoc} from "@firebase/firestore";
+import {db} from "../../../../../pages/_app";
+import {uuidv4} from "@firebase/util";
 
 const size = [80, 60];
 const badge = [25, 20];
@@ -16,6 +20,12 @@ const offset = [7, 3];
 const badge_expanded = [70, 50];
 const query = "(max-width: 768px)";
 
+
+const getKey = (): string => {
+    const storageId = "chatbot-websocket-id";
+    if(!localStorage.getItem(storageId)) localStorage.setItem(storageId, uuidv4());
+    return localStorage.getItem(storageId)!;
+}
 
 
 const bot: Author = {name: "Bot", avatar_url: "https://images.emojiterra.com/google/android-11/512px/1f916.png"};
@@ -62,10 +72,11 @@ export const Chatbot = ({args}: any) => {
 
         input.value = "";
         if(content.split(" ").join("") != ""){
-            console.log("submit...");
-            console.log(state);
             if(state.whatsyourname){
-                ws?.send(JSON.stringify({"set_name": content}));
+                const index = redux_state.msgList.length;
+                send(JSON.stringify({"set_name": content, "key": getKey()}), ()=>{
+                    executeChatBotAction(dispatch, ChatbotAction.Confirm, {index: index});
+                });
                 executeChatBotAction(dispatch, ChatbotAction.Send, {content: content});
                 executeChatBotAction(dispatch, ChatbotAction.Typing);
                 setTimeout(()=>{
@@ -81,7 +92,10 @@ export const Chatbot = ({args}: any) => {
                 }, 1000);
             }
             else{
-                ws?.send(JSON.stringify({"content": content}));
+                const index = redux_state.msgList.length;
+                send(JSON.stringify({"content": content, "key": getKey()}), ()=>{
+                    executeChatBotAction(dispatch, ChatbotAction.Confirm, {index: index});
+                });
                 executeChatBotAction(dispatch, ChatbotAction.Send, {content: content});
             }
         }
@@ -95,23 +109,6 @@ export const Chatbot = ({args}: any) => {
         if(!state.didMount){
             window.matchMedia(query).addEventListener('change', e => setState({...state, isSmall: e.matches}));
             setState({...state, didMount: true, isSmall: window.matchMedia(query).matches});
-            ws = new WebSocket("wss://portfolio-chatbot-discordpy.herokuapp.com/CHANNEL_ID");
-            ws.onmessage = (e) => {
-                const data = JSON.parse(e.data);
-                if(data.type === "MESSAGE"){
-                    executeChatBotAction(dispatch, ChatbotAction.Read);
-                    executeChatBotAction(dispatch, ChatbotAction.Recv, data);
-                    if(state.isopen){
-                        executeChatBotAction(dispatch, ChatbotAction.Read);
-                    }
-                    else{
-                        setState({...state, preview_key: data.content.split(" ").join("")})
-                    }
-                }
-                else{
-                    executeChatBotAction(dispatch, ChatbotAction.Typing);
-                }
-            }
         }
         else{
             const messageView = document.getElementById("messageView");
@@ -168,12 +165,77 @@ export const Chatbot = ({args}: any) => {
         }
     }, [state, redux_state.msgList, dispatch, t]);
 
-    const onBlurNameInput = (e: any) => {
-        if(e.target.value && e.target.value != ""){
-            ws?.send(JSON.stringify({"set_name": e.target.value}));
-            setState({...state, user_name: e.target.value});
+    const connect = () => {
+        ws = new WebSocket('wss://portfolio-chatbot-discordpy.herokuapp.com/CHANNEL_ID');
+
+        ws.onmessage = (e) => {
+            const data = JSON.parse(e.data);
+            if(data.type === "MESSAGE"){
+                executeChatBotAction(dispatch, ChatbotAction.Read);
+                executeChatBotAction(dispatch, ChatbotAction.Recv, data);
+                if(state.isopen){
+                    executeChatBotAction(dispatch, ChatbotAction.Read);
+                }
+                else{
+                    setState({...state, preview_key: data.content.split(" ").join("")})
+                }
+            }
+            else{
+                executeChatBotAction(dispatch, ChatbotAction.Typing);
+            }
         }
     }
+
+    const waitForConnection = (callback: Function, interval: number) => {
+        if(!ws || ws.CLOSED === ws.readyState) connect();
+        if (ws!.readyState === 1) {
+            callback();
+        } else {
+            // optional: implement backoff for interval here
+            setTimeout(function () {
+                waitForConnection(callback, interval);
+            }, interval);
+        }
+    };
+
+    const send = (message: string, callback: Function | undefined = undefined) => {
+        waitForConnection(function () {
+            ws!.send(message);
+            if (typeof callback !== 'undefined') {
+                callback();
+            }
+        }, 1000);
+    }
+
+    const setName = (name: string) =>{
+        send(JSON.stringify({"set_name": name, "key": getKey()}));
+
+        setState({...state, user_name: name, inputValue: name});
+    }
+
+    const onBlurNameInput = (e: any) => {
+        if(e.target.value && e.target.value != ""){
+            setName(e.target.value);
+        }
+    }
+
+    useEffect(()=>{
+        const auth = getAuth();
+        const unsub = auth.onAuthStateChanged((user)=>{
+            if(user){
+                getDoc(doc(db, "users", user.uid)).then(
+                    (snap)=>{
+                        if(snap.exists() && snap.data().username && snap.data().username.length){
+                            setName(snap.data().username);
+                        }
+                    }
+                )
+            }
+        });
+        return ()=>{
+            unsub();
+        }
+    }, []);
 
 
 
@@ -222,7 +284,7 @@ export const Chatbot = ({args}: any) => {
                     </div>
                     <div className={styles.messageView} id="messageView">
                         {redux_state.msgList.map( (msg: Message, key: number) => (
-                            <MessageComponent content={msg.content} fromUser={msg.fromUser} author_name={msg.author.name} author_avatar_url={msg.author.avatar_url} key={key} />
+                            <MessageComponent isSend={msg.isSent} content={msg.content} fromUser={msg.fromUser} author_name={msg.author.name} author_avatar_url={msg.author.avatar_url} key={key} />
                             ))}
                         <div className={[styles.messageViewTypingContainer, redux_state.distantTyping ? styles.isTyping : null].join(" ")}>
                             <Dotline typing={redux_state.distantTyping}/>

@@ -10,6 +10,7 @@ export interface Message{
     attachments: Array<string>,
     author: Author,
     fromUser: boolean,
+    isSent: boolean
     read: boolean
 }
 
@@ -31,7 +32,10 @@ export const chatbotSlice = createSlice({
             state.msgList.push({...action.payload, fromUser: false, read: false})
         },
         send: (state, action: PayloadAction<any>) => {
-            state.msgList.push({...action.payload, fromUser: true, author: {name: "", avatar_url: ""}, attachments: [], read: true})
+            state.msgList.push({...action.payload, fromUser: true, author: {name: "", avatar_url: ""}, attachments: [], read: true, isSent: false})
+        },
+        confirmSend: (state, action: PayloadAction<number>) => {
+            state.msgList[action.payload] = {...state.msgList[action.payload], isSent: true};
         },
         typing: (state, action: PayloadAction<boolean>) => {
             state.distantTyping = action.payload;
@@ -44,7 +48,7 @@ export const chatbotSlice = createSlice({
     }
 })
 
-export const {recv, send, typing, read} = chatbotSlice.actions;
+export const {recv, send, typing, read, confirmSend} = chatbotSlice.actions;
 
 
 export default chatbotSlice.reducer;
