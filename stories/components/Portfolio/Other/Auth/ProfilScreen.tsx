@@ -174,39 +174,7 @@ export const ProfilScreen = () => {
                 });
             }
         );
-        // self-host only
-        // try {
-        //     let formData = new FormData();
-        //     formData.append("media", file);
-        //
-        //     const options: AxiosRequestConfig = {
-        //         headers: { "Content-Type": "multipart/form-data" },
-        //         onUploadProgress: (progressEvent: any) => {
-        //             const { loaded, total } = progressEvent;
-        //
-        //             // Calculate the progress percentage
-        //             const percentage = (loaded * 100) / total;
-        //             setProgress(percentage);
-        //         },
-        //     };
-        //
-        //     const {
-        //         data: { data },
-        //     } = await axios.post<{
-        //         data: {
-        //             url: string | string[];
-        //         };
-        //     }>("/api/upload", formData, options);
-        //
-        //     console.log("File was uploaded successfylly:", data);
-        // } catch (e: any) {
-        //     console.error(e);
-        //     const error =
-        //         e.response && e.response.data
-        //             ? e.response.data.error
-        //             : "Sorry! something went wrong.";
-        //     alert(error);
-        // }
+
     };
 
     const selectAvatar = (index: number) => {
@@ -232,11 +200,7 @@ export const ProfilScreen = () => {
                         // Update successful.
                         setEditPassword(false);
                         setLoadingChange({current: loadingChange.current+1, total: loadingChange.total});
-                    }).catch((error) => {
-                        // An error ocurred
-                        // ...
-                        alert(error);
-                    });
+                    }).catch((error) => alert(error));
                 }
                 if(editMail && newEmailInputRef.current!.value.length){
                     loading += 1;
@@ -247,11 +211,7 @@ export const ProfilScreen = () => {
                             // ...
                             setEditMail(false);
                             setLoadingChange({current: loadingChange.current+1, total: loadingChange.total});
-                        }).catch((error) => {
-                            // An error occurred
-                            // ...
-                            alert(error);
-                        });
+                        }).catch((error) => alert(error));
                     }
                 }
                 setLoadingChange({current: loadingChange.current+1, total: loading});
@@ -273,12 +233,7 @@ export const ProfilScreen = () => {
                     setDoc(userInfo!.ref, {username: "Deleted User", avatarUrl: deletedAvatar}).then(()=>{
                         deleteUser(user).then(() => {
                             // User deleted.
-                        }).catch((error) => {
-                            // An error ocurred
-                            // ...
-                            alert(error);
-                        });});
-
+                        }).catch((error) => alert(error));});
                 }
                 else{
                     console.log("don't delete")
@@ -306,11 +261,7 @@ export const ProfilScreen = () => {
                             .then((result) => {
                                 // This gives you a Google Access Token. You can use it to access the Google API.
                                 deleteAccountWithCredential(GoogleAuthProvider.credentialFromResult(result)!);
-                            }).catch((error) => {
-                            // Handle Errors here.
-                            const errorMessage = error.message;
-                            alert(errorMessage);
-                        });
+                            }).catch((error) => alert(error.message));
                     }
             }
     }}
@@ -365,7 +316,6 @@ export const ProfilScreen = () => {
                 </button>
                 <div className={[styles.dangerZone, dangerZoneOpen ? styles.open : null].join(" ")}>
                     <div className={styles.dangerZoneTitleSection}><h2><FontAwesomeIcon icon={faTriangleExclamation}/> {t("authentification:dangerZone")}</h2><FontAwesomeIcon onClick={()=>setDangerZoneOpen(!dangerZoneOpen)} icon={dangerZoneOpen ? faLockOpen : faLock}/></div>
-                    <div className={styles.separator}></div>
                     {dangerZoneOpen ? (<>
                         {user?.providerData[0].providerId == "password" ? (<><div className={styles.inputLine}>
                             <input ref={newEmailInputRef} defaultValue={user?.email!} disabled={!editMail}/>
@@ -376,7 +326,6 @@ export const ProfilScreen = () => {
                                 <input type={"password"} ref={newPassInputRef} placeholder={"Change Password"} disabled={!editPassword}/>
                                 <input type={"checkbox"} onChange={(e)=>setEditPassword(e.target.checked)} checked={editPassword}/>
                             </div>
-                            <div className={styles.separator}></div>
                         {wrongPassword ? <p>{t("authentification:wrongPassword")}</p> : null}
                             <div className={styles.inputLine}>
                                 <input type={"password"} ref={currentPassInputRef} placeholder={"Current Password"} />

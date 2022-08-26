@@ -7,6 +7,7 @@ import {useRouter} from "next/router";
 import {FormEvent, useEffect, useState} from "react";
 import {createUserWithEmailAndPassword, getAuth, GoogleAuthProvider, signInWithCredential} from "@firebase/auth";
 import Script from "next/script";
+import {googleDraw} from "./LoginScreen";
 
 
 
@@ -95,24 +96,7 @@ export const SignUpScreen = ({onLogin = undefined} : {onLogin: Function |undefin
         // @ts-ignore
         const google = window.google;
         if(google){
-            google.accounts.id.initialize({
-                client_id: '1065332303972-9m6kfer2t2slptj0p06s9ej36gvd49rv.apps.googleusercontent.com',
-                prompt_parent_id: styles["g_id_onload"],
-                context: "signup",
-                itp_support: true,
-                cancel_on_tap_outside: false,
-                callback: handleGoogleCredentialResponse
-            });
-
-            google.accounts.id.prompt((notification: any) => {
-                if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
-                    // try next provider if OneTap is not displayed or skipped
-                    google.accounts.id.renderButton(
-                        document.getElementById(styles["buttonDiv"]),
-                        { theme: "outline", size: "large" }  // customization attributes
-                    );
-                }
-            });
+            googleDraw("signup", handleGoogleCredentialResponse);
         }
 
 

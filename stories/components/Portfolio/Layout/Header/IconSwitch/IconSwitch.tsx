@@ -87,7 +87,7 @@ export const IconSwitch = (props: IconSwitchProps) => {
                 {props.optionList.map( (e, k) => {
                     if(isOpen){
                         return (
-                            <motion.div key={k} layoutId={e.key+"container"} layout={"position"}  onClick={() => {toggleMenu(false); e.onClick(); setSelected(e.key)}}>
+                            <motion.div key={k} layout onClick={() => {toggleMenu(false); e.onClick(); setSelected(e.key)}}>
                                 <div style={{position: "relative"}}>
                                     {hovered == e.key ? <motion.div layoutId={"activeThemeHighlight"} className={styles.hoverTheme}></motion.div> : null}
                                     <div className={[styles.innerContainer, e.key == selected ? styles.activeTheme : null].join(" ")} onPointerEnter={(event) => setHovered(e.key)}>
@@ -98,7 +98,7 @@ export const IconSwitch = (props: IconSwitchProps) => {
                     }
                     else if(e.key == selected){
                         return (
-                            <motion.div key={k} layoutId={e.key+"container"} layout={"position"} onClick={() => {toggleMenu(true)}}>
+                            <motion.div key={k} layout onClick={() => {toggleMenu(true)}}>
                                 <div className={styles.innerContainer}>
                                     {e.icon}
                                 </div>

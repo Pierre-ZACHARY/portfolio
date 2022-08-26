@@ -15,7 +15,33 @@ import {
 import {faGoogle} from "@fortawesome/free-brands-svg-icons";
 import Script from "next/script";
 
-
+export const googleDraw = (context: "signin" | "signup", callBack: Function) => {
+    google.accounts.id.initialize({
+        client_id: '1065332303972-9m6kfer2t2slptj0p06s9ej36gvd49rv.apps.googleusercontent.com',
+        prompt_parent_id: styles["g_id_onload"],
+        context: context,
+        itp_support: true,
+        cancel_on_tap_outside: false,
+        callback: callBack
+    });
+    if(window.innerWidth>760){
+        google.accounts.id.prompt((notification: any) => {
+            if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
+                // try next provider if OneTap is not displayed or skipped
+                google.accounts.id.renderButton(
+                    document.getElementById(styles["buttonDiv"]),
+                    { theme: "outline", size: "large" }  // customization attributes
+                );
+            }
+        });
+    }
+    else{
+        google.accounts.id.renderButton(
+            document.getElementById(styles["buttonDiv"]),
+            { theme: "outline", size: "large" }  // customization attributes
+        );
+    }
+}
 declare var google: any
 
 export const LoginScreen = ({onSignUp = undefined} : {onSignUp: Function |undefined}) => {
@@ -131,23 +157,7 @@ export const LoginScreen = ({onSignUp = undefined} : {onSignUp: Function |undefi
         // @ts-ignore
         const google = window.google;
         if(google){
-            google.accounts.id.initialize({
-                client_id: '1065332303972-9m6kfer2t2slptj0p06s9ej36gvd49rv.apps.googleusercontent.com',
-                prompt_parent_id: styles["g_id_onload"],
-                context: "signin",
-                itp_support: true,
-                cancel_on_tap_outside: false,
-                callback: handleGoogleCredentialResponse
-            });
-            google.accounts.id.prompt((notification: any) => {
-                if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
-                    // try next provider if OneTap is not displayed or skipped
-                    google.accounts.id.renderButton(
-                        document.getElementById(styles["buttonDiv"]),
-                        { theme: "outline", size: "large" }  // customization attributes
-                    );
-                }
-            });
+            googleDraw("signin", handleGoogleCredentialResponse);
         }
 
 

@@ -92,6 +92,7 @@
     .secondRow, .home .firstRow{
         display: none;
     }
+
     .mobileRow{
         display: flex;
     }
