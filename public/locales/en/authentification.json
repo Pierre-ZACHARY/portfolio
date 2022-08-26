@@ -13,6 +13,7 @@
   "goodbye": "Good Bye !",
   "inProgress": "In progress...",
   "loginScreenTitle": "Log In",
+  "orSignInWith": "Or Log In with : ",
   "password": "Password",
   "passwordTooWeak": "Password should be at least 6 characters",
   "pleasePass": "Please provide a password",

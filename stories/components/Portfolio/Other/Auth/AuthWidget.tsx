@@ -12,7 +12,7 @@ import User = firebase.User;
 import {useEffectOnce} from "../../../../../lib/utils";
 import {ProfilScreen} from "./ProfilScreen";
 import Image from "next/image";
-import UserInfo from "../../../../../lib/UserInfo";
+import UserInfo, {createUserInfo} from "../../../../../lib/UserInfo";
 import {doc, onSnapshot, setDoc} from "@firebase/firestore";
 import {db} from "../../../../../pages/_app";
 
@@ -37,15 +37,7 @@ export const AuthWidget = () => {
                     }
                     else{
                         // No UserInfo Yet
-                        console.log("no userinfo yet");
-                        setDoc(doc(db, "users", user.uid), {
-                            username: user.displayName ?? (user.email?.split("@")[0] ?? "User"),
-                            avatarUrl: user.photoURL,
-                        }).then((ref) =>{
-                            console.log(ref);
-                        }).catch( (error)=>{
-                            console.log(error);
-                        });
+                        createUserInfo(user);
                     }
                 });
                 return () => {
@@ -102,7 +94,7 @@ export const AuthWidget = () => {
                 <div className={styles.svgContainer} onClick={()=>handleClick()} style={{position: "relative"}}>
                     { userInfo !== undefined && !isOpen ?
                         <div style={{position: "relative", width: "24px", height: "24px", borderRadius: "50%", overflow: "hidden"}}>
-                            <Image src={userInfo?.avatarUrl ?? "https://firebasestorage.googleapis.com/v0/b/portfolio-3303d.appspot.com/o/2289_SkVNQSBGQU1PIDEwMjgtMTE2.jpg?alt=media&token=e5ddc175-a895-4116-b325-cc3e2364cca2"} alt={""} layout={"fill"} objectFit={"contain"}/>
+                            <Image priority={true} src={userInfo?.avatarUrl ?? "https://firebasestorage.googleapis.com/v0/b/portfolio-3303d.appspot.com/o/2289_SkVNQSBGQU1PIDEwMjgtMTE2.jpg?alt=media&token=e5ddc175-a895-4116-b325-cc3e2364cca2"} alt={""} layout={"fill"} objectFit={"contain"}/>
                         </div> : null }
                     { userInfo === undefined && !isOpen ? <FontAwesomeIcon icon={faRightToBracket}/> : null }
                     { isOpen ? <FontAwesomeIcon icon={faClose}/> : null }

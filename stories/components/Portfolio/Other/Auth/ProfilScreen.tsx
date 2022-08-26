@@ -8,7 +8,14 @@ import {
     signOut,
     reauthenticateWithCredential,
     EmailAuthProvider,
-    ProviderId, updatePassword, updateEmail, deleteUser, AuthCredential, OAuthCredential
+    ProviderId,
+    updatePassword,
+    updateEmail,
+    deleteUser,
+    AuthCredential,
+    OAuthCredential,
+    signInWithRedirect,
+    GoogleAuthProvider, getRedirectResult, signInWithPopup
 } from "@firebase/auth";
 import styles from "./ProfilScreen.module.sass"
 import {motion, PanInfo} from "framer-motion";
@@ -26,8 +33,8 @@ import {db} from "../../../../../pages/_app";
 import Image from "next/image";
 import axios, { AxiosRequestConfig } from "axios";
 import {getDownloadURL, getStorage, ref, uploadBytes, uploadBytesResumable} from "@firebase/storage";
-import UserInfo from "../../../../../lib/UserInfo";
-import handleGoogleSignIn from "../../../../../lib/handleGoogleSignIn";
+import UserInfo, {createUserInfo} from "../../../../../lib/UserInfo";
+import {credentials} from "@grpc/grpc-js";
 
 const avatar: string[] = [
     "https://firebasestorage.googleapis.com/v0/b/portfolio-3303d.appspot.com/o/2289_SkVNQSBGQU1PIDEwMjgtMTE2.jpg?alt=media&token=e5ddc175-a895-4116-b325-cc3e2364cca2",
@@ -39,6 +46,7 @@ const avatar: string[] = [
     "https://firebasestorage.googleapis.com/v0/b/portfolio-3303d.appspot.com/o/2289_SkVNQSBGQU1PIDEwMjgtMTIx.jpg?alt=media&token=21e67942-e97d-4356-95f5-fdc562e51e40"
 ]
 
+const deletedAvatar = "https://firebasestorage.googleapis.com/v0/b/portfolio-3303d.appspot.com/o/496450-conception-d-39-icone-d-39-utilisateurs-gratuit-vectoriel.jpg?alt=media&token=d2e50ed0-0cde-48a7-b083-0b120f48ce66";
 
 enum SignOutState {
     Inactive,
@@ -81,16 +89,7 @@ export const ProfilScreen = () => {
                     }
                     else{
                         // No UserInfo Yet
-                        console.log("no userinfo yet");
-                        console.log(user.email);
-                        setDoc(doc(db, "users", user.uid), {
-                            username: user.displayName ?? (user.email?.split("@")[0] ?? "User"),
-                            avatarUrl: user.photoURL,
-                        }).then((ref) =>{
-                            console.log(ref);
-                        }).catch( (error)=>{
-                            console.log(error);
-                        });
+                        createUserInfo(user);
                     }
                 });
                 return () => {
@@ -266,39 +265,19 @@ export const ProfilScreen = () => {
         }
     }
 
-    const handleDeleteAccount = () => {
-        const user = auth.currentUser;
-
+    const deleteAccountWithCredential = (credential : AuthCredential) => {
         if(user){
-            let credential: AuthCredential | null = null;
-            switch(user.providerData[0].providerId){
-                case "password":
-                    const mdp = currentPassInputRef.current!.value;
-                    credential = EmailAuthProvider.credential(user.email!, mdp);
-                    break;
-                default:
-                    const resp = confirm(t("authentification:relogToDelete"))
-                    if(resp){
-                        handleGoogleSignIn().then((cred: OAuthCredential | null)=>{
-                            if(!cred){
-                                return;
-                            }
-                            credential=cred;
-                            console.log(cred);
-                        })
-                    }
-            }
             reauthenticateWithCredential(user, credential!).then(() => {
                 setWrongPassword(false);
                 if(confirm(t("authentification:areYouSure"))){
-                    setDoc(userInfo!.ref, {username: "Deleted User", avatarUrl: "https://firebasestorage.googleapis.com/v0/b/portfolio-3303d.appspot.com/o/496450-conception-d-39-icone-d-39-utilisateurs-gratuit-vectoriel.jpg?alt=media&token=d2e50ed0-0cde-48a7-b083-0b120f48ce66"}).then(()=>{
+                    setDoc(userInfo!.ref, {username: "Deleted User", avatarUrl: deletedAvatar}).then(()=>{
                         deleteUser(user).then(() => {
-                        // User deleted.
-                    }).catch((error) => {
-                        // An error ocurred
-                        // ...
-                        alert(error);
-                    });});
+                            // User deleted.
+                        }).catch((error) => {
+                            // An error ocurred
+                            // ...
+                            alert(error);
+                        });});
 
                 }
                 else{
@@ -307,6 +286,33 @@ export const ProfilScreen = () => {
             }).catch(
                 (error)=>{setWrongPassword(true)}
             )
+        }
+
+    }
+
+    const handleDeleteAccount = () => {
+        const user = auth.currentUser;
+
+        if(user){
+            switch(user.providerData[0].providerId){
+                case "password":
+                    const mdp = currentPassInputRef.current!.value;
+                    deleteAccountWithCredential(EmailAuthProvider.credential(user.email!, mdp));
+                    break;
+                default:
+                    const resp = confirm(t("authentification:relogToDelete"))
+                    if(resp){
+                        signInWithPopup(auth, new GoogleAuthProvider())
+                            .then((result) => {
+                                // This gives you a Google Access Token. You can use it to access the Google API.
+                                deleteAccountWithCredential(GoogleAuthProvider.credentialFromResult(result)!);
+                            }).catch((error) => {
+                            // Handle Errors here.
+                            const errorMessage = error.message;
+                            alert(errorMessage);
+                        });
+                    }
+            }
     }}
 
     function handleChangeUsername(e: React.FocusEvent<HTMLInputElement> | FormEvent<HTMLInputElement>) {
@@ -324,7 +330,7 @@ export const ProfilScreen = () => {
             <>
                 {userInfo ?
                 <div className={styles.avatarContainer} onClick={()=>setEditAvatar(true)}>
-                    <Image src={userInfo?.avatarUrl ?? avatar[0]} alt={"Avatar"} layout={"fill"} objectFit={"contain"} priority/>
+                    <Image src={userInfo?.avatarUrl ?? deletedAvatar} alt={"Avatar"} layout={"fill"} objectFit={"contain"} priority={true} placeholder={"empty"} />
                     <div className={styles.editPencil}><FontAwesomeIcon icon={faPencil}/></div>
                 </div> : null}
                 {userInfo?.username ?
@@ -378,7 +384,7 @@ export const ProfilScreen = () => {
                             <div className={styles.inputLine}>
                                 <a onClick={()=>handleDeleteAccount()}>Delete your account</a>
                             </div>
-                            <button onClick={()=>handleDangerEdit()}>{loadingChange.current<loadingChange.total && loadingChange.total>0 ? <FontAwesomeIcon icon={faSpinner} className={"fa-spin"}/> : ( loadingChange.total>0 ? <FontAwesomeIcon icon={faCheck}/> : null)} {t("authentification:validate")}</button>
+                        {user?.providerData[0].providerId == "password" ?<button onClick={()=>handleDangerEdit()}>{loadingChange.current<loadingChange.total && loadingChange.total>0 ? <FontAwesomeIcon icon={faSpinner} className={"fa-spin"}/> : ( loadingChange.total>0 ? <FontAwesomeIcon icon={faCheck}/> : null)} {t("authentification:validate")}</button> : <p></p>}
                         </>) : null}
                 </div>
             </>

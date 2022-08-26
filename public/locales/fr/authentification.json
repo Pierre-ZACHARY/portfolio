@@ -13,6 +13,7 @@
   "goodbye": "Au revoir !",
   "inProgress": "En cours...",
   "loginScreenTitle": "Connexion",
+  "orSignInWith": "Sinon connectez-vous avec :",
   "password": "Mot de passe",
   "passwordTooWeak": "Votre mot de passe doit contenir au moins 6 caractères",
   "pleasePass": "Vous devez entrer un mot de passe",

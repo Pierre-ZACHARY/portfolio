@@ -133,12 +133,21 @@ export const LoginScreen = ({onSignUp = undefined} : {onSignUp: Function |undefi
         if(google){
             google.accounts.id.initialize({
                 client_id: '1065332303972-9m6kfer2t2slptj0p06s9ej36gvd49rv.apps.googleusercontent.com',
-                prompt_parent_id: "g_id_onload",
+                prompt_parent_id: styles["g_id_onload"],
                 context: "signin",
+                itp_support: true,
                 cancel_on_tap_outside: false,
                 callback: handleGoogleCredentialResponse
             });
-            google.accounts.id.prompt();
+            google.accounts.id.prompt((notification: any) => {
+                if (notification.isNotDisplayed() || notification.isSkippedMoment()) {
+                    // try next provider if OneTap is not displayed or skipped
+                    google.accounts.id.renderButton(
+                        document.getElementById(styles["buttonDiv"]),
+                        { theme: "outline", size: "large" }  // customization attributes
+                    );
+                }
+            });
         }
 
 
@@ -158,10 +167,9 @@ export const LoginScreen = ({onSignUp = undefined} : {onSignUp: Function |undefi
                     <button type={"submit"}>{loading ? <FontAwesomeIcon  icon={faSpinner} className={"fa-spin"}/> : <FontAwesomeIcon  icon={faRightToBracket}/>} {t("authentification:loginScreenTitle")}</button>
                 </form>
                 <p>{t("authentification:donthave")}<br/><a onClick={()=>handleSignUp()}><FontAwesomeIcon icon={faArrowRight}/> {t("authentification:signUp")}</a></p>
-                <p>Or, sign in with :</p>
-                <div id="g_id_onload"
-                     style={{position: "relative", width: "fit-content", margin: "auto" }}>
-                </div>
+                <p>{t("authentification:orSignInWith")}</p>
+                <div id={styles["g_id_onload"]}/>
+                <div id={styles["buttonDiv"]}/>
             </div>
             <Script src="https://accounts.google.com/gsi/client" async defer onLoad={()=>setGoogleScriptLoaded(true)}></Script>
 
