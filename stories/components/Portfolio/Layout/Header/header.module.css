@@ -45,6 +45,9 @@
     align-items: center;
     max-width: unset;
 }
+.firstRow>p{
+    white-space: nowrap;
+}
 .secondRow{
     max-width: unset;
     display: flex;

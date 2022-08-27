@@ -1,6 +1,6 @@
 .commentContainer
   background-color: var(--background-highlight)
-  padding: 20px
+  padding: 15px
   border-radius: 20px
   width: 100%
   section
@@ -27,12 +27,17 @@
     display: flex
     align-items: center
     gap: 20px
+    &>span
+      min-width: 20px
     img
       border-radius: 100%
-  span
-    color: #808080
-    opacity: 0.3
-    font-size: var(--font-small)
+    h3
+      line-height: 1
+      span
+        color: #808080
+        opacity: 0.3
+        line-break: anywhere
+        font-size: var(--font-small)
 
 
 .attachments
@@ -50,10 +55,12 @@
     display: flex
     flex-direction: column
     //list-style: "↳"
-    //padding-left: 20px
+    padding-left: 0px
     li
       display: flex
-      align-items: center
+      align-items: flex-start
+      &>p
+        margin: 40px 0 0 0
 
 .reply
   padding-right: 0 !important
@@ -64,15 +71,22 @@
   align-items: center
   gap: 3px
   margin: 10px 0
+  flex-wrap: wrap
+  &>div
+    display: inherit
+    gap: inherit
+    align-items: inherit
   h4
     padding: 0
     margin: 0 5px
+    white-space: nowrap
   button
     background-color: rgba(128, 128, 128, 0.12)
     color: var(--primary)
     border-radius: 6px
     margin: 0
     padding: 6px 12px
+    white-space: nowrap
     font-size: var(--font-small)
     &:disabled
       opacity: 0.4

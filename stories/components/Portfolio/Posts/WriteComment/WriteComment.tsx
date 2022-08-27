@@ -127,7 +127,7 @@ export const WriteComment = ({commentsRef = undefined, onSend=undefined}: {comme
                         <motion.button initial={{y: 15, opacity: 0.4}} viewport={{once: true}} whileInView={{ opacity: 1, y: 0 }} transition={{delay: 0.2}} onClick={()=>handleTextFormating("*", "*")}><FontAwesomeIcon icon={faItalic}/></motion.button>
                         <motion.button initial={{y: 15, opacity: 0.4}} viewport={{once: true}} whileInView={{ opacity: 1, y: 0 }} transition={{delay: 0.4}} onClick={()=>handleTextFormating("~~", "~~")}><FontAwesomeIcon icon={faStrikethrough}/></motion.button>
                         <motion.button initial={{y: 15, opacity: 0.4}} viewport={{once: true}} whileInView={{ opacity: 1, y: 0 }} transition={{delay: 0.6}} onClick={()=>handleTextFormating("__", "__")}><FontAwesomeIcon icon={faUnderline}/></motion.button>
-                        <motion.button style={{backgroundImage: "linear-gradient(0deg, var(--primary-color) 0 var(--image-upload-progress), var(--background-highlight) var(--image-upload-progress) )"}} initial={{y: 15, opacity: 0.4}} viewport={{once: true}} whileInView={{ opacity: 1, y: 0 }} transition={{delay: 0.8}}>
+                        <motion.button className={styles.imageButton} initial={{y: 15, opacity: 0.4}} viewport={{once: true}} whileInView={{ opacity: 1, y: 0 }} transition={{delay: 0.8}}>
                             <label htmlFor={"uploadFile"}>
                             <input type={"file"} id="uploadFile" style={{display: "none"}} onChange={(e)=>{
                                 const fileInput = e.target;
@@ -151,8 +151,8 @@ export const WriteComment = ({commentsRef = undefined, onSend=undefined}: {comme
 
                                 uploadFile(file).then(()=>{});
                             }}/>
-                            <FontAwesomeIcon icon={faImage}/>
                             </label>
+                            <FontAwesomeIcon icon={faImage}/>
                         </motion.button>
                     </div>
                     <button disabled={sendDisabled} onClick={()=>onSendComment()}>{t("common:Send")} <FontAwesomeIcon icon={faPaperPlane}/></button>

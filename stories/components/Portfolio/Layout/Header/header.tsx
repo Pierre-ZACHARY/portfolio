@@ -45,7 +45,7 @@ export const Header = ({content, home,  postId = undefined, className = null}: H
             window.removeEventListener("scroll", handleScroll);
             if(unsub) unsub();
         }
-    }, []);
+    }, [postId]);
 
     let toggleButton = () => {
         setState({...state, burgerActive: !state.burgerActive});

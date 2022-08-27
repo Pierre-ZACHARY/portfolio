@@ -56,8 +56,10 @@ export const CommentComponent = ({comment, level = 0, onReply }: CommentComponen
 
                     <button disabled={!user} onClick={()=>onReply({repliesRef: collection(comment.docRef, "replies"), commentId: comment.id})}><FontAwesomeIcon icon={faReply}/> {t("common:reply")}</button>
                     <h4>{comment.totalUpvotes} <FontAwesomeIcon icon={faStar} style={{color: "#fdd843"}}/></h4>
-                    <button disabled={!user} onClick={()=>comment.currentUserVote(voteValue == 1 ? 0 : 1, ()=>{setRenderDate(new Date())})} className={[voteValue === 1 ? styles.currentValue : null].join(" ")} ><FontAwesomeIcon icon={faArrowUp}/></button>
-                    <button disabled={!user} onClick={()=>comment.currentUserVote(voteValue == -1 ? 0 : -1, ()=>{setRenderDate(new Date())})} className={[voteValue === -1 ? styles.currentValue : null].join(" ")}><FontAwesomeIcon icon={faArrowDown}/></button>
+                    <div>
+                        <button disabled={!user} onClick={()=>comment.currentUserVote(voteValue == 1 ? 0 : 1, ()=>{setRenderDate(new Date())})} className={[voteValue === 1 ? styles.currentValue : null].join(" ")} ><FontAwesomeIcon icon={faArrowUp}/></button>
+                        <button disabled={!user} onClick={()=>comment.currentUserVote(voteValue == -1 ? 0 : -1, ()=>{setRenderDate(new Date())})} className={[voteValue === -1 ? styles.currentValue : null].join(" ")}><FontAwesomeIcon icon={faArrowDown}/></button>
+                    </div>
                 </section>
                 <section className={styles.replies}>
                     <ul>
