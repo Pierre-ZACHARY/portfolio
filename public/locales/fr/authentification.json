@@ -25,5 +25,6 @@
   "uploadFile": "Choisissez votre photo",
   "username": "Nom d'utilisateur",
   "validate": "Valider",
-  "wrongPassword": "Mot de passe incorrect"
+  "wrongPassword": "Mot de passe incorrect",
+  "youMustLoginToComment": "Vous devez vous connecter pour commenter l'article"
 }

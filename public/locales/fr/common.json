@@ -1,4 +1,6 @@
 {
+  "Send": "Envoyer",
+  "answerTo": "Réponse à :",
   "backToHome": "Retour",
   "comments": "Commentaires",
   "mostFav": "Upvotes",
@@ -6,7 +8,9 @@
   "otherPosts": "Voir Aussi",
   "reply": "Répondre",
   "section1": "Bonjour",
+  "sendAComment": "Envoyer un commentaire : ",
   "sortby": "Trier par",
   "testing": "Bonjour vous!",
-  "viewCount": "Nombre de vues"
+  "viewCount": "Nombre de vues",
+  "showMore": "Voir Plus"
 }

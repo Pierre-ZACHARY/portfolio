@@ -46,7 +46,7 @@ const avatar: string[] = [
     "https://firebasestorage.googleapis.com/v0/b/portfolio-3303d.appspot.com/o/2289_SkVNQSBGQU1PIDEwMjgtMTIx.jpg?alt=media&token=21e67942-e97d-4356-95f5-fdc562e51e40"
 ]
 
-const deletedAvatar = "https://firebasestorage.googleapis.com/v0/b/portfolio-3303d.appspot.com/o/496450-conception-d-39-icone-d-39-utilisateurs-gratuit-vectoriel.jpg?alt=media&token=d2e50ed0-0cde-48a7-b083-0b120f48ce66";
+export const deletedAvatar = "https://firebasestorage.googleapis.com/v0/b/portfolio-3303d.appspot.com/o/496450-conception-d-39-icone-d-39-utilisateurs-gratuit-vectoriel.jpg?alt=media&token=d2e50ed0-0cde-48a7-b083-0b120f48ce66";
 
 enum SignOutState {
     Inactive,
@@ -391,7 +391,7 @@ export const ProfilScreen = () => {
 
                             /** File validation */
                             if (!file.type.startsWith("image")) {
-                                alert("Please select a valide image");
+                                alert("Please select a valid image");
                                 return;
                             }
 
@@ -400,8 +400,7 @@ export const ProfilScreen = () => {
                             }).catch((e)=>{
                                 alert(e);
                             })
-                        }
-                        }/>
+                        }}/>
                         <p>{progress >0 ? t("authentification:inProgress") : t("authentification:uploadFile")}</p>
                         <div className={styles.progressContainer} style={style}><div></div></div>
                     </label>

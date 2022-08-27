@@ -12,16 +12,22 @@ import {useTranslation} from "next-i18next";
 export default function Login() {
     const router = useRouter();
     const {t} = useTranslation();
+    const { onSignIn } = router.query;
+
 
     useEffect(()=>{
         const auth = getAuth();
         const unsub = onAuthStateChanged(auth, (user) => {
-            if (user) router.push("/profile");
+            if (user) router.push(onSignIn? onSignIn.toString() : "/profile");
         });
         return ()=>{
             unsub();
         }
-    }, []);
+    }, [router]);
+
+
+
+
 
     return (
         <>

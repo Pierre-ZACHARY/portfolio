@@ -1,4 +1,6 @@
 {
+  "Send": "Send",
+  "answerTo": "Answer To : ",
   "backToHome": "Back To Home",
   "comments": "Comments",
   "mostFav": "Upvotes",
@@ -6,7 +8,9 @@
   "otherPosts": "See also",
   "reply": "Reply",
   "section1": "Hey!",
+  "sendAComment": "Send a comment :",
   "sortby": "Sort by",
   "testing": "Hello There!",
-  "viewCount": "View Count"
+  "viewCount": "View Count",
+  "showMore": "Show more"
 }

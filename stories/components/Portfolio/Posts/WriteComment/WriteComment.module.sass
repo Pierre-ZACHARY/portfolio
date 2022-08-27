@@ -1,0 +1,61 @@
+.mainContainer
+  padding: 1em 0
+  background-color: var(--background)
+  color: var(--primary)
+  position: relative
+  .displayAttachments
+    position: relative
+    height: 100px
+    width: 100%
+    display: flex
+    gap: 10px
+    flex-wrap: nowrap
+    overflow-x: scroll
+  button
+    svg
+      cursor: pointer
+    disabled
+      cursor: not-allowed
+      opacity: 0.6
+
+  .youMustLoggin
+    position: absolute
+    width: 100%
+    height: 100%
+    top: 0
+    left: 0
+    display: flex
+    justify-content: center
+    align-items: center
+    //background-color: rgba(128, 128, 128, 0.6)
+    backdrop-filter: blur(2px)
+    a
+      color: var(--primary-color)
+
+  .buttonsLine
+    display: flex
+    justify-content: space-between
+    align-items: center
+    button
+      margin: 0
+    .textFormatting
+      display: flex
+      gap: 10px
+      flex-wrap: nowrap
+      width: fit-content
+      button
+        background-color: var(--background-highlight)
+        color: var(--primary)
+        padding: 10px 15px
+        border-radius: 9px
+  .textArea
+    padding: 1em
+    textarea
+      background-color: var(--background-highlight)
+      border-radius: 9px
+      width: 100%
+      color: var(--primary)
+      line-height: calc(var(--font-small) + 4px)
+      resize: none
+      font-size: var(--font-small)
+      height: calc(7 * (var(--font-small) + 5px))
