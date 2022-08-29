@@ -1,5 +1,9 @@
 .main
   .hits
+    display: flex
+    flex-direction: column
+    &>button
+      margin: auto
     ol
       list-style-type: none
       padding: 0
@@ -17,6 +21,7 @@
 .searchBox
   background-color: white
   display: flex
+  margin: auto
   width: fit-content
   border-radius: 9px
   border: 1px solid #1E2025
@@ -45,6 +50,22 @@
   background-color: var(--background-highlight)
   width: fit-content
   position: relative
+  &>span
+    width: 100%
+  .imageContainer
+    width: 160px
+    margin: auto
+    .swiper
+      overflow: visible
+      &>div
+        width: 160px
+        .swiperSlide
+          width: 160px !important
+          height: 200px
+          span
+            border-radius: 9px
+          &>div
+            border-radius: 9px
   .imageBackground
     position: absolute
     display: flex
@@ -89,3 +110,22 @@
   display: flex
   align-items: center
   flex-wrap: nowrap
+  padding-top: 20px
+  justify-content: space-between
+  &>button
+    margin: 0 0 0 20px
+    padding: 5px 15px
+    font-size: var(--font-small)
+    min-width: 65px
+    position: relative
+    &:disabled
+      opacity: 0.4
+      cursor: not-allowed
+    p.onSale
+      position: absolute
+      top: -7px
+      left: -15px
+      margin: 0
+      transform: rotateZ(343deg)
+      font-weight: bold
+      color: var(--secondary-color)

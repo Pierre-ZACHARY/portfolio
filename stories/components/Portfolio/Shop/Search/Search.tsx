@@ -1,11 +1,16 @@
 import styles from "./Search.module.sass"
 import {instantMeiliSearch} from "@meilisearch/instant-meilisearch";
-import {Highlight, Hits, InstantSearch, useSearchBox, UseSearchBoxProps} from "react-instantsearch-hooks-web";
+import {Highlight, Hits, InstantSearch, useHits, useSearchBox, UseSearchBoxProps} from "react-instantsearch-hooks-web";
 import {useEffect, useRef, useState} from "react";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faCartShopping, faDeleteLeft, faSearch} from "@fortawesome/free-solid-svg-icons";
+import {faCartShopping, faDeleteLeft, faDollarSign, faEuroSign, faSearch} from "@fortawesome/free-solid-svg-icons";
 import {NaturalImageFixedHeight} from "../../../../../lib/utils-components";
-
+import {format_price, format_price_range, user_currency} from "../../../../../lib/medusa-utils";
+import {connectHits} from "instantsearch.js/es/connectors";
+import {useTranslation} from "next-i18next";
+import {Swiper, SwiperSlide} from "swiper/react";
+import { EffectCards } from "swiper";
+import Image from "next/image";
 
 const searchClient = instantMeiliSearch(
     process.env.NEXT_PUBLIC_SEARCH_ENDPOINT!,
@@ -32,12 +37,29 @@ export const Search = () => {
         <div className={styles.main}>
             <InstantSearch indexName={process.env.NEXT_PUBLIC_SEARCH_INDEX_NAME!} searchClient={searchClient}>
                 <CustomSearchBox/>
-                <Hits hitComponent={Hit} className={styles.hits}/>
+                <CustomHits className={styles.hits}/>
             </InstantSearch>
         </div>
     )
 }
 
+
+function CustomHits(props: any) {
+    const { hits, results, sendEvent } = useHits(props);
+    const [maxItems, setMax] = useState(3);
+    const {t} = useTranslation();
+
+    return <>
+        <div className={props.className}>
+            <ol>
+                {hits.slice(0, maxItems).map((hit) => (
+                    <li key={hit.id as string}><Hit hit={hit}/></li>
+                ))}
+            </ol>
+            {maxItems<hits.length ? <button onClick={()=>setMax(maxItems+3)}>{t("common:showMore")}</button> : null}
+        </div>
+    </>;
+}
 
 
 const Hit = ({ hit }: {hit: any}) => {
@@ -70,6 +92,12 @@ const Hit = ({ hit }: {hit: any}) => {
     const [selectedOptions, setSelectedOptions] = useState<Map<string, string | undefined>>(new Map<string, string>());
     // @ts-ignore
     const [selected_variants, setSelected_variants] = useState<string[]>(()=>[...variantsMap.keys()]);
+    const {t} = useTranslation();
+
+    if(hit.title=="Medusa Sweatshirt"){
+        console.log(hit);
+        console.log(allOptions);
+    }
 
     const variantHasOption = (variant_id: string, option_value: string): boolean => {
         return variantsMap.get(variant_id).options.some((opt: any): boolean | undefined => {
@@ -79,8 +107,12 @@ const Hit = ({ hit }: {hit: any}) => {
         });
     }
 
+    const optionFromVariantCanBeSelected = (variant_id: string, option_value: string): boolean => {
+        return variantHasOption(variant_id, option_value) && (variantsMap.get(variant_id).inventory_quantity > 0 || variantsMap.get(variant_id).allow_backorder);
+    }
+
     const optionCanBeSelected = (option_value: string): boolean => {
-        // Regarde si un variant possède cette option dans la liste des variants disponibles
+        // Regarde si un variant possède cette option dans la liste des variants disponibles ET que l'option en question est en stock / peut être commandé
         return selected_variants.some((variant_id) => {
             const variant_has_option_value = variantsMap.get(variant_id).options.some((opt: any): boolean | undefined => {
                 if (opt.value === option_value) return true;
@@ -99,7 +131,7 @@ const Hit = ({ hit }: {hit: any}) => {
             let variant_hasnt_options = [...selectedOptions.values()].some((option_value): boolean | undefined=> {
                 if(option_value) {
                     // on l'enleve de liste de variant possible
-                    if(!variantHasOption(variant_id, option_value)) return true;
+                    if(!optionFromVariantCanBeSelected(variant_id, option_value)) return true;
                 }
             });
             if(!variant_hasnt_options){
@@ -109,27 +141,31 @@ const Hit = ({ hit }: {hit: any}) => {
         setSelected_variants(temp);
     }
 
-    const getVariantPrice = (currency: string, variant_id: string) : number | undefined=> {
+    const getVariantPrice = (currency: string, variant_id: string) : number[] | undefined=> {
         const variant = variantsMap.get(variant_id);
         if(variant){
-            let res = 0;
-            variant.prices.forEach((price: any) : number | undefined=>{
+            const res: number[] = [];
+            variant.prices.forEach((price: any)=>{
                 if(price.currency_code === currency){
-                    res = price.amount
-                    return price.amount;
+                    res.push(price.amount)
                 }
             })
-            console.log(res)
             return res;
         }
     }
 
-    useEffect(()=>{console.log(selected_variants)}, [selected_variants]);
+    const getPriceRange = (currency: string): number[][] => {
+        const temp: number[][] = [];
+        selected_variants.forEach((variant_id)=>{
+            const price = getVariantPrice(currency, variant_id);
+            if(price) temp.push(price)
+        })
+        return temp;
+    }
 
     const availableOptions = new Map<string, string[]>();
 
-    selected_variants
-        .forEach((variant_id: any)=>{
+    selected_variants.forEach((variant_id: any)=>{
         variantsMap.get(variant_id).options.forEach((option: any)=>{
             if(!availableOptions.has(option.option_id)) availableOptions.set(option.option_id, []);
             if(!(option.value in availableOptions.get(option.option_id)!)) availableOptions.get(option.option_id)!.push(option.value)
@@ -139,17 +175,24 @@ const Hit = ({ hit }: {hit: any}) => {
     return (
         <div key={hit.id} className={"relative" +" "+ styles.hitCard}>
             <div className={styles.imageBackground}/>
-            <NaturalImageFixedHeight props={{src: hit.thumbnail}} fixedHeight={200}/>
-            <div className="hit-name">
-                <Highlight attribute="title" hit={hit} highlightedTagName="mark" className={styles.highlight}/>
+            <div className={styles.imageContainer}>
+                <Swiper effect={"cards"}
+                        grabCursor={true}
+                        modules={[EffectCards]}
+                        className={styles.swiper}>
+                    {hit.images.map((image: any)=><SwiperSlide className={styles.swiperSlide} key={image.id}><Image src={image.url} height={200} width={160} objectFit={"cover"}/></SwiperSlide>)}
+                </Swiper>
             </div>
             <div className={styles.objectInfo}>
                 <div className={styles.allOptions}>
+                    <div className="hit-name">
+                        <Highlight attribute="title" hit={hit} highlightedTagName="mark" className={styles.highlight}/>
+                    </div>
                     { // @ts-ignore
                       [...allOptions.entries()].map((k: [string, Set<string>])=>{
                         return (<>
                             <div className={styles.selectOption}>
-                                <p>{optionsMap.get(k[0]).title}</p>
+                                <p>{t("shop:"+optionsMap.get(k[0]).title)}</p>
                                 {
                                     // @ts-ignore
                                     [...k[1].values()].map((opt_value)=>{
@@ -174,14 +217,25 @@ const Hit = ({ hit }: {hit: any}) => {
                         )
                     })}
                 </div>
-                <button className={styles.addToCart} disabled={selectedOptions.size!=1}>
+                <button className={styles.addToCart} disabled={selected_variants.length!=1 || selected_variants.length==1 && !getVariantPrice("eur", selected_variants[0])}>
                     {
-                        selected_variants.length==0 ? "Unavailable..." : (
-                            selected_variants.length==1 ? getVariantPrice("eur", selected_variants[0]) : <FontAwesomeIcon icon={faCartShopping}/>
-                        )
+                        selected_variants.length==0 ? "Unavailable..." : <Display_amount amount={getPriceRange(user_currency)}/>
                     }
                 </button>
             </div>
         </div>
     )
+}
+
+const Display_amount = ({amount}: {amount: number[][]}) => {
+    const {t} = useTranslation()
+    if(!amount || !amount.length){
+        return (<>Unavailable</>)
+    }
+    const formatted = format_price_range(amount);
+    let str = <>{formatted.min && formatted.max ? <>{formatted.min} {formatted.max!=formatted.min ? <>{" - "+formatted.max}</> : null}</> :
+        <>{} {formatted.current!=formatted.original ? <><p className={styles.onSale}>{t("shop:onSale")}</p><del>{formatted.original}</del> {formatted.current}</>: formatted.original}</>
+    } </>;
+
+    return (<>{str} <FontAwesomeIcon icon={user_currency === "eur"? faEuroSign : faDollarSign}/></>)
 }
