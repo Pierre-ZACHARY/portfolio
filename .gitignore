@@ -37,3 +37,7 @@ yarn-error.log*
 /docs-build
 
 /public/uploads
+
+/requests.http
+
+.env

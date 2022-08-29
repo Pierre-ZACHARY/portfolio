@@ -1,0 +1,34 @@
+.main
+  .hits
+    ol
+      list-style-type: none
+      padding: 0
+      .highlight
+        mark
+          background-color: var(--primary-color)
+          color: var(--background)
+
+.searchBox
+  background-color: white
+  display: flex
+  width: fit-content
+  border-radius: 9px
+  border: 1px solid #1E2025
+  cursor: pointer
+  &.focused
+    border: 1px solid var(--primary-color)
+    svg
+      color: var(--primary-color)
+  svg
+    color: var(--primary)
+    padding: 15px
+    &.delete
+      color: red
+      visibility: hidden
+      &.active
+        visibility: visible
+  input
+    border: none
+    background-color: transparent
+    color: black
+    outline: none

@@ -5,7 +5,7 @@ const nextConfig = {
   reactStrictMode: true,
   i18n,
   images: {
-    domains: ["firebasestorage.googleapis.com"]
+    domains: ["firebasestorage.googleapis.com", "medusa-public-images.s3.eu-west-1.amazonaws.com"]
   }
 }
 
