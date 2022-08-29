@@ -23,6 +23,7 @@
     box-shadow: 0px 0px 8px rgba(0,0,0,0);
     background-color: var(--background);
     transition: box-shadow 0.3s ease-in-out;
+    z-index: 10;
 }
 
 .notOnTop{
@@ -114,6 +115,7 @@
 
 
 .mobileMenuContainer{
+    z-index: 10;
     height: 100%;
     width: 100%;
     position: fixed;

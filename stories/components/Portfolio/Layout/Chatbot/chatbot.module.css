@@ -1,10 +1,11 @@
 
 .container{
+    z-index: 10;
     border-radius: 25px;
     background-color: var(--background-highlight);
     position: fixed;
     max-width: 500px;
-    max-height: 500px;
+    max-height: min(500px, calc(100vh - 58px));
 }
 
 .closedContent{
