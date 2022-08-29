@@ -3,6 +3,12 @@
     ol
       list-style-type: none
       padding: 0
+      display: flex
+      flex-wrap: wrap
+      gap: 1em
+      align-items: flex-start
+      li
+        margin: auto
       .highlight
         mark
           background-color: var(--primary-color)
@@ -20,7 +26,7 @@
     svg
       color: var(--primary-color)
   svg
-    color: var(--primary)
+    color: black
     padding: 15px
     &.delete
       color: red
@@ -32,3 +38,54 @@
     background-color: transparent
     color: black
     outline: none
+
+.hitCard
+  padding: 20px
+  border-radius: 30px
+  background-color: var(--background-highlight)
+  width: fit-content
+  position: relative
+  .imageBackground
+    position: absolute
+    display: flex
+    align-items: center
+    justify-content: center
+    top: 0
+    left: 0
+    height: 220px
+    width: 100%
+    border-radius: 30px 30px 0 0
+    background-color: var(--secondary-color)
+  .selectOption
+    display: flex
+    flex-wrap: nowrap
+    gap: 5px
+    margin: 5px 0
+    align-items: center
+    p
+      margin: 0
+      line-height: 1
+      font-size: var(--font-small)
+      font-weight: bold
+    button
+      padding: 8px
+      height: fit-content
+      border-radius: 6px
+      background-color: var(--background)
+      color: var(--primary)
+      margin: 0
+      font-size: var(--font-small)
+      &.colorButton
+        width: 25px
+        height: 25px
+        border-radius: 50%
+        border: solid 1px var(--primary)
+      &:disabled
+        opacity: 0.4
+        cursor: not-allowed
+
+
+.objectInfo
+  display: flex
+  align-items: center
+  flex-wrap: nowrap

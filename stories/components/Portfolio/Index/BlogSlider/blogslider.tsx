@@ -57,7 +57,7 @@ export const Blogslider = ({content = [{
                     1230: {
                         slidesPerView: 3,
                     },
-                    1850: {
+                    2000: {
                         slidesPerView: 4,
                     }
                 }}
