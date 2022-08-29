@@ -119,7 +119,7 @@
     height: 100%;
     width: 100%;
     position: fixed;
-    top: 64px;
+    top: 58px;
     background-color: var(--background);
     transition: background-color 1s cubic-bezier(0, 0, 0.2, 1);
     display: flex;
