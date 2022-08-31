@@ -16,6 +16,7 @@
     "@fortawesome/free-brands-svg-icons": "^6.1.2",
     "@fortawesome/free-solid-svg-icons": "^6.1.1",
     "@fortawesome/react-fontawesome": "^0.2.0",
+    "@medusajs/medusa-js": "^1.2.6",
     "@meilisearch/instant-meilisearch": "^0.8.1",
     "@reduxjs/toolkit": "^1.8.2",
     "@svgdotjs/svg.js": "^3.1.2",

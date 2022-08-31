@@ -14,7 +14,6 @@ import {doc, getDoc} from "@firebase/firestore";
 import {db} from "../../../../../pages/_app";
 import {uuidv4} from "@firebase/util";
 
-const size = [80, 60];
 const badge = [25, 20];
 const offset = [7, 3];
 const badge_expanded = [70, 50];
@@ -245,7 +244,6 @@ export const Chatbot = ({args}: any) => {
 
     const mediaquery = state.isSmall ? 1 : 0;
     const badge_offset = state.isopen ? offset[mediaquery]+"px" : "-"+offset[mediaquery]+"px";
-    const widget_size = state.isopen ? "100%" : size[mediaquery]+"px";
     const padding = state.isopen ? "0" : "5%";
 
     if(!state.didMount){
@@ -254,17 +252,7 @@ export const Chatbot = ({args}: any) => {
 
     return (
         <>
-            <motion.div initial={{
-                bottom: "5%",
-                right: "5%",
-                width: widget_size,
-                height: widget_size,
-            }}
-                        animate={{
-                width: widget_size,
-                height: widget_size,
-                bottom: state.padding ,
-                right: state.padding}}
+            <motion.div layout
                         className={[styles.container, state.isopen ? styles.containeropen : null].join(" ")}
                         onClick={(e)=>open(e)}>
                 <div className={styles.closedContent}>

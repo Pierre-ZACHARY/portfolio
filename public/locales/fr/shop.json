@@ -1,5 +1,9 @@
 {
   "Color": "Couleur",
   "Size": "Taille",
-  "onSale": "Promo"
+  "continueCheckout": "Passer la commande",
+  "discount": "Réductions",
+  "onSale": "Promo",
+  "quantity": "Quantité",
+  "shipping": "Frais de livraison "
 }

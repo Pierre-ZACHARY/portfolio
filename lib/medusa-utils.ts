@@ -1,6 +1,14 @@
+import Medusa from '@medusajs/medusa-js';
+import {Cart} from "@medusajs/medusa";
+import {useEffect} from "react";
+import {useAppDispatch, useAppSelector} from "../redux/hooks";
+import {CartAction, executeCartAction} from "../stories/components/Portfolio/Shop/cartAction";
 
+export const client = new Medusa({
+    baseUrl: 'https://pz-medusa-core.herokuapp.com/',
+    maxRetries: 3
+});
 
-export const user_currency = "eur";
 
 export const format_price = (amount: number): string => {
     const length = amount.toString().length;
@@ -52,3 +60,33 @@ export const format_price_range = (amount: number[][]): FormattedPrice => {
     else return {min: format_price(Math.min(...price_min!)), max:format_price(Math.max(...price_max!)), original: undefined, current: undefined};
 }
 
+
+export function useCart(){
+
+    const dispatch = useAppDispatch()
+
+    useEffect(()=>{
+        const id = localStorage.getItem('cart_id');
+        if(id) {
+            client.carts.retrieve(id).then(({cart}) => executeCartAction(dispatch, CartAction.Update, cart));
+        }
+        else {
+            client.carts.create({
+                region_id: "reg_01GBGGFM1CDN3C9BGKAVVB37E0"
+            })
+                .then(({cart}) => {
+                    localStorage.setItem('cart_id', cart.id);
+                    //assuming you have a state variable to store the cart
+                    executeCartAction(dispatch, CartAction.Update, cart);
+                });
+        }
+    }, []);
+
+    const updateCart = (cart: Omit<Cart, "refundable_amount" | "refunded_total">) => {
+        executeCartAction(dispatch, CartAction.Update, cart);
+    }
+
+    const cart = useAppSelector(state => state.cart.cart)
+
+    return {cart, updateCart};
+}

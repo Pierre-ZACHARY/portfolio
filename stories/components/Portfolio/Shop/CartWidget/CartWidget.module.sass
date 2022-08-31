@@ -1,0 +1,162 @@
+.main
+  border-radius: 25px
+  width: 80px
+  height: 80px
+  max-width: 500px
+  max-height: min(500px, calc(100vh - 58px))
+  background-color: var(--background-highlight)
+  cursor: pointer
+  .svgContainer
+    position: relative
+    padding: 15%
+    height: 100%
+    .itemsIndicator
+      width: 25px
+      height: 25px
+      background-color: red
+      color: white
+      font-size: var(--font-medium)
+      display: flex
+      justify-content: center
+      align-items: center
+      position: absolute
+      border-radius: 50%
+      top: -7px
+      right: -7px
+      font-weight: 600
+      @media (max-width: 768px)
+        top: -3px
+        right: -3px
+        width: 20px
+        height: 20px
+    svg
+      width: 100%
+      height: 100%
+      position: relative
+      color: var(--primary-color)
+  @media (max-width: 768px)
+    width: 60px
+    height: 60px
+    border-radius: 17px
+  &.open
+    position: fixed
+    width: 100%
+    height: 100%
+    z-index: 11
+    bottom: 0
+    right: 0
+    cursor: initial
+  .openContent
+    padding: 15px
+    height: 100%
+    display: flex
+    flex-direction: column
+    position: relative
+    button.buttonClose
+      background-color: red
+      border-radius: 50%
+      margin: 0
+      padding: 0
+      position: absolute
+      width: 30px
+      height: 30px
+      display: flex
+      justify-content: center
+      align-items: center
+      top: 0
+      right: 0
+      color: white
+    .topBar
+      flex: 0 1 auto
+      select
+        background-color: var(--primary-color)
+        color: var(--background)
+        border: none
+        padding: 5px 15px
+        border-radius: 9px
+        margin: 5px 0
+        option
+          background-color: var(--primary)
+          border: none
+          &:hover
+            background-color: var(--primary-color) !important
+
+    .checkOut
+      margin-top: 20px
+      flex: 0 1 auto
+      position: relative
+      .checkOutSteps
+        a
+          width: 100%
+          text-align: center
+          color: var(--primary-color)
+        button
+          margin: 20px 0 0 0
+          width: 100%
+          font-weight: 600
+          color: var(--background)
+
+      .checkOutInfo
+        &>div
+          display: flex
+          justify-content: space-between
+          flex-wrap: nowrap
+        h1, h2
+          font-size: var(--font-medium)
+          margin: 0
+          line-height: 1
+          &.displayDiscount
+            color: var(--primary-color)
+
+    .showItems
+      flex: 1 1 auto
+      position: relative
+      overflow-y: auto
+      ol
+        margin: 0
+        list-style-type: none
+        padding: 0
+        width: 100%
+        height: 100%
+        display: flex
+        overflow-y: auto
+        flex-wrap: nowrap
+        gap: 15px
+        flex-direction: column-reverse
+        li
+          display: flex
+          justify-content: space-between
+          .itemInfo
+            display: flex
+            align-items: center
+            gap: 20px
+            .tempQuantity
+              opacity: 0.4
+          .quantitiesButton
+            display: flex
+            flex-direction: column
+            height: 100%
+            justify-content: center
+            gap: 5px
+            button
+              padding: 5px 10px
+              border-radius: 9px
+              margin: 0
+              background-color: var(--background)
+              svg
+                height: var(--font-small)
+                width: var(--font-small)
+                color: var(--primary)
+        h1, h2, h3
+          margin: 0
+          line-height: 1
+          font-weight: normal
+        h1
+          font-size: var(--font-medium)
+          font-weight: 800
+        h2, h3
+          font-size: var(--font-small)
+          strong
+            font-weight: 700
+            background-color: transparent
+            color: var(--primary)

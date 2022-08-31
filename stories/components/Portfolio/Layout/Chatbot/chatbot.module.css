@@ -3,9 +3,11 @@
     z-index: 10;
     border-radius: 25px;
     background-color: var(--background-highlight);
-    position: fixed;
     max-width: 500px;
+    position: relative;
     max-height: min(500px, calc(100vh - 58px));
+    width: 80px;
+    height: 80px;
 }
 
 .closedContent{
@@ -16,6 +18,8 @@
     align-items: center;
     padding: 15%;
 }
+
+
 .containeropen>.closedContent{
     display: none;
 }
@@ -174,5 +178,16 @@
 @media (max-width: 768px){
     .container{
         border-radius: 17px;
+        width: 60px;
+        height: 60px;
     }
+}
+
+.containeropen{
+    z-index: 11;
+    position: fixed;
+    bottom: 0;
+    right: 0;
+    width: 100vw;
+    height: 100vh;
 }

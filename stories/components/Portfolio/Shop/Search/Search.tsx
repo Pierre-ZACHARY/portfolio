@@ -3,14 +3,24 @@ import {instantMeiliSearch} from "@meilisearch/instant-meilisearch";
 import {Highlight, Hits, InstantSearch, useHits, useSearchBox, UseSearchBoxProps} from "react-instantsearch-hooks-web";
 import {useEffect, useRef, useState} from "react";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faCartShopping, faDeleteLeft, faDollarSign, faEuroSign, faSearch} from "@fortawesome/free-solid-svg-icons";
+import {
+    faCartShopping,
+    faDeleteLeft,
+    faDollarSign,
+    faEuroSign, faMinus,
+    faPlus,
+    faSearch, faSpinner
+} from "@fortawesome/free-solid-svg-icons";
 import {NaturalImageFixedHeight} from "../../../../../lib/utils-components";
-import {format_price, format_price_range, user_currency} from "../../../../../lib/medusa-utils";
+import {client, format_price, format_price_range, useCart} from "../../../../../lib/medusa-utils";
 import {connectHits} from "instantsearch.js/es/connectors";
 import {useTranslation} from "next-i18next";
 import {Swiper, SwiperSlide} from "swiper/react";
 import { EffectCards } from "swiper";
 import Image from "next/image";
+import {LineItem} from "@medusajs/medusa";
+import {useAppDispatch, useAppSelector} from "../../../../../redux/hooks";
+import {setTemporaryQuantity, useTemporaryQuantity} from "../cartReducer";
 
 const searchClient = instantMeiliSearch(
     process.env.NEXT_PUBLIC_SEARCH_ENDPOINT!,
@@ -53,7 +63,7 @@ function CustomHits(props: any) {
         <div className={props.className}>
             <ol>
                 {hits.slice(0, maxItems).map((hit) => (
-                    <li key={hit.id as string}><Hit hit={hit}/></li>
+                    <li key={hit.id as string}><Hit hit={hit} key={hit.id as string}/></li>
                 ))}
             </ol>
             {maxItems<hits.length ? <button onClick={()=>setMax(maxItems+3)}>{t("common:showMore")}</button> : null}
@@ -93,6 +103,7 @@ const Hit = ({ hit }: {hit: any}) => {
     // @ts-ignore
     const [selected_variants, setSelected_variants] = useState<string[]>(()=>[...variantsMap.keys()]);
     const {t} = useTranslation();
+    const {cart, updateCart} = useCart()
 
     if(hit.title=="Medusa Sweatshirt"){
         console.log(hit);
@@ -163,6 +174,12 @@ const Hit = ({ hit }: {hit: any}) => {
         return temp;
     }
 
+
+
+
+
+
+
     const availableOptions = new Map<string, string[]>();
 
     selected_variants.forEach((variant_id: any)=>{
@@ -171,6 +188,9 @@ const Hit = ({ hit }: {hit: any}) => {
             if(!(option.value in availableOptions.get(option.option_id)!)) availableOptions.get(option.option_id)!.push(option.value)
         });
     });
+
+
+
 
     return (
         <div key={hit.id} className={"relative" +" "+ styles.hitCard}>
@@ -189,13 +209,13 @@ const Hit = ({ hit }: {hit: any}) => {
                         <Highlight attribute="title" hit={hit} highlightedTagName="mark" className={styles.highlight}/>
                     </div>
                     { // @ts-ignore
-                      [...allOptions.entries()].map((k: [string, Set<string>])=>{
+                      [...allOptions.entries()].map((k: [string, Set<string>], i)=>{
                         return (<>
-                            <div className={styles.selectOption}>
+                            <div key={i} className={styles.selectOption}>
                                 <p>{t("shop:"+optionsMap.get(k[0]).title)}</p>
                                 {
                                     // @ts-ignore
-                                    [...k[1].values()].map((opt_value)=>{
+                                    [...k[1].values()].map((opt_value, key)=>{
                                         if(!selectedOptions.has(k[0])) selectedOptions.set(k[0], undefined);
                                         const handleClick = () => {
                                             if(selectedOptions.get(k[0]) === opt_value) selectedOptions.set(k[0], undefined);
@@ -205,9 +225,9 @@ const Hit = ({ hit }: {hit: any}) => {
                                         return (<>
                                             {
                                                 optionsMap.get(k[0]).title=="Color"?
-                                                    <button style={{backgroundColor: opt_value}} disabled={!optionCanBeSelected(opt_value)} onClick={handleClick} className={styles.colorButton}></button>
+                                                    <button key={key} style={{backgroundColor: opt_value}} disabled={!optionCanBeSelected(opt_value)} onClick={handleClick} className={styles.colorButton}></button>
                                                     :
-                                                    <button style={{backgroundColor: opt_value}} disabled={!optionCanBeSelected(opt_value)} onClick={handleClick}>{opt_value}
+                                                    <button key={key} style={{backgroundColor: opt_value}} disabled={!optionCanBeSelected(opt_value)} onClick={handleClick}>{opt_value}
                                                     </button>
                                             }
                                         </>)
@@ -217,18 +237,98 @@ const Hit = ({ hit }: {hit: any}) => {
                         )
                     })}
                 </div>
-                <button className={styles.addToCart} disabled={selected_variants.length!=1 || selected_variants.length==1 && !getVariantPrice("eur", selected_variants[0])}>
-                    {
-                        selected_variants.length==0 ? "Unavailable..." : <Display_amount amount={getPriceRange(user_currency)}/>
-                    }
-                </button>
+                {selected_variants.length == 1 ? <Display_AddToCart variant_id={selected_variants[0]} price_range={getPriceRange(cart?.region.currency_code ?? "usd")}/> : <button className={styles.addToCart} disabled><Display_amount amount={getPriceRange(cart?.region.currency_code ?? "usd")}/></button>}
             </div>
         </div>
     )
 }
 
+const Display_AddToCart = ({variant_id, price_range}: {variant_id: string, price_range: number[][] }) => {
+
+    const [canEditQuantity, setCanEditQuantity] = useState(true);
+    const hook = useCart()
+    const tempQuantity = useTemporaryQuantity(variant_id)
+    const dispatch = useAppDispatch()
+
+    const updateLineItemQuantities = (lineItemId: string, add_quantity: number) => {
+        if(hook.cart && lineItemInCart && tempQuantity!=undefined){
+            const new_quantity = Math.max(add_quantity + tempQuantity, 0);
+            dispatch(setTemporaryQuantity({ variant_id: variant_id, quantity: new_quantity}));
+        }
+    }
+
+    const handleAddToCart = () => {
+        if(hook.cart){
+            dispatch(setTemporaryQuantity({ variant_id: variant_id, quantity: 1}));
+            client.carts.lineItems.create(hook.cart.id, {
+                variant_id: variant_id,
+                quantity: 1
+            })
+                .then(({cart}) => hook.updateCart(cart));
+        }
+    }
+
+    const variantIdInCart = (variant_id: string): LineItem | undefined => {
+        if(!hook.cart) return undefined
+        let res = undefined;
+        hook.cart.items.some((item)=> {
+            if (item.variant_id === variant_id) {
+                res = item;
+                return true
+            }
+        })
+        return res;
+    }
+    const lineItemInCart = variantIdInCart(variant_id);
+
+    if(lineItemInCart && lineItemInCart?.quantity!=0 && tempQuantity == undefined){
+        dispatch(setTemporaryQuantity({ variant_id: variant_id, quantity: lineItemInCart.quantity}));
+    }
+
+    if(tempQuantity!=undefined && lineItemInCart && hook.cart && tempQuantity!=lineItemInCart?.quantity && canEditQuantity){
+        setCanEditQuantity(false);
+        if(tempQuantity <= 0){
+            client.carts.lineItems.delete(hook.cart.id, lineItemInCart.id)
+                .then(({cart}) => {
+                    setCanEditQuantity(true);
+                    hook.updateCart(cart)
+                })
+        }
+        else{
+            client.carts.lineItems.update(hook.cart.id, lineItemInCart.id, {
+                quantity: tempQuantity
+            }).then(({cart}) => {
+                setCanEditQuantity(true);
+                hook.updateCart(cart)
+            })
+        }
+    }
+
+
+
+    return (
+        <>
+            {lineItemInCart ?
+                <div className={styles.updateQuantitiesContainer}>
+                    <button onClick={()=>updateLineItemQuantities(lineItemInCart?.id, -1)}><FontAwesomeIcon icon={faMinus}/></button>
+                    {tempQuantity != lineItemInCart.quantity ? <div className={styles.showQuantity} style={{opacity: 0.4}}>{tempQuantity}</div> : <div className={styles.showQuantity}>{lineItemInCart.quantity}</div>}
+                    <button onClick={()=>updateLineItemQuantities(lineItemInCart?.id, 1)}><FontAwesomeIcon icon={faPlus}/></button>
+                </div>
+                : <button className={styles.addToCart}
+                          onClick={()=>{handleAddToCart()}}
+                          disabled={(!!tempQuantity)}>
+
+                    {tempQuantity ? <FontAwesomeIcon icon={faSpinner} className={"fa-spin"}/> : <Display_amount amount={price_range}/>}
+
+                </button>}
+        </>
+    )
+}
+
 const Display_amount = ({amount}: {amount: number[][]}) => {
     const {t} = useTranslation()
+    const {cart, updateCart} = useCart()
+
     if(!amount || !amount.length){
         return (<>Unavailable</>)
     }
@@ -237,5 +337,5 @@ const Display_amount = ({amount}: {amount: number[][]}) => {
         <>{} {formatted.current!=formatted.original ? <><p className={styles.onSale}>{t("shop:onSale")}</p><del>{formatted.original}</del> {formatted.current}</>: formatted.original}</>
     } </>;
 
-    return (<>{str} <FontAwesomeIcon icon={user_currency === "eur"? faEuroSign : faDollarSign}/></>)
+    return (<>{str} <FontAwesomeIcon icon={cart && cart?.region.currency_code === "eur"? faEuroSign : faDollarSign}/></>)
 }

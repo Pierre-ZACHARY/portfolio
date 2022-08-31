@@ -26,5 +26,6 @@
   "username": "Nom d'utilisateur",
   "validate": "Valider",
   "wrongPassword": "Mot de passe incorrect",
-  "youMustLoginToComment": "Vous devez vous connecter pour commenter l'article"
+  "youMustLoginToComment": "Vous devez vous connecter pour commenter l'article",
+  "youMustLoginToContinue": "Vous devez d'abord vous connectez"
 }

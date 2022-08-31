@@ -26,5 +26,6 @@
   "username": "Username",
   "validate": "Validate",
   "wrongPassword": "Wrong password",
-  "youMustLoginToComment": "You must Log In to post a comment"
+  "youMustLoginToComment": "You must Log In to post a comment",
+  "youMustLoginToContinue": "You must Log In to Continue"
 }

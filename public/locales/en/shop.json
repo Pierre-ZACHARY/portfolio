@@ -1,5 +1,9 @@
 {
   "Color": "Color",
   "Size": "Size",
-  "onSale": "For Sale"
+  "continueCheckout": "Continue Checkout",
+  "discount": "Discounts",
+  "onSale": "For Sale",
+  "quantity": "Quantity",
+  "shipping": "Shipping Fee"
 }
