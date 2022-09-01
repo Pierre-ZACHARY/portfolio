@@ -1,6 +1,6 @@
 import Medusa from '@medusajs/medusa-js';
 import {Cart} from "@medusajs/medusa";
-import {useEffect} from "react";
+import {useEffect, useState} from "react";
 import {useAppDispatch, useAppSelector} from "../redux/hooks";
 import {CartAction, executeCartAction} from "../stories/components/Portfolio/Shop/cartAction";
 
@@ -64,29 +64,31 @@ export const format_price_range = (amount: number[][]): FormattedPrice => {
 export function useCart(){
 
     const dispatch = useAppDispatch()
+    const cart = useAppSelector(state => state.cart?.cart)
 
     useEffect(()=>{
-        const id = localStorage.getItem('cart_id');
-        if(id) {
-            client.carts.retrieve(id).then(({cart}) => executeCartAction(dispatch, CartAction.Update, cart));
+        if(!cart){
+            const id = localStorage.getItem('cart_id');
+            if(id) {
+                client.carts.retrieve(id).then(({cart}) => executeCartAction(dispatch, CartAction.Update, cart));
+            }
+            else {
+                client.carts.create({
+                    region_id: "reg_01GBGGFM1CDN3C9BGKAVVB37E0"
+                })
+                    .then(({cart}) => {
+                        localStorage.setItem('cart_id', cart.id);
+                        //assuming you have a state variable to store the cart
+                        executeCartAction(dispatch, CartAction.Update, cart);
+                    });
+            }
         }
-        else {
-            client.carts.create({
-                region_id: "reg_01GBGGFM1CDN3C9BGKAVVB37E0"
-            })
-                .then(({cart}) => {
-                    localStorage.setItem('cart_id', cart.id);
-                    //assuming you have a state variable to store the cart
-                    executeCartAction(dispatch, CartAction.Update, cart);
-                });
-        }
-    }, []);
+    }, [dispatch, cart]);
 
     const updateCart = (cart: Omit<Cart, "refundable_amount" | "refunded_total">) => {
         executeCartAction(dispatch, CartAction.Update, cart);
     }
 
-    const cart = useAppSelector(state => state.cart.cart)
 
     return {cart, updateCart};
 }

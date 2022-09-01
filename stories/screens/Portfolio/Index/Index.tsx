@@ -102,7 +102,7 @@ export const Index = ({blogPosts = {content: [{
             window.removeEventListener("scroll", handleScroll); // this event listener is removed after the new route loads
             window.removeEventListener("resize", setScreenHeight);
         }
-    }, []);
+    }, [state.mounted, handleScroll]);
 
     const selected_index: number = useAppSelector(state => state.headerSection.selected);
 
@@ -114,6 +114,8 @@ export const Index = ({blogPosts = {content: [{
             document.getElementById("header-name")?.classList.remove(styles.showHeaderName);
         }
     }
+
+    useEffect(()=>console.log("render"))
 
 
     return (

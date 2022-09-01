@@ -2,6 +2,7 @@ import styles from "./CartWidget.module.sass"
 import {useEffect, useState} from "react";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {
+    faArrowLeft,
     faArrowUpRightFromSquare,
     faBagShopping,
     faCross,
@@ -21,6 +22,8 @@ import {useAppDispatch} from "../../../../../redux/hooks";
 import {getAuth, User} from "@firebase/auth";
 import Link from "next/link";
 import {useRouter} from "next/router";
+import {db} from "../../../../../pages/_app";
+import {collection, doc, DocumentReference, onSnapshot} from "@firebase/firestore";
 
 
 enum ContentState{
@@ -49,7 +52,7 @@ export const CartWidget = ( ) => {
                 <button className={styles.buttonClose} onClick={()=>setOpen(false)}><FontAwesomeIcon icon={faXmark}/></button>
                 {{
                     [ContentState.CartOverView]: <CartOverView onContinue={()=>setContentState(ContentState.SelectShippingAddress)}/>,
-                    [ContentState.SelectShippingAddress]: <></>,
+                    [ContentState.SelectShippingAddress]: <SelectShippingAddress onContinue={()=>setContentState(ContentState.SelectShippingMethod)}/>,
                     [ContentState.SelectShippingMethod]: <></>,
                     [ContentState.SelectPaymentMethod]: <></>,
                     [ContentState.CompleteOrder]: <></>,
@@ -61,6 +64,76 @@ export const CartWidget = ( ) => {
 }
 
 
+interface Shipping_Address{
+    company: string,
+    first_name: string,
+    last_name: string,
+    address_1: string,
+    address_2: string,
+    city: string,
+    country_code: string,
+    province: string,
+    postal_code: string,
+    phone: string,
+    ref: DocumentReference
+}
+
+
+const SelectShippingAddress = ({onContinue}: {onContinue: Function }) => {
+
+    const auth = getAuth()
+    const [user, setUser] = useState<User | null>(null)
+    const [shipping_address_list, set_shipping_address_list] = useState<Shipping_Address[]>([])
+    const [selected_shipping_address_id, setselected_shipping_address] = useState<string | null>(null)
+    useEffect(()=>{const unsub = auth.onAuthStateChanged((user)=>setUser(user)); return ()=>unsub()}, [auth]);
+    useEffect(()=>{
+        if(user){
+            const unsub = onSnapshot(collection(db, "users", user.uid, "shipping_address"), (col) => {
+                const temp: Shipping_Address[] = []
+                col.docs.forEach((doc)=>{
+                    temp.push({...doc.data(), ref: doc.ref} as Shipping_Address)
+                });
+                set_shipping_address_list(temp);
+            });
+            return ()=>unsub()
+        }
+    }, [user])
+
+    return (<>
+        {shipping_address_list.length ? <div className={styles.selectUserAddress}>
+            <div className={styles.forms}>
+                <fieldset onChange={(e)=>setselected_shipping_address(e.target.value)}>
+                    <legend>Select a shipping address</legend>
+                    {
+                        shipping_address_list.map(
+                            (addr) => {
+                                return (
+                                    <div className={styles.radioContainer+" "+(selected_shipping_address_id == addr.ref.id ? styles.selected : null)}>
+                                        <input type={"radio"} id={addr.ref.id} name={addr.ref.id} value={addr.ref.id}/>
+                                        <label htmlFor={addr.ref.id}>
+                                            <div>
+                                                <h1>{addr.last_name} {addr.first_name}</h1>
+                                                <p>{addr.address_1} {addr.address_2}</p>
+                                                <p>{addr.city} {addr.postal_code}</p>
+                                            </div></label>
+                                    </div>
+                                )
+                            }
+                        )
+                    }
+                </fieldset>
+                <form>
+                    <legend>Add Shipping Address</legend>
+                </form>
+            </div>
+            <div className={styles.buttons}>
+                <button><FontAwesomeIcon icon={faArrowLeft}/> Back</button>
+                <button className={styles.buttonContinue} disabled={selected_shipping_address_id != null}>Continue</button>
+            </div>
+        </div> : null}
+    </>)
+}
+
 const CartOverView = ({onContinue}: {onContinue: Function }) => {
     const cartHook = useCart()
     const auth = getAuth()
@@ -71,7 +144,7 @@ const CartOverView = ({onContinue}: {onContinue: Function }) => {
     useEffect(()=>{
         const unsub = auth.onAuthStateChanged((user) => setUser(user))
         return () => unsub()
-    })
+    }, [auth])
 
     return(
         <>
@@ -97,13 +170,12 @@ const CartOverView = ({onContinue}: {onContinue: Function }) => {
                     {cartHook.cart?.total ? <div><h2>Total :</h2><h2>{format_price(cartHook.cart?.total!)} <FontAwesomeIcon icon={cartHook.cart.region.currency_code === "eur" ? faEuroSign : faDollarSign}/></h2></div> : null}
                 </div>
                 <div className={styles.checkOutSteps}>
-                    {user ? <button onClick={()=>onContinue()}>{t("shop:continueCheckout")}</button> : <Link href={"/login?onSignIn="+router.asPath}><a>{t("authentification:youMustLoginToContinue")} <FontAwesomeIcon icon={faArrowUpRightFromSquare}/></a></Link>}
+                    {user ? <button disabled={!(cartHook.cart && cartHook.cart .items.length)} onClick={()=>onContinue()}>{t("shop:continueCheckout")}</button> : <Link href={"/login?onSignIn="+router.asPath}><a>{t("authentification:youMustLoginToContinue")} <FontAwesomeIcon icon={faArrowUpRightFromSquare}/></a></Link>}
                 </div>
             </div>
         </>
     )
 }
-
 
 const SelectRegion = () => {
 
@@ -121,20 +193,18 @@ const SelectRegion = () => {
             .then(({cart}) => updateCart(cart));
     }
 
-
     return (
-        <select onChange={(e)=>changeRegion(e.target.value)}>
+        <select onChange={(e)=>changeRegion(e.target.value)} value={cart ? cart.region.id : ""}>
             {regionList.map((reg) => {
                 return(
 
-                    <option key={reg.id} value={reg.id} selected={cart ? cart.region_id == reg.id : false}>{reg.name}</option>
+                    <option key={reg.id} value={reg.id} >{reg.name}</option>
                 )
             })
             }
         </select>
     )
 }
-
 
 const CartItem = ({default_item}: {default_item: LineItem }) => {
     const {t} = useTranslation()

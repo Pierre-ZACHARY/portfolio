@@ -32,7 +32,7 @@ function CustomSearchBox(props: UseSearchBoxProps) {
     const [value, setValue] = useState("");
     const [focused, setFocused] = useState(false);
     const inputRef = useRef<HTMLInputElement>(null);
-    useEffect(()=>{refine(value)}, [value])
+    useEffect(()=>{refine(value)}, [refine, value])
 
     return <><div className={[styles.searchBox, focused?styles.focused:null].join(" ")} onClick={()=>inputRef.current!.select()}>
         <FontAwesomeIcon icon={faSearch}/>
@@ -55,6 +55,7 @@ export const Search = () => {
 
 
 function CustomHits(props: any) {
+
     const { hits, results, sendEvent } = useHits(props);
     const [maxItems, setMax] = useState(3);
     const {t} = useTranslation();
@@ -73,6 +74,7 @@ function CustomHits(props: any) {
 
 
 const Hit = ({ hit }: {hit: any}) => {
+
     const [variantsMap, setVariantsMap] = useState<Map<string, any>>(()=>{
         const temp = new Map<string, any>();
         hit.variants.forEach((variant: any)=>{
@@ -104,6 +106,8 @@ const Hit = ({ hit }: {hit: any}) => {
     const [selected_variants, setSelected_variants] = useState<string[]>(()=>[...variantsMap.keys()]);
     const {t} = useTranslation();
     const {cart, updateCart} = useCart()
+
+    useEffect(()=>console.log("Cart Changed"), [cart])
 
     if(hit.title=="Medusa Sweatshirt"){
         console.log(hit);
@@ -173,11 +177,6 @@ const Hit = ({ hit }: {hit: any}) => {
         })
         return temp;
     }
-
-
-
-
-
 
 
     const availableOptions = new Map<string, string[]>();
