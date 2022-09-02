@@ -1,5 +1,5 @@
 import styles from "./CartWidget.module.sass"
-import {useEffect, useState} from "react";
+import {FormEvent, useEffect, useState} from "react";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {
     faArrowLeft,
@@ -16,14 +16,14 @@ import { motion } from "framer-motion";
 import {client, format_price, useCart} from "../../../../../lib/medusa-utils";
 import {NaturalImageFixedHeight} from "../../../../../lib/utils-components";
 import {useTranslation} from "next-i18next";
-import {LineItem, Region} from "@medusajs/medusa";
+import {Country, LineItem, Region} from "@medusajs/medusa";
 import {setTemporaryQuantity, useTemporaryQuantity} from "../cartReducer";
 import {useAppDispatch} from "../../../../../redux/hooks";
 import {getAuth, User} from "@firebase/auth";
 import Link from "next/link";
 import {useRouter} from "next/router";
 import {db} from "../../../../../pages/_app";
-import {collection, doc, DocumentReference, onSnapshot} from "@firebase/firestore";
+import {addDoc, collection, deleteDoc, doc, DocumentReference, onSnapshot, setDoc} from "@firebase/firestore";
 
 
 enum ContentState{
@@ -52,7 +52,7 @@ export const CartWidget = ( ) => {
                 <button className={styles.buttonClose} onClick={()=>setOpen(false)}><FontAwesomeIcon icon={faXmark}/></button>
                 {{
                     [ContentState.CartOverView]: <CartOverView onContinue={()=>setContentState(ContentState.SelectShippingAddress)}/>,
-                    [ContentState.SelectShippingAddress]: <SelectShippingAddress onContinue={()=>setContentState(ContentState.SelectShippingMethod)}/>,
+                    [ContentState.SelectShippingAddress]: <SelectShippingAddress onContinue={()=>setContentState(ContentState.SelectShippingMethod)} onBack={()=>setContentState(ContentState.CartOverView)}/>,
                     [ContentState.SelectShippingMethod]: <></>,
                     [ContentState.SelectPaymentMethod]: <></>,
                     [ContentState.CompleteOrder]: <></>,
@@ -79,12 +79,15 @@ interface Shipping_Address{
 }
 
 
-const SelectShippingAddress = ({onContinue}: {onContinue: Function }) => {
+const SelectShippingAddress = ({onContinue, onBack}: {onContinue: Function, onBack: Function }) => {
 
     const auth = getAuth()
     const [user, setUser] = useState<User | null>(null)
+    const [countries, setCountries] = useState<Country[]>([])
+    const {cart, updateCart} = useCart()
+    useEffect(()=>{if(cart) client.regions.retrieve(cart.region_id).then((reg)=>setCountries(reg.region.countries))}, [cart])
     const [shipping_address_list, set_shipping_address_list] = useState<Shipping_Address[]>([])
-    const [selected_shipping_address_id, setselected_shipping_address] = useState<string | null>(null)
+    const [selected_shipping_address_id, setselected_shipping_address] = useState<string>("")
     useEffect(()=>{const unsub = auth.onAuthStateChanged((user)=>setUser(user)); return ()=>unsub()}, [auth]);
     useEffect(()=>{
         if(user){
@@ -99,18 +102,87 @@ const SelectShippingAddress = ({onContinue}: {onContinue: Function }) => {
         }
     }, [user])
 
+    function getShippingAddressFromId(id: string): Shipping_Address | null{
+        for(let i = 0; i<shipping_address_list.length; i++){
+            if(shipping_address_list[i].ref.id == id) return shipping_address_list[i];
+        }
+        return null
+    }
+
+    const handleAddEditShippingAddress = (e: FormEvent<HTMLFormElement>) => {
+        if(user){
+            const form: HTMLFormElement = e.target as HTMLFormElement;
+            // @ts-ignore
+            const ref_id: string = (form[0].value! as string);
+            // @ts-ignore
+            const address_1: string = (form[1].value! as string);
+            // @ts-ignore
+            const address_2: string = (form[2].value! as string);
+            // @ts-ignore
+            const city: string = (form[3].value! as string);
+            // @ts-ignore
+            const postal_code: string = (form[4].value! as string);
+            // @ts-ignore
+            const province: string = (form[5].value! as string);
+            // @ts-ignore
+            const country_code: string = (form[6].value! as string);
+            console.log(country_code)
+            // @ts-ignore
+            const company: string = (form[7].value! as string);
+            // @ts-ignore
+            const phone: string = (form[8].value! as string);
+            // @ts-ignore
+            const first_name: string = (form[9].value! as string);
+            // @ts-ignore
+            const last_name: string = (form[10].value! as string);
+            if(ref_id != "" && selected_address) setDoc(selected_address.ref, {address_1, address_2, city, postal_code, province, country_code, company, phone, first_name, last_name}).then();
+            else addDoc(collection(db, "users", user.uid, "shipping_address"), {address_1, address_2, city, postal_code, province, country_code, company, phone, first_name, last_name}).then();
+        }
+
+    }
+
+    const RemoveSelectedAddress = () => {
+        if(selected_shipping_address_id !== "" && selected_address){
+            const ok = confirm("Voulez-vous supprimer cette adresse ?")
+            if(ok){
+                deleteDoc(selected_address.ref).then(()=>setselected_shipping_address(""))
+            }
+        }
+    }
+
+    const handleContinue = () => {
+        if(cart && selected_address) {
+            const {ref, ...post} = selected_address
+            console.log(post)
+            client.carts.update(cart.id, {
+                shipping_address: post,
+            }).then((response) => {
+                updateCart(response.cart);
+                onContinue();
+            }).catch((error)=>alert(error))
+        }
+
+    }
+
+    const selected_address = getShippingAddressFromId(selected_shipping_address_id);
+
+
     return (<>
-        {shipping_address_list.length ? <div className={styles.selectUserAddress}>
+        <div className={styles.selectUserAddress}>
             <div className={styles.forms}>
+                {/* @ts-ignore */}
                 <fieldset onChange={(e)=>setselected_shipping_address(e.target.value)}>
                     <legend>Select a shipping address</legend>
                     {
                         shipping_address_list.map(
                             (addr) => {
                                 return (
-                                    <div className={styles.radioContainer+" "+(selected_shipping_address_id == addr.ref.id ? styles.selected : null)}>
-                                        <input type={"radio"} id={addr.ref.id} name={addr.ref.id} value={addr.ref.id}/>
+                                    <div key={addr.ref.id} className={styles.radioContainer+" "+(selected_shipping_address_id == addr.ref.id ? styles.selected : null)}>
+                                        <input type={"radio"} id={addr.ref.id} name={addr.ref.id} value={addr.ref.id} checked={selected_shipping_address_id == addr.ref.id}/>
                                         <label htmlFor={addr.ref.id}>
+                                            <div className={styles.radioButton}>
+                                                <div />
+                                            </div>
                                             <div>
                                                 <h1>{addr.last_name} {addr.first_name}</h1>
                                                 <p>{addr.address_1} {addr.address_2}</p>
@@ -121,16 +193,55 @@ const SelectShippingAddress = ({onContinue}: {onContinue: Function }) => {
                             }
                         )
                     }
+                    <div className={styles.radioContainer+" "+(selected_shipping_address_id == "" ? styles.selected : null)}>
+                        <input type={"radio"} id={"add_addr"} name={"add_addr"} value={""} checked={selected_shipping_address_id == ""}/>
+                        <label htmlFor={"add_addr"}>
+                            <div className={styles.radioButton}>
+                                <div />
+                            </div>
+                            <div>
+                                <h1>Add Shipping Address</h1>
+                            </div>
+                        </label>
+                    </div>
                 </fieldset>
-                <form>
-                    <legend>Add Shipping Address</legend>
+                <form onSubmit={(e)=>{e.preventDefault(); handleAddEditShippingAddress(e)}}>
+                    <legend>{selected_shipping_address_id === "" ? "Add Shipping Address" : "Edit Shipping Address"}</legend>
+                    <input type={"hidden"} value={selected_shipping_address_id}/>
+                    <div>
+                        <input type={"text"} placeholder={"Address 1 *"} required autoComplete={"address-line1"}/>
+                        <input type={"text"} placeholder={"Address 2"} autoComplete={"address-line2"}/>
+                    </div>
+                    <div>
+                        <input type={"text"} placeholder={"City *"} required autoComplete={"home city"}/>
+                        <input type={"text"} placeholder={"Postal Code *"} required autoComplete={"postal-code"}/>
+                    </div>
+                    <div>
+                        <input type={"text"} placeholder={"Province"}/>
+                        <select required placeholder={"Country"} autoComplete={"on"}>
+                            <option disabled value={""} selected>Please Select A country *</option>
+                            {countries.map((c)=>{
+                                return (<option key={c.iso_3} value={c.iso_2}>{c.name.slice(0,1)+c.name.slice(1).toLowerCase()}</option>)
+                            })}
+                        </select>
+                    </div>
+                    <input type={"text"} placeholder={"Company"}/>
+                    <input type={"text"} placeholder={"Phone"} autoComplete={"tel"}/>
+                    <div>
+                        <input type={"text"} placeholder={"First Name *"} required autoComplete={"given-name"}/>
+                        <input type={"text"} placeholder={"Last Name *"} required autoComplete={"family-name"}/>
+                    </div>
+                    <div className={styles.formButtons}>
+                        <button type={"submit"}>{selected_shipping_address_id === "" ? "Add" : "Confirm Edit"}</button>
+                        {selected_shipping_address_id!= "" ? <button type={"button"} onClick={() => RemoveSelectedAddress()} className={styles.buttonRemove}>Remove</button> : null}
+                    </div>
                 </form>
             </div>
             <div className={styles.buttons}>
-                <button><FontAwesomeIcon icon={faArrowLeft}/> Back</button>
-                <button className={styles.buttonContinue} disabled={selected_shipping_address_id != null}>Continue</button>
+                <button onClick={()=>onBack()}><FontAwesomeIcon icon={faArrowLeft}/> Back</button>
+                <button onClick={()=>handleContinue()} className={styles.buttonContinue} disabled={selected_shipping_address_id == ""}>Continue</button>
             </div>
-        </div> : null}
+        </div>
     </>)
 }
 
