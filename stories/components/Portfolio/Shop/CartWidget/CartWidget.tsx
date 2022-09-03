@@ -26,6 +26,7 @@ import {db} from "../../../../../pages/_app";
 import {addDoc, collection, deleteDoc, doc, DocumentReference, onSnapshot, setDoc} from "@firebase/firestore";
 import {CardElement, Elements, useElements, useStripe, PaymentRequestButtonElement} from "@stripe/react-stripe-js";
 import {PaymentRequest, PaymentRequestItem} from "@stripe/stripe-js";
+import {useTheme} from "next-themes";
 
 
 enum ContentState{
@@ -70,12 +71,16 @@ function Form({clientSecret, cartId} : any) {
     const elements = useElements();
     const {cart} = useCart();
     const [paymentRequest, setPaymentRequest] = useState<PaymentRequest | undefined>(undefined);
+    const {resolvedTheme} = useTheme()
+    console.log(resolvedTheme);
+
     useEffect(() => {
         if (stripe && cart) {
             const items: PaymentRequestItem[] = [];
             for(const elem of cart.items){
                 items.push({label: elem.title, amount: elem.total!})
             }
+
             const pr = stripe.paymentRequest({
                 country: cart.shipping_address?.country_code!.toUpperCase()!,
                 currency: cart.region.currency_code,
@@ -164,10 +169,19 @@ function Form({clientSecret, cartId} : any) {
     }
 
     return (
-        <form>
+        <form className={styles.stripeForm}>
+            <h1>Payer par carte</h1>
             <CardElement />
-            {paymentRequest ? <PaymentRequestButtonElement options={{paymentRequest}} /> : null}
-            <button onClick={handlePayment}>Submit</button>
+            <button onClick={handlePayment}>Payer</button>
+            <h1>Ou choisissez une autre méthode de paiement</h1>
+
+            {paymentRequest ? <PaymentRequestButtonElement options={{
+                paymentRequest: paymentRequest,
+                style: {
+                    paymentRequestButton: {
+                        theme: (resolvedTheme === "light" ? "light-outline" : "dark"),
+                    },
+                }}} /> : null}
         </form>
     );
 }
@@ -178,8 +192,6 @@ const SelectPaymentProvider = ({onBack, onContinue}: {onBack: Function, onContin
     useEffect(()=>{const unsub = auth.onAuthStateChanged((user)=>setUser(user)); return ()=>unsub()}, [auth]);
     const {cart, updateCart} = useCart()
     const [clientSecret, setClientSecret] = useState<undefined | any>(undefined)
-
-
 
     useEffect(()=>{
         if(cart && !clientSecret){
@@ -301,11 +313,17 @@ const SelectShippingAddress = ({onContinue, onBack}: {onContinue: Function, onBa
     useEffect(()=>{if(cart) client.regions.retrieve(cart.region_id).then((reg)=>setCountries(reg.region.countries))}, [cart])
     const [shipping_address_list, set_shipping_address_list] = useState<Shipping_Address[]>([])
     const [temporary_address, setTempopary_address] = useState<Shipping_Address>({address_1: "", address_2: "", city: "", ref: undefined, company: "", country_code: "", phone: "", postal_code: "", first_name: "", last_name: "", province: ""})
+    const [selected_address, setSelected_address] = useState<Shipping_Address>({address_1: "", address_2: "", city: "", ref: undefined, company: "", country_code: "", phone: "", postal_code: "", first_name: "", last_name: "", province: ""})
     const [selected_shipping_address_id, setselected_shipping_address] = useState<string>("")
     useEffect(()=>{
-        if(getShippingAddressFromId(selected_shipping_address_id)) setTempopary_address(getShippingAddressFromId(selected_shipping_address_id)!);
+        const s_a = getShippingAddressFromId(selected_shipping_address_id)
+        if(s_a != null) {
+            setSelected_address(s_a)
+            setTempopary_address(s_a);
+        }
         else setTempopary_address({address_1: "", address_2: "", city: "", ref: undefined, company: "", country_code: "", phone: "", postal_code: "", first_name: "", last_name: "", province: ""})
     }, [selected_shipping_address_id]);
+
     useEffect(()=>{const unsub = auth.onAuthStateChanged((user)=>setUser(user)); return ()=>unsub()}, [auth]);
     useEffect(()=>{
         if(user){
@@ -320,7 +338,8 @@ const SelectShippingAddress = ({onContinue, onBack}: {onContinue: Function, onBa
         }
     }, [user])
     const [loadingContinue, setLoadingContinue] = useState(false);
-    function getShippingAddressFromId(id: string): Shipping_Address | null{
+
+    const getShippingAddressFromId = (id: string): Shipping_Address | null => {
         for(let i = 0; i<shipping_address_list.length; i++){
             if(shipping_address_list[i].ref!.id == id) return shipping_address_list[i];
         }
@@ -344,7 +363,6 @@ const SelectShippingAddress = ({onContinue, onBack}: {onContinue: Function, onBa
             const province: string = (form[5].value! as string);
             // @ts-ignore
             const country_code: string = (form[6].value! as string);
-            console.log(country_code)
             // @ts-ignore
             const company: string = (form[7].value! as string);
             // @ts-ignore
@@ -371,6 +389,7 @@ const SelectShippingAddress = ({onContinue, onBack}: {onContinue: Function, onBa
     const handleContinue = () => {
         if(cart && selected_address) {
             const {ref, ...post} = selected_address
+            console.log(post);
             setLoadingContinue(true);
             client.carts.update(cart.id, {
                 shipping_address: post,
@@ -386,9 +405,6 @@ const SelectShippingAddress = ({onContinue, onBack}: {onContinue: Function, onBa
         }
 
     }
-
-    const selected_address = getShippingAddressFromId(selected_shipping_address_id);
-
 
     return (<>
         <div className={styles.selectUserAddress}>
