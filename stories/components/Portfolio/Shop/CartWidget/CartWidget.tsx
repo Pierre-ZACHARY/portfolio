@@ -233,7 +233,11 @@ const SelectShippingMethod = ({onBack, onContinue}: {onBack: Function, onContinu
     useEffect(()=>{const unsub = auth.onAuthStateChanged((user)=>setUser(user)); return ()=>unsub()}, [auth]);
     const {cart, updateCart} = useCart()
     const [shipping_options, setShipping_Options] = useState<ShippingOption[]>([])
-    useEffect(()=>{if(cart) client.shippingOptions.listCartOptions(cart.id).then((res)=>setShipping_Options(res.shipping_options))}, [cart])
+    useEffect(()=>{if(cart) {
+        console.log(cart);
+
+        client.shippingOptions.listCartOptions(cart.id).then((res)=>setShipping_Options(res.shipping_options))
+    }}, [cart])
     useEffect(()=>{console.log(shipping_options)}, [shipping_options])
     const [loadingContinue, setLoadingContinue] = useState(false);
     const [selected_shipping_option_id, setSelected_shipping_option_id] = useState("");
@@ -316,7 +320,10 @@ const SelectShippingAddress = ({onContinue, onBack}: {onContinue: Function, onBa
     const [selected_address, setSelected_address] = useState<Shipping_Address>({address_1: "", address_2: "", city: "", ref: undefined, company: "", country_code: "", phone: "", postal_code: "", first_name: "", last_name: "", province: ""})
     const [selected_shipping_address_id, setselected_shipping_address] = useState<string>("")
     useEffect(()=>{
+        console.log(selected_shipping_address_id)
         const s_a = getShippingAddressFromId(selected_shipping_address_id)
+        console.log(s_a)
+        console.log(shipping_address_list)
         if(s_a != null) {
             setSelected_address(s_a)
             setTempopary_address(s_a);
@@ -340,9 +347,11 @@ const SelectShippingAddress = ({onContinue, onBack}: {onContinue: Function, onBa
     const [loadingContinue, setLoadingContinue] = useState(false);
 
     const getShippingAddressFromId = (id: string): Shipping_Address | null => {
+        if(id=="") return null
         for(let i = 0; i<shipping_address_list.length; i++){
             if(shipping_address_list[i].ref!.id == id) return shipping_address_list[i];
         }
+        alert("null id : "+id)
         return null
     }
 
