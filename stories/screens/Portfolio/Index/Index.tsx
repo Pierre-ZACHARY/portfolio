@@ -49,6 +49,7 @@ export const Index = ({blogPosts = {content: [{
     }]}}: IndexProps) => {
     const { t } = useTranslation();
     const [state, setState] = useState<IndexState>({mounted: false});
+    const selected_index: number = useAppSelector(state => state.headerSection.selected);
     const dispatch = useAppDispatch();
     const Skills = useRef(null);
     const Blog = useRef(null);
@@ -64,25 +65,9 @@ export const Index = ({blogPosts = {content: [{
         { section: 4, ref: Contact },
     ]
 
-    let previousSection: number | undefined = undefined;
-
-    const handleScroll = () => {
-        const scrollPosition = window.scrollY + 75;
-
-        const selected = sectionRefs.find(({ section, ref }) => {
-            const ele = ref.current;
-            if (ele) {
-                const { offsetBottom, offsetTop } = getDimensions(ele);
-                return scrollPosition > offsetTop && scrollPosition < offsetBottom;
-            }
-        });
+    let previousSection = useRef<number | undefined>(undefined);
 
 
-        if ( selected && (!previousSection || selected.section != previousSection)) {
-            previousSection = selected.section;
-            executeHeaderSectionAction(dispatch, headerSectionAction.Select, selected.section);
-        }
-    };
 
     const setScreenHeight = () => {
         let elem = document.getElementById(styles["mobilePresentation"])!;
@@ -90,21 +75,35 @@ export const Index = ({blogPosts = {content: [{
     }
 
     useEffect(() => {
-        if(!state.mounted){
-           setScreenHeight();
-           window.addEventListener("resize", setScreenHeight);
-           handleScroll();
-           window.addEventListener("scroll", handleScroll);
-           setState({...state, mounted: true});
-        }
+        const handleScroll = () => {
+            const scrollPosition = window.scrollY + 75;
+
+            const selected = sectionRefs.find(({ section, ref }) => {
+                const ele = ref.current;
+                if (ele) {
+                    const { offsetBottom, offsetTop } = getDimensions(ele);
+                    return scrollPosition > offsetTop && scrollPosition < offsetBottom;
+                }
+            });
+
+
+            if ( selected && (!previousSection.current || selected.section != previousSection.current)) {
+                previousSection.current = selected.section;
+                executeHeaderSectionAction(dispatch, headerSectionAction.Select, selected.section);
+            }
+        };
+       setScreenHeight();
+       window.addEventListener("resize", setScreenHeight);
+       handleScroll();
+       window.addEventListener("scroll", handleScroll);
+
 
         return () => {
             window.removeEventListener("scroll", handleScroll); // this event listener is removed after the new route loads
             window.removeEventListener("resize", setScreenHeight);
         }
-    }, [state.mounted, handleScroll]);
+    }, []);
 
-    const selected_index: number = useAppSelector(state => state.headerSection.selected);
 
     if(state.mounted){
         if(selected_index != 0){
@@ -115,7 +114,6 @@ export const Index = ({blogPosts = {content: [{
         }
     }
 
-    useEffect(()=>console.log("render"))
 
 
     return (

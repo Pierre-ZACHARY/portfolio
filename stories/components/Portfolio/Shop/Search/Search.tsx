@@ -63,14 +63,17 @@ function CustomHits(props: any) {
     return <>
         <div className={props.className}>
             <ol>
-                {hits.slice(0, maxItems).map((hit) => (
-                    <li key={hit.id as string}><Hit hit={hit} key={hit.id as string}/></li>
-                ))}
+                {hits.slice(0, maxItems).map((hit, k) => {
+                    return (<li key={hit + "li"+k}>
+                            <div><Hit hit={hit}/></div>
+                        </li>)
+                })}
             </ol>
             {maxItems<hits.length ? <button onClick={()=>setMax(maxItems+3)}>{t("common:showMore")}</button> : null}
         </div>
     </>;
 }
+
 
 
 const Hit = ({ hit }: {hit: any}) => {
@@ -108,11 +111,6 @@ const Hit = ({ hit }: {hit: any}) => {
     const {cart, updateCart} = useCart()
 
     useEffect(()=>console.log("Cart Changed"), [cart])
-
-    if(hit.title=="Medusa Sweatshirt"){
-        console.log(hit);
-        console.log(allOptions);
-    }
 
     const variantHasOption = (variant_id: string, option_value: string): boolean => {
         return variantsMap.get(variant_id).options.some((opt: any): boolean | undefined => {
@@ -189,17 +187,23 @@ const Hit = ({ hit }: {hit: any}) => {
     });
 
 
-
-
     return (
-        <div key={hit.id} className={"relative" +" "+ styles.hitCard}>
+        <div className={"relative" +" "+ styles.hitCard}>
             <div className={styles.imageBackground}/>
             <div className={styles.imageContainer}>
                 <Swiper effect={"cards"}
                         grabCursor={true}
                         modules={[EffectCards]}
                         className={styles.swiper}>
-                    {hit.images.map((image: any)=><SwiperSlide className={styles.swiperSlide} key={image.id}><Image src={image.url} height={200} width={160} objectFit={"cover"}/></SwiperSlide>)}
+                    {
+                        hit.images.map(
+                            (image: any)=>{
+                                return <SwiperSlide key={image.id} className={styles.swiperSlide}>
+                                    <div key={image.id+"div"}><Image alt={"slide-img"} src={image.url} height={200} width={160} objectFit={"cover"}/></div>
+                                </SwiperSlide>
+                            }
+                        )
+                    }
                 </Swiper>
             </div>
             <div className={styles.objectInfo}>
@@ -208,31 +212,31 @@ const Hit = ({ hit }: {hit: any}) => {
                         <Highlight attribute="title" hit={hit} highlightedTagName="mark" className={styles.highlight}/>
                     </div>
                     { // @ts-ignore
-                      [...allOptions.entries()].map((k: [string, Set<string>], i)=>{
-                        return (<>
-                            <div key={i} className={styles.selectOption}>
+                      [...allOptions.entries()].map((k: [string, Set<string>])=>{
+                        return (
+                            <div key={k[0]} className={styles.selectOption}>
                                 <p>{t("shop:"+optionsMap.get(k[0]).title)}</p>
                                 {
                                     // @ts-ignore
-                                    [...k[1].values()].map((opt_value, key)=>{
+                                    [...k[1].values()].map((opt_value)=>{
                                         if(!selectedOptions.has(k[0])) selectedOptions.set(k[0], undefined);
                                         const handleClick = () => {
                                             if(selectedOptions.get(k[0]) === opt_value) selectedOptions.set(k[0], undefined);
                                             else selectedOptions.set(k[0], opt_value);
                                             updateSelectedVariants();
                                         }
-                                        return (<>
+                                        return (<div key={opt_value}>
                                             {
                                                 optionsMap.get(k[0]).title=="Color"?
-                                                    <button key={key} style={{backgroundColor: opt_value}} disabled={!optionCanBeSelected(opt_value)} onClick={handleClick} className={styles.colorButton}></button>
+                                                    <button style={{backgroundColor: opt_value}} disabled={!optionCanBeSelected(opt_value)} onClick={handleClick} className={styles.colorButton}></button>
                                                     :
-                                                    <button key={key} style={{backgroundColor: opt_value}} disabled={!optionCanBeSelected(opt_value)} onClick={handleClick}>{opt_value}
+                                                    <button style={{backgroundColor: opt_value}} disabled={!optionCanBeSelected(opt_value)} onClick={handleClick}>{opt_value}
                                                     </button>
                                             }
-                                        </>)
+                                        </div>)
                                     })
                                 }
-                            </div></>
+                            </div>
                         )
                     })}
                 </div>
@@ -263,7 +267,10 @@ const Display_AddToCart = ({variant_id, price_range}: {variant_id: string, price
                 variant_id: variant_id,
                 quantity: 1
             })
-                .then(({cart}) => hook.updateCart(cart));
+                .then(({cart}) => {
+                    console.log("Update Cart Called");
+                    hook.updateCart(cart)
+                });
         }
     }
 
@@ -286,10 +293,12 @@ const Display_AddToCart = ({variant_id, price_range}: {variant_id: string, price
 
     if(tempQuantity!=undefined && lineItemInCart && hook.cart && tempQuantity!=lineItemInCart?.quantity && canEditQuantity){
         setCanEditQuantity(false);
+        console.log(tempQuantity, lineItemInCart?.quantity)
         if(tempQuantity <= 0){
             client.carts.lineItems.delete(hook.cart.id, lineItemInCart.id)
                 .then(({cart}) => {
                     setCanEditQuantity(true);
+                    console.log("Update Cart Called");
                     hook.updateCart(cart)
                 })
         }
@@ -298,6 +307,7 @@ const Display_AddToCart = ({variant_id, price_range}: {variant_id: string, price
                 quantity: tempQuantity
             }).then(({cart}) => {
                 setCanEditQuantity(true);
+                console.log("Update Cart Called");
                 hook.updateCart(cart)
             })
         }

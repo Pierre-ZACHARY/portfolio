@@ -14,7 +14,6 @@ export const HeaderSectionV2 = ({keyList}: HeaderSectionV2Props) => {
     const selected_index: number = useAppSelector(state => state.headerSection.selected);
     const [hovered, setHovered] = useState("");
 
-    console.log(keyList);
     return (
         <>
             <AnimatePresence exitBeforeEnter>

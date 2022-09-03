@@ -1,7 +1,7 @@
 import '../styles/globals.css'
 import '../styles/themesVariables.css'
 import type { AppProps } from 'next/app'
-import {Provider} from "react-redux";
+import {Provider, useDispatch} from "react-redux";
 import {store} from "../redux/store";
 import { ThemeProvider } from 'next-themes'
 import { appWithTranslation } from 'next-i18next';
@@ -11,6 +11,10 @@ config.autoAddCss = false
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
 import { getFirestore } from "firebase/firestore";
+import {useEffect} from "react";
+import {reduceCart} from "../stories/components/Portfolio/Shop/cartReducer";
+import {client, useCart} from "../lib/medusa-utils";
+import {useAppDispatch} from "../redux/hooks";
 
 // Your web app's Firebase configuration
 // For Firebase JS SDK v7.20.0 and later, measurementId is optional
@@ -30,11 +34,46 @@ export const app = initializeApp(firebaseConfig);
 // Initialize Cloud Firestore and get a reference to the service
 export const db = getFirestore(app);
 function MyApp({ Component, pageProps }: AppProps) {
+
+
+
   return (<Provider store={store}>
-            <ThemeProvider themes={['oled', 'light', 'dark']}>
-              <Component {...pageProps} />
-            </ThemeProvider>
-          </Provider>)
+              <AsyncStateLoader>
+                <ThemeProvider themes={['oled', 'light', 'dark']}>
+                    <Component {...pageProps} />
+                </ThemeProvider>
+              </AsyncStateLoader>
+  </Provider>)
+}
+
+const AsyncStateLoader = (props: any) => {
+
+    const dispatch = useAppDispatch();
+
+    useEffect(()=>{
+
+
+        const id = localStorage.getItem('cart_id');
+        if(id) {
+            client.carts.retrieve(id).then(({cart}) => {
+                dispatch(reduceCart(cart))
+            });
+        }
+        else {
+            client.carts.create({
+                region_id: "reg_01GBGGFM1CDN3C9BGKAVVB37E0"
+            })
+                .then(({cart}) => {
+                    localStorage.setItem('cart_id', cart.id);
+                    console.log("reduceCart")
+                    //assuming you have a state variable to store the cart
+                    dispatch(reduceCart(cart))
+                });
+        }
+
+    }, []);
+    return (<>{props.children}
+        </>)
 }
 
 export default appWithTranslation(MyApp)

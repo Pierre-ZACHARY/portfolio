@@ -19,7 +19,7 @@ export const cartSlice = createSlice({
     name: 'chatbot',
     initialState,
     reducers: {
-        update: (state, action: PayloadAction<Omit<Cart, "refundable_amount" | "refunded_total">>) => {
+        reduceCart: (state, action: PayloadAction<Omit<Cart, "refundable_amount" | "refunded_total">>) => {
             state.cart = action.payload
         },
         setTemporaryQuantity: (state, action: PayloadAction<{variant_id: string, quantity: number}>) => {
@@ -34,7 +34,7 @@ export const cartSlice = createSlice({
     }
 })
 
-export const {update, setTemporaryQuantity} = cartSlice.actions;
+export const {reduceCart, setTemporaryQuantity} = cartSlice.actions;
 
 export default cartSlice.reducer;
 

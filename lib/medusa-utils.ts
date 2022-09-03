@@ -2,13 +2,16 @@ import Medusa from '@medusajs/medusa-js';
 import {Cart} from "@medusajs/medusa";
 import {useEffect, useState} from "react";
 import {useAppDispatch, useAppSelector} from "../redux/hooks";
-import {CartAction, executeCartAction} from "../stories/components/Portfolio/Shop/cartAction";
+import {reduceCart} from "../stories/components/Portfolio/Shop/cartReducer";
+import {loadStripe, Stripe} from "@stripe/stripe-js";
+import {getAuth, User} from "@firebase/auth";
 
 export const client = new Medusa({
     baseUrl: 'https://pz-medusa-core.herokuapp.com/',
     maxRetries: 3
 });
 
+export const stripePromise: Promise<Stripe | null> = loadStripe(process.env.NEXT_PUBLIC_STRIPE_KEY!)
 
 export const format_price = (amount: number): string => {
     const length = amount.toString().length;
@@ -63,30 +66,26 @@ export const format_price_range = (amount: number[][]): FormattedPrice => {
 
 export function useCart(){
 
-    const dispatch = useAppDispatch()
-    const cart = useAppSelector(state => state.cart?.cart)
-
+    const auth = getAuth()
+    const [user, setUser] = useState<User | null>(null)
     useEffect(()=>{
-        if(!cart){
-            const id = localStorage.getItem('cart_id');
-            if(id) {
-                client.carts.retrieve(id).then(({cart}) => executeCartAction(dispatch, CartAction.Update, cart));
-            }
-            else {
-                client.carts.create({
-                    region_id: "reg_01GBGGFM1CDN3C9BGKAVVB37E0"
-                })
-                    .then(({cart}) => {
-                        localStorage.setItem('cart_id', cart.id);
-                        //assuming you have a state variable to store the cart
-                        executeCartAction(dispatch, CartAction.Update, cart);
-                    });
-            }
-        }
-    }, [dispatch, cart]);
+        const unsub = auth.onAuthStateChanged((user) => setUser(user))
+        return () => unsub()
+    }, [auth])
 
+    const dispatch = useAppDispatch()
+    const cart: Omit<Cart, "refundable_amount" | "refunded_total"> | undefined = useAppSelector(state => state.cart?.cart)
+    useEffect(()=>{
+        if(user && cart && user.email != cart.email){
+            console.log(cart)
+            client.carts.update(cart!.id, {
+                email: user.email!
+            })
+                .then(({cart}) => dispatch(reduceCart(cart)));
+        }
+    }, [user?.email, cart?.id])
     const updateCart = (cart: Omit<Cart, "refundable_amount" | "refunded_total">) => {
-        executeCartAction(dispatch, CartAction.Update, cart);
+        dispatch(reduceCart(cart));
     }
 
 

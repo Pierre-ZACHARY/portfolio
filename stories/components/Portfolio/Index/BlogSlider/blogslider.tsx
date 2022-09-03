@@ -63,7 +63,6 @@ export const Blogslider = ({content = [{
                 }}
                 pagination={{ clickable: true}}
                 scrollbar={{ draggable: true }}
-                onSwiper={(swiper) => console.log(swiper)}
                 className={styles.swiper}
             >
                 {content.map((slide, key) =>
