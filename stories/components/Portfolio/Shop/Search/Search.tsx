@@ -109,8 +109,9 @@ const Hit = ({ hit }: {hit: any}) => {
     const [selected_variants, setSelected_variants] = useState<string[]>(()=>[...variantsMap.keys()]);
     const {t} = useTranslation();
     const {cart, updateCart} = useCart()
-
     useEffect(()=>console.log("Cart Changed"), [cart])
+
+
 
     const variantHasOption = (variant_id: string, option_value: string): boolean => {
         return variantsMap.get(variant_id).options.some((opt: any): boolean | undefined => {
@@ -196,13 +197,15 @@ const Hit = ({ hit }: {hit: any}) => {
                         modules={[EffectCards]}
                         className={styles.swiper}>
                     {
-                        hit.images.map(
+                        hit.images ? hit.images.map(
                             (image: any)=>{
                                 return <SwiperSlide key={image.id} className={styles.swiperSlide}>
                                     <div key={image.id+"div"}><Image alt={"slide-img"} src={image.url} height={200} width={160} objectFit={"cover"}/></div>
                                 </SwiperSlide>
                             }
-                        )
+                        ) : <SwiperSlide key={hit.thumbnail} className={styles.swiperSlide}>
+                            <div><Image alt={"slide-img"} src={hit.thumbnail} height={200} width={160} objectFit={"cover"}/></div>
+                        </SwiperSlide>
                     }
                 </Swiper>
             </div>
