@@ -115,7 +115,7 @@ function Paypal() {
     }
 
     return (
-        <div style={{marginTop: "10px", marginLeft: "10px"}}>
+        <div>
             {cart !== undefined && (
                 <PayPalScriptProvider options={{
                     "client-id": process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID!,
