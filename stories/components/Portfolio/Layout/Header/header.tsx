@@ -102,7 +102,7 @@ export const Header = ({content, home,  postId = undefined, className = null}: H
                     </div>
                 </nav>
             </motion.div>
-            <div className={[state.burgerActive? styles.mobileMenuDisplay : styles.mobileMenuHide, styles.mobileMenuContainer].join(" ")}>
+            { home && (<div className={[state.burgerActive? styles.mobileMenuDisplay : styles.mobileMenuHide, styles.mobileMenuContainer].join(" ")}>
                 <Link href="#first"><a><h3>{t("header:section1")}</h3></a></Link>
                 <Link href="#second"><a><h3>{t("header:section2")}</h3></a></Link>
                 <Link href="#third"><a><h3>{t("header:section3")}</h3></a></Link>
@@ -115,6 +115,6 @@ export const Header = ({content, home,  postId = undefined, className = null}: H
                         <ThemeSwitch/>
                     </LayoutGroup>
                 </div>
-            </div>
+            </div>)}
         </>)
 }

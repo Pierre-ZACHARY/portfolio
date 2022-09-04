@@ -53,6 +53,7 @@
     flex-direction: column
     position: relative
     button.buttonClose
+      z-index: 101
       background-color: red
       border-radius: 50%
       margin: 0
@@ -95,6 +96,8 @@
           width: 100%
           font-weight: 600
           color: var(--background)
+          &:disabled
+            opacity: 0.6
 
       .checkOutInfo
         &>div
@@ -273,9 +276,23 @@
   display: flex
   flex-direction: column
   gap: 10px
-  width: 100%
-  height: 100%
-  padding: 1em
+  flex: 1 1 auto
+  .paymentProcessing
+    position: absolute
+    width: 100%
+    height: 100%
+    display: flex
+    background-color: #1E2025
+    opacity: 0.6
+    top: 0
+    left: 0
+    border-radius: 25px
+    z-index: 100
+    svg
+      width: 50px
+      height: 50px
+      margin: auto
+      color: white
   button
     margin: 5px
   h1
@@ -287,7 +304,19 @@
   width: 100%
   height: 100%
   display: flex
+  flex-direction: column
+  .orderRecap
+    margin-bottom: 10px
+    h1, h2
+      display: flex
+      justify-content: space-between
+      margin: 0
+      font-size: var(--font-medium)
+      line-height: 1.2
   .spinner
     width: 50px
     height: 50px
     margin: auto
+
+.paypalButtonContainer
+  color-scheme: auto

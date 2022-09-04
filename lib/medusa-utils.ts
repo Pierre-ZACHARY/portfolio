@@ -1,10 +1,13 @@
 import Medusa from '@medusajs/medusa-js';
-import {Cart} from "@medusajs/medusa";
+import {Cart, Order} from "@medusajs/medusa";
 import {useEffect, useState} from "react";
 import {useAppDispatch, useAppSelector} from "../redux/hooks";
 import {reduceCart} from "../stories/components/Portfolio/Shop/cartReducer";
 import {loadStripe, Stripe} from "@stripe/stripe-js";
 import {getAuth, User} from "@firebase/auth";
+import {doc, setDoc} from "@firebase/firestore";
+import {db} from "../pages/_app";
+import {useRouter} from 'next/router';
 
 export const client = new Medusa({
     baseUrl: 'https://pz-medusa-core.herokuapp.com/',
@@ -68,6 +71,7 @@ export function useCart(){
 
     const auth = getAuth()
     const [user, setUser] = useState<User | null>(null)
+    const router = useRouter()
     useEffect(()=>{
         const unsub = auth.onAuthStateChanged((user) => setUser(user))
         return () => unsub()
@@ -88,6 +92,36 @@ export function useCart(){
         dispatch(reduceCart(cart));
     }
 
+    const completeOrder = async (): Promise<boolean> => {
+        const {data} = await client.carts.complete(cart!.id)
+        // @ts-ignore
+        if (!data || data.object !== "order" || user==null) {
+            return false
+        }
+        //order successful
+        const order = data as Order;
+        // register the order on firebase
+        await setDoc(doc(db, "users", user.uid, "orders", order.id), {
+            orderId: order.id,
+            cartId: order.cart_id
+        })
+        // create new cart
+        client.carts.create({
+            region_id: cart?.region_id
+        })
+            .then(({cart}) => {
+                localStorage.setItem('cart_id', cart.id);
+                //assuming you have a state variable to store the cart
+                dispatch(reduceCart(cart))
+            });
+        // redirect to order link with new_order parameter
+        await router.push("/orders/"+order.id+"?new_order=true")
+        //alert("success")
+        return true
+    }
 
-    return {cart, updateCart};
+
+    return {cart, updateCart, completeOrder};
 }
+
+

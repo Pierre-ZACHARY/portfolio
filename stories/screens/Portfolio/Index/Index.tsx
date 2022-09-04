@@ -71,7 +71,7 @@ export const Index = ({blogPosts = {content: [{
 
     const setScreenHeight = () => {
         let elem = document.getElementById(styles["mobilePresentation"])!;
-        elem.setAttribute("style", "height:"+window.innerHeight+"px;");
+        if(parseInt(elem.style.height) > window.innerHeight) elem.setAttribute("style", "height:"+window.innerHeight+"px;");
     }
 
     useEffect(() => {

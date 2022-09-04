@@ -23,18 +23,29 @@ import {useTranslation} from "next-i18next";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {
     faArrowLeft, faCheck,
-    faChevronRight, faLock, faLockOpen,
+    faChevronRight, faDollarSign, faEuroSign, faLock, faLockOpen,
     faPencil,
     faPenToSquare, faSpinner,
     faTriangleExclamation
 } from "@fortawesome/free-solid-svg-icons";
-import {DocumentData, DocumentReference, onSnapshot, doc, DocumentSnapshot, setDoc} from "@firebase/firestore";
+import {
+    DocumentData,
+    DocumentReference,
+    onSnapshot,
+    doc,
+    DocumentSnapshot,
+    setDoc,
+    collection
+} from "@firebase/firestore";
 import {db} from "../../../../../pages/_app";
 import Image from "next/image";
 import axios, { AxiosRequestConfig } from "axios";
 import {getDownloadURL, getStorage, ref, uploadBytes, uploadBytesResumable} from "@firebase/storage";
 import UserInfo, {createUserInfo} from "../../../../../lib/UserInfo";
 import {credentials} from "@grpc/grpc-js";
+import Link from "next/link";
+import {Order} from "@medusajs/medusa";
+import {client, format_price} from "../../../../../lib/medusa-utils";
 
 const avatar: string[] = [
     "https://firebasestorage.googleapis.com/v0/b/portfolio-3303d.appspot.com/o/2289_SkVNQSBGQU1PIDEwMjgtMTE2.jpg?alt=media&token=e5ddc175-a895-4116-b325-cc3e2364cca2",
@@ -55,9 +66,31 @@ enum SignOutState {
 }
 
 
-export const ProfilScreen = () => {
+const ShowOrder = ({orderId = ""}) => {
+
+    const [order, setOrder] = useState<Order | null>(null);
+    useEffect(()=>{client.orders.retrieve(orderId).then((response)=>setOrder(response.order))}, [orderId])
+
+    return (
+        <>
+            <Link href={"/orders/"+orderId}>
+                {order ? <a className={styles.showOrder}>
+                    <h1>{order.id}</h1>
+                    <h2>{order.status}</h2>
+                    <h2>{format_price(order.total)} <FontAwesomeIcon
+                        icon={order.currency_code === "eur" ? faEuroSign : faDollarSign}/></h2>
+                </a> : <a className={styles.showOrder}><h1>Loading...</h1></a>}
+
+            </Link>
+        </>
+    )
+}
+
+
+export const ProfilScreen = ({show_orders = false}) => {
 
     const [userInfo, setUserInfo] = useState<UserInfo | undefined>(undefined);
+    const [ordersIds, setOrdersIds] = useState<string[]>([]);
     const [user, setUser] = useState<User | null>(null);
     const [editUsername, setEditUsername] = useState(false);
     const [dangerZoneOpen, setDangerZoneOpen] = useState(false);
@@ -92,8 +125,20 @@ export const ProfilScreen = () => {
                         createUserInfo(user);
                     }
                 });
+
+                const unsub2 = onSnapshot(collection(db, "users", user.uid, "orders"), (snapshot)=>{
+                    if(snapshot.docs){
+                        const tempids: string[] = []
+                        snapshot.docs.forEach((d) => tempids.push(d.id))
+                        setOrdersIds(tempids);
+                    }
+                    else{
+                        setOrdersIds([]);
+                    }
+                });
                 return () => {
                     unsub();
+                    unsub2();
                 }
             } else {
                 // User is signed out
@@ -336,6 +381,27 @@ export const ProfilScreen = () => {
                         {user?.providerData[0].providerId == "password" ?<button onClick={()=>handleDangerEdit()}>{loadingChange.current<loadingChange.total && loadingChange.total>0 ? <FontAwesomeIcon icon={faSpinner} className={"fa-spin"}/> : ( loadingChange.total>0 ? <FontAwesomeIcon icon={faCheck}/> : null)} {t("authentification:validate")}</button> : <p></p>}
                         </>) : null}
                 </div>
+                {show_orders ?
+                    <div>
+
+                        {ordersIds.length == 0 ?
+                            <h1>{t("authentification:noOrdersYet")} :</h1> :
+                            <>
+                                <h1>{t("authentification:Orders")} :</h1>
+                                <div className={styles.showOrder}>
+                                    <h1>OrderId</h1>
+                                    <h2>Status</h2>
+                                    <h2>Amount</h2>
+                                </div>
+                                <div className={styles.orderList}>
+                                    {ordersIds.map((id)=><ShowOrder orderId={id} key={id}/>)}
+                                </div>
+                            </>
+                        }
+
+                    </div> :
+                    <Link href={"/profile"}><a><button>{t("authentification:showOrders")}</button></a></Link>
+                }
             </>
         );
     }

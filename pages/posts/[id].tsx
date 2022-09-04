@@ -197,7 +197,7 @@ export async function getStaticProps({ locale, params }: any) {
 
     return {
         props: {
-            ...(await serverSideTranslations(locale, ['common', 'header', 'chatbot', 'authentification'])),
+            ...(await serverSideTranslations(locale, ['common', 'header', 'shop', 'chatbot', 'authentification'])),
             postData,
             allPostsData,
         },

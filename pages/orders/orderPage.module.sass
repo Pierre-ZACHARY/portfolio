@@ -1,0 +1,64 @@
+.main
+  max-width: var(--max-width)
+  margin: auto
+  .orderStatus
+    padding: 2em
+    div
+      transition: width 0.2s linear
+    .step
+      background-color: var(--background-highlight)
+      padding: 3px
+      border-radius: 50%
+      &.stepAccomplished
+        svg
+          color: var(--primary-color)
+      svg
+        width: 20px
+        height: 20px
+        color: var(--primary)
+  .confettiCanvas
+    z-index: 11 !important
+  &>div.info
+    margin-top: 1em
+    display: flex
+    justify-content: center
+    align-items: center
+    flex-direction: column
+    h1, p
+      margin: 0
+      color: var(--primary)
+    p
+      opacity: 0.4
+      font-size: var(--font-small)
+  &>div.orderRecap
+    background-color: var(--background-highlight)
+    padding: 1em
+    border-radius: 1em
+    display: flex
+    gap: 1em
+    flex-direction: column
+    overflow-x: auto
+    .lineItemContainer
+      display: flex
+      gap: 1em
+      align-items: center
+      min-width: min-content
+      div
+        flex: 1 1 auto
+      h1, h2
+        white-space: nowrap
+        margin: 0
+        font-size: var(--font-medium)
+        line-height: 1.2
+      h1
+        font-size: var(--font-large)
+    &>div.orderTotal
+      display: flex
+      flex-direction: column
+      div
+        display: flex
+        justify-content: space-between
+        h1, h2
+          margin: 0
+          font-size: var(--font-medium)
+          line-height: 1.2

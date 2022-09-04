@@ -5,5 +5,9 @@
   "discount": "Discounts",
   "onSale": "For Sale",
   "quantity": "Quantity",
-  "shipping": "Shipping Fee"
+  "shipping": "Shipping Fee",
+  "paymentAccepted": "Payment Accepted",
+  "confirmed": "Confirmed",
+  "waitingForShipping": "Waiting for Shipment",
+  "send": "Order Sent"
 }

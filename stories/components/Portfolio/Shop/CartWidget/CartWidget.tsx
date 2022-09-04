@@ -36,8 +36,7 @@ enum ContentState{
     CartOverView,
     SelectShippingAddress,
     SelectShippingMethod,
-    SelectPaymentMethod,
-    CompleteOrder
+    SelectPaymentMethod
 }
 
 
@@ -60,8 +59,7 @@ export const CartWidget = ( ) => {
                     [ContentState.CartOverView]: <CartOverView onContinue={()=>setContentState(ContentState.SelectShippingAddress)}/>,
                     [ContentState.SelectShippingAddress]: <SelectShippingAddress onContinue={()=>setContentState(ContentState.SelectShippingMethod)} onBack={()=>setContentState(ContentState.CartOverView)}/>,
                     [ContentState.SelectShippingMethod]: <SelectShippingMethod onBack={()=>setContentState(ContentState.SelectShippingAddress)} onContinue={()=>setContentState(ContentState.SelectPaymentMethod)}/>,
-                    [ContentState.SelectPaymentMethod]: <SelectPaymentProvider onBack={()=>setContentState(ContentState.SelectShippingMethod)} onContinue={()=>setContentState(ContentState.CompleteOrder)}/>,
-                    [ContentState.CompleteOrder]: <></>,
+                    [ContentState.SelectPaymentMethod]: <SelectPaymentProvider onBack={()=>setContentState(ContentState.SelectShippingMethod)} onContinue={()=>setContentState(ContentState.CartOverView)}/>,
                 }[contentState]}
             </div>
             }
@@ -71,12 +69,13 @@ export const CartWidget = ( ) => {
 
 
 
-function Paypal() {
+function Paypal({onComplete}: {onComplete: Function }) {
     const [errorMessage, setErrorMessage] = useState<string | undefined>(undefined)
     const [processing, setProcessing] = useState(false)
-    const {cart, updateCart} = useCart()
+    const {cart, completeOrder} = useCart()
 
     const handlePayment = (data: OnApproveData, actions: OnApproveActions) => {
+        setProcessing(true);
         actions.order!.authorize().then(async (authorization) => {
             if (authorization.status !== 'COMPLETED') {
                 setErrorMessage(`An error occurred, status: ${authorization.status}`);
@@ -100,23 +99,14 @@ function Paypal() {
                     }
                 }
             });
-
-            const {data} = await client.carts.complete(cart!.id)
-
-            // @ts-ignore
-            if (!data || data.object !== "order") {
-                setProcessing(false)
-                return
-            }
-
-            //order successful
-            alert("success")
+            const ok = await completeOrder();
+            setProcessing(false);
+            onComplete();
         })
     }
 
-    return (
-        <div>
-            {cart !== undefined && (
+    return (<div className={styles.paypalButtonContainer}>
+            {cart !== undefined && !processing && (
                 <PayPalScriptProvider options={{
                     "client-id": process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID!,
                     "currency": cart.region.currency_code.toUpperCase(),
@@ -132,27 +122,27 @@ function Paypal() {
                     />
                 </PayPalScriptProvider>
             )}
-        </div>
-    );
+            {processing && <FontAwesomeIcon icon={faSpinner} className={"fa-spin"}/>}
+        </div>);
 }
 
 
-function Form({clientSecret, cartId} : any) {
+function Form({clientSecret, cartId, onComplete} : any) {
     const stripe = useStripe();
     const elements = useElements();
-    const {cart} = useCart();
+    const {cart, completeOrder} = useCart();
     const [paymentRequest, setPaymentRequest] = useState<PaymentRequest | undefined>(undefined);
+    const [processing, setProcessing] = useState<boolean>(false);
     const {resolvedTheme} = useTheme()
 
     useEffect(() => {
-        if (stripe && cart) {
+        if (stripe && cart && !paymentRequest && cart.shipping_address && cart.shipping_address.country_code) {
             const items: PaymentRequestItem[] = [];
             for(const elem of cart.items){
                 items.push({label: elem.title, amount: elem.total!})
             }
-
             const pr = stripe.paymentRequest({
-                country: cart.shipping_address?.country_code!.toUpperCase()!,
+                country: cart.shipping_address.country_code.toUpperCase(),
                 currency: cart.region.currency_code,
                 total: {
                     label: 'pierre-zachary.fr',
@@ -175,6 +165,7 @@ function Form({clientSecret, cartId} : any) {
         if(paymentRequest && stripe && clientSecret){
             paymentRequest.on('paymentmethod', async (ev) => {
                 // Confirm the PaymentIntent without handling potential next actions (yet).
+                setProcessing(true);
                 const {paymentIntent, error: confirmError} = await stripe.confirmCardPayment(
                     clientSecret,
                     {payment_method: ev.paymentMethod.id},
@@ -198,14 +189,23 @@ function Form({clientSecret, cartId} : any) {
                         const {error} = await stripe.confirmCardPayment(clientSecret);
                         if (error) {
                             // The payment failed -- ask your customer for a new payment method.
-                            if(error) alert(error);
+                            if(error) {
+                                setProcessing(false);
+                                alert(error);
+                            }
                         } else {
                             // The payment has succeeded.
-                            client.carts.complete(cartId).then(resp => console.log(resp))
+                            completeOrder().then((ok)=>{
+                                setProcessing(false);
+                                onComplete();
+                            });
                         }
                     } else {
                         // The payment has succeeded.
-                        client.carts.complete(cartId).then(resp => console.log(resp))
+                        completeOrder().then((ok)=>{
+                            setProcessing(false);
+                            onComplete();
+                        });
                     }
                 }
             });
@@ -215,9 +215,11 @@ function Form({clientSecret, cartId} : any) {
 
     async function handlePayment(e: any) {
         if(e) e.preventDefault()
+        const cardElem = elements!.getElement(CardElement)!;
+        setProcessing(true);
         return stripe!.confirmCardPayment(clientSecret, {
             payment_method: {
-                card: elements!.getElement(CardElement)!,
+                card: cardElem,
                 billing_details: {
                     name: cart?.shipping_address!.first_name+" "+cart?.shipping_address!.last_name,
                     email: cart?.email,
@@ -233,12 +235,20 @@ function Form({clientSecret, cartId} : any) {
             }
         }).then(({ error, paymentIntent }) => {
             //TODO handle errors
-            if(error) alert(error);
-            client.carts.complete(cartId).then(resp => console.log(resp))
+            if(error) {
+                setProcessing(false);
+                alert(error.message);
+            }
+            else {
+                completeOrder().then((ok)=>{
+                    setProcessing(false)
+                    onComplete();
+                });
+            }
         })
     }
 
-    return (
+    return (<>
         <form className={styles.stripeForm}>
             <h1>Payer par carte</h1>
             <CardElement />
@@ -252,8 +262,10 @@ function Form({clientSecret, cartId} : any) {
                         theme: (resolvedTheme === "light" ? "light-outline" : "dark"),
                     },
                 }}} /> : null}
-            <Paypal/>
+            <Paypal onComplete={()=>onComplete()}/>
+            {processing && (<div className={styles.paymentProcessing}><FontAwesomeIcon icon={faSpinner} className={"fa-spin"}/></div>)}
         </form>
+        </>
     );
 }
 
@@ -288,10 +300,18 @@ const SelectPaymentProvider = ({onBack, onContinue}: {onBack: Function, onContin
 
     return(
         <div className={styles.selectPaymentProvider}>
-            {cart && clientSecret ? (
+            {cart && clientSecret ? (<>
+                <div className={styles.orderRecap}>
+                    <h2>Subtotal : <span>{format_price(cart.subtotal!)} <FontAwesomeIcon icon={cart.region.currency_code === "eur" ? faEuroSign : faDollarSign}/></span></h2>
+                    <h2>Shipping : <span>{format_price(cart.shipping_total!)} <FontAwesomeIcon icon={cart.region.currency_code === "eur" ? faEuroSign : faDollarSign}/></span></h2>
+                    <h1>Total : <span>{format_price(cart.total!)} <FontAwesomeIcon icon={cart.region.currency_code === "eur" ? faEuroSign : faDollarSign}/></span></h1>
+                </div>
                 <Elements stripe={stripePromise} options={{clientSecret}}>
-                    <Form clientSecret={clientSecret} cartId={cart.id} />
+                    <Form clientSecret={clientSecret} cartId={cart.id} onComplete={onContinue}/>
                 </Elements>
+                <div>
+                    <button onClick={()=>onBack()}><FontAwesomeIcon icon={faArrowLeft}/> Back</button>
+                </div></>
             )
             : <FontAwesomeIcon icon={faSpinner} className={"fa-spin "+styles.spinner}/>}
         </div>

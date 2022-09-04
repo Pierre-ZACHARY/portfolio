@@ -27,7 +27,7 @@ export default function Profile() {
                 <title>Profile</title>
             </Head>
             <Layout>
-                <ProfilScreen/>
+                <ProfilScreen show_orders={true}/>
             </Layout>
         </>
     )

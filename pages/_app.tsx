@@ -7,6 +7,8 @@ import { ThemeProvider } from 'next-themes'
 import { appWithTranslation } from 'next-i18next';
 import { config } from '@fortawesome/fontawesome-svg-core'
 import '@fortawesome/fontawesome-svg-core/styles.css'
+import "react-step-progress-bar/styles.css";
+
 config.autoAddCss = false
 import { initializeApp } from "firebase/app";
 import { getAnalytics } from "firebase/analytics";
@@ -65,7 +67,6 @@ const AsyncStateLoader = (props: any) => {
             })
                 .then(({cart}) => {
                     localStorage.setItem('cart_id', cart.id);
-                    console.log("reduceCart")
                     //assuming you have a state variable to store the cart
                     dispatch(reduceCart(cart))
                 });

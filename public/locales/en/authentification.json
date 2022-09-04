@@ -1,4 +1,5 @@
 {
+  "Orders": "Orders",
   "alreadyhave": "Already have an account ?",
   "areYouSure": "Are you sure you want to delete your account ?",
   "chooseBetweenAvatar": "Or Choose Between",
@@ -13,6 +14,7 @@
   "goodbye": "Good Bye !",
   "inProgress": "In progress...",
   "loginScreenTitle": "Log In",
+  "noOrdersYet": "No Orders Yet",
   "orSignInWith": "Or Log In with : ",
   "password": "Password",
   "passwordTooWeak": "Password should be at least 6 characters",
@@ -20,6 +22,7 @@
   "pleaseProvidePassword": "Please provide a password",
   "relogToDelete": "You must re-authenticate to delete your account.",
   "resetSent": "Password Reset Email Sent !",
+  "showOrders": "View Order",
   "signOut": "Log Out",
   "signUp": "Sign Up",
   "uploadFile": "Upload your Avatar",

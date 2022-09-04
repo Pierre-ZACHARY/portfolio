@@ -5,5 +5,9 @@
   "discount": "Réductions",
   "onSale": "Promo",
   "quantity": "Quantité",
-  "shipping": "Frais de livraison "
+  "shipping": "Frais de livraison ",
+  "paymentAccepted": "Paiement Accepté",
+  "confirmed": "Confirmé",
+  "waitingForShipping": "En attente d'expedition",
+  "send": "Envoyé"
 }
