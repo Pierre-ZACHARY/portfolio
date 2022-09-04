@@ -27,6 +27,9 @@ import {addDoc, collection, deleteDoc, doc, DocumentReference, onSnapshot, setDo
 import {CardElement, Elements, useElements, useStripe, PaymentRequestButtonElement} from "@stripe/react-stripe-js";
 import {PaymentRequest, PaymentRequestItem} from "@stripe/stripe-js";
 import {useTheme} from "next-themes";
+import {PayPalButtons, PayPalScriptProvider} from "@paypal/react-paypal-js";
+import {OnApproveActions, OnApproveData} from "@paypal/paypal-js";
+import {PayByCardButton} from "./PayByCardButton/PayByCardButton";
 
 
 enum ContentState{
@@ -66,13 +69,80 @@ export const CartWidget = ( ) => {
     )
 }
 
+
+
+function Paypal() {
+    const [errorMessage, setErrorMessage] = useState<string | undefined>(undefined)
+    const [processing, setProcessing] = useState(false)
+    const {cart, updateCart} = useCart()
+
+    const handlePayment = (data: OnApproveData, actions: OnApproveActions) => {
+        actions.order!.authorize().then(async (authorization) => {
+            if (authorization.status !== 'COMPLETED') {
+                setErrorMessage(`An error occurred, status: ${authorization.status}`);
+                setProcessing(false);
+                return;
+            }
+
+            const response = await client.carts.setPaymentSession(cart!.id, {
+                "provider_id": "paypal"
+            });
+
+            if (!response.cart) {
+                setProcessing(false)
+                return
+            }
+
+            await client.carts.updatePaymentSession(cart!.id, "paypal", {
+                data: {
+                    data: {
+                        ...authorization
+                    }
+                }
+            });
+
+            const {data} = await client.carts.complete(cart!.id)
+
+            // @ts-ignore
+            if (!data || data.object !== "order") {
+                setProcessing(false)
+                return
+            }
+
+            //order successful
+            alert("success")
+        })
+    }
+
+    return (
+        <div style={{marginTop: "10px", marginLeft: "10px"}}>
+            {cart !== undefined && (
+                <PayPalScriptProvider options={{
+                    "client-id": process.env.NEXT_PUBLIC_PAYPAL_CLIENT_ID!,
+                    "currency": cart.region.currency_code.toUpperCase(),
+                    "intent": "authorize"
+                    }}>
+                    {errorMessage && (
+                        <span className="text-rose-500 mt-4">{errorMessage}</span>
+                    )}
+                    <PayPalButtons
+                        style={{ layout: "horizontal", tagline: false }}
+                        onApprove={async (d,a)=>handlePayment(d,a)}
+                        disabled={processing}
+                    />
+                </PayPalScriptProvider>
+            )}
+        </div>
+    );
+}
+
+
 function Form({clientSecret, cartId} : any) {
     const stripe = useStripe();
     const elements = useElements();
     const {cart} = useCart();
     const [paymentRequest, setPaymentRequest] = useState<PaymentRequest | undefined>(undefined);
     const {resolvedTheme} = useTheme()
-    console.log(resolvedTheme);
 
     useEffect(() => {
         if (stripe && cart) {
@@ -144,7 +214,7 @@ function Form({clientSecret, cartId} : any) {
     }, [paymentRequest, stripe, clientSecret]);
 
     async function handlePayment(e: any) {
-        e.preventDefault()
+        if(e) e.preventDefault()
         return stripe!.confirmCardPayment(clientSecret, {
             payment_method: {
                 card: elements!.getElement(CardElement)!,
@@ -172,7 +242,7 @@ function Form({clientSecret, cartId} : any) {
         <form className={styles.stripeForm}>
             <h1>Payer par carte</h1>
             <CardElement />
-            <button onClick={handlePayment}>Payer</button>
+            <PayByCardButton onClick={handlePayment}/>
             <h1>Ou choisissez une autre méthode de paiement</h1>
 
             {paymentRequest ? <PaymentRequestButtonElement options={{
@@ -182,6 +252,7 @@ function Form({clientSecret, cartId} : any) {
                         theme: (resolvedTheme === "light" ? "light-outline" : "dark"),
                     },
                 }}} /> : null}
+            <Paypal/>
         </form>
     );
 }
@@ -216,12 +287,13 @@ const SelectPaymentProvider = ({onBack, onContinue}: {onBack: Function, onContin
     }, [cart])
 
     return(
-        <div>
-            {cart && clientSecret && (
+        <div className={styles.selectPaymentProvider}>
+            {cart && clientSecret ? (
                 <Elements stripe={stripePromise} options={{clientSecret}}>
                     <Form clientSecret={clientSecret} cartId={cart.id} />
                 </Elements>
-            )}
+            )
+            : <FontAwesomeIcon icon={faSpinner} className={"fa-spin "+styles.spinner}/>}
         </div>
     )
 }

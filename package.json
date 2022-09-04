@@ -18,6 +18,7 @@
     "@fortawesome/react-fontawesome": "^0.2.0",
     "@medusajs/medusa-js": "^1.2.6",
     "@meilisearch/instant-meilisearch": "^0.8.1",
+    "@paypal/react-paypal-js": "^7.8.1",
     "@reduxjs/toolkit": "^1.8.2",
     "@stripe/react-stripe-js": "^1.10.0",
     "@stripe/stripe-js": "^1.35.0",
