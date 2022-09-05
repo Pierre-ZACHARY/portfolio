@@ -162,7 +162,7 @@ export const getStaticPaths = async ({ locales }: {locales: string[]}) => {
     return {
         // no paths generated at build time
         paths: [],
-        fallback: false,
+        fallback: true,
     };
 }
 
