@@ -6,7 +6,7 @@ import {Order} from "@medusajs/medusa";
 import styles from "./orderPage.module.sass"
 import {LineItem} from "@medusajs/medusa/dist/models/line-item";
 import {NaturalImageFixedHeight} from "../../lib/utils-components";
-import {useTranslation} from "next-i18next";
+import {useTranslation} from "react-i18next";
 import {format_price} from "../../lib/medusa-utils";
 import {
     faCircleCheck,
@@ -17,7 +17,6 @@ import {
     faTruckFast
 } from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {serverSideTranslations} from "next-i18next/serverSideTranslations";
 import {useWindowSize} from "react-use";
 import Confetti from 'react-confetti'
 import {useEffect, useState} from "react";
@@ -163,7 +162,7 @@ export const getStaticPaths = async ({ locales }: {locales: string[]}) => {
     return {
         // no paths generated at build time
         paths: [],
-        fallback: true,
+        fallback: false,
     };
 }
 
@@ -175,7 +174,6 @@ export async function getStaticProps({ locale, params }: any) {
     // Pass post data to the page via props
     return {
         props: {
-            ...(await serverSideTranslations(locale, ['common', 'header', 'chatbot', 'authentification', 'shop'])),
             id: params.id,
         },
         // Re-generate the post at most once per second
