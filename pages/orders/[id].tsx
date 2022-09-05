@@ -21,7 +21,8 @@ import {serverSideTranslations} from "next-i18next/serverSideTranslations";
 import {useWindowSize} from "react-use";
 import Confetti from 'react-confetti'
 import {useEffect, useState} from "react";
-
+// @ts-ignore
+import { ProgressBar, Step } from "react-step-progress-bar";
 
 
 const orderSteps: {i18nVar: string, jsx: JSX.Element}[] = [
@@ -50,7 +51,6 @@ export default function OrderPage({ order }: {order: any}) {
     const { width, height } = useWindowSize()
     const { new_order } = router.query
     const [progress, setProgress] = useState(0);
-    const [orderObj, setOrderObj] = useState<Order |undefined>(undefined);
     const [step, setStep] = useState(0);
     const updateProgress  = () => {
         setTimeout(()=>{
@@ -63,12 +63,7 @@ export default function OrderPage({ order }: {order: any}) {
         updateProgress();
     }, [step, progress])
     useEffect(()=>{
-        if(orderObj) setStep(getStep(orderObj));
-    }, [orderObj])
-    useEffect(()=>{
-        if(order && order.order){
-            setOrderObj(order.order)
-        }
+        if(order) setStep(getStep(order));
     }, [order])
     // If the page is not yet generated, this will be displayed
     // initially until getStaticProps() finishes running
@@ -81,77 +76,78 @@ export default function OrderPage({ order }: {order: any}) {
         </Layout>
     }
 
+    return <p>ok</p>
 
     // Render post...
-    return(orderObj && <Layout className={utilStyles.defineMaxWidth}>
-            <Head>
-                <title>Commande {orderObj.id}</title>
-            </Head>
-            <main className={styles.main}>
-                <div className={styles.info}>
-                    <h1>Commande</h1>
-                    <p>#{orderObj.id}</p>
-                </div>
-                <div className={styles.orderStatus}>
-                    {/*<ProgressBar*/}
-                    {/*    percent={progress}*/}
-                    {/*    filledBackground="linear-gradient(to right, #0380EF 0%, #05DCD9 100%)"*/}
-                    {/*>*/}
-                    {/*    {*/}
-                    {/*        orderSteps.map((step)=>{*/}
-                    {/*            return (*/}
-                    {/*            <Step transition="scale" key={step.i18nVar} >*/}
-                    {/*                {({ accomplished }: any) => <div title={t(step.i18nVar)} className={styles.step+" "+(accomplished ? styles.stepAccomplished : "")}>{step.jsx}</div>}*/}
-                    {/*            </Step>)*/}
-                    {/*        })*/}
-                    {/*    }*/}
-                    {/*</ProgressBar>*/}
-                </div>
-
-                <div className={styles.orderRecap}>
-                    {orderObj.items.map((i: LineItem)=>
-                        <div key={i.id} className={styles.lineItemContainer}>
-                            <NaturalImageFixedHeight props={{src: i.thumbnail as string, alt: "line-item-img"}} fixedHeight={150}/>
-                            <div>
-                                <h1>{i.title}</h1>
-                                <h2>{t("shop:quantity")} : {i.quantity}</h2>
-                                <h2>Option : {i.description}</h2>
-                            </div>
-                            <h2>{format_price(i.unit_price)} <FontAwesomeIcon icon={orderObj.region.currency_code === "eur" ? faEuroSign : faDollarSign}/></h2>
-                        </div>)}
-                    <div className={styles.orderTotal}>
-                        <div>
-                            <h2>{t("shop:Subtotal")} : </h2>
-                            <h2>{format_price(orderObj.subtotal)} <FontAwesomeIcon icon={orderObj.region.currency_code === "eur" ? faEuroSign : faDollarSign}/></h2>
-                        </div>
-                        {orderObj.discount_total>0 && <div>
-                            <h2>{t("shop:discount")} : </h2>
-                            <h2>- {format_price(orderObj.discount_total)} <FontAwesomeIcon
-                                icon={orderObj.region.currency_code === "eur" ? faEuroSign : faDollarSign}/></h2>
-                        </div>}
-                        <div>
-                            <h2>{t("shop:Shipping")} : </h2>
-                            <h2>{format_price(orderObj.shipping_total)} <FontAwesomeIcon icon={orderObj.region.currency_code === "eur" ? faEuroSign : faDollarSign}/></h2>
-                        </div>
-                        <div>
-                            <h2>Total : </h2>
-                            <h2>{format_price(orderObj.total)} <FontAwesomeIcon icon={orderObj.region.currency_code === "eur" ? faEuroSign : faDollarSign}/></h2>
-                        </div>
-                    </div>
-                </div>
-
-                {new_order && <Confetti
-                    className={styles.confettiCanvas}
-                    width={width}
-                    height={height}
-                    numberOfPieces={200}
-                    tweenDuration={4000}
-                    recycle={false}
-                />}
-            </main>
-
-        </Layout>
-    )
+    // return(order && <Layout className={utilStyles.defineMaxWidth}>
+    //         <Head>
+    //             <title>Commande {order.id}</title>
+    //         </Head>
+    //         <main className={styles.main}>
+    //             <div className={styles.info}>
+    //                 <h1>Commande</h1>
+    //                 <p>#{order.id}</p>
+    //             </div>
+    //             <div className={styles.orderStatus}>
+    //                 <ProgressBar
+    //                     percent={progress}
+    //                     filledBackground="linear-gradient(to right, #0380EF 0%, #05DCD9 100%)"
+    //                 >
+    //                     {
+    //                         orderSteps.map((step)=>{
+    //                             return (
+    //                             <Step transition="scale" key={step.i18nVar} >
+    //                                 {({ accomplished }: any) => <div title={t(step.i18nVar)} className={styles.step+" "+(accomplished ? styles.stepAccomplished : "")}>{step.jsx}</div>}
+    //                             </Step>)
+    //                         })
+    //                     }
+    //                 </ProgressBar>
+    //             </div>
+    //
+    //             <div className={styles.orderRecap}>
+    //                 {order.items.map((i: LineItem)=>
+    //                     <div key={i.id} className={styles.lineItemContainer}>
+    //                         <NaturalImageFixedHeight props={{src: i.thumbnail as string, alt: "line-item-img"}} fixedHeight={150}/>
+    //                         <div>
+    //                             <h1>{i.title}</h1>
+    //                             <h2>{t("shop:quantity")} : {i.quantity}</h2>
+    //                             <h2>Option : {i.description}</h2>
+    //                         </div>
+    //                         <h2>{format_price(i.unit_price)} <FontAwesomeIcon icon={order.region.currency_code === "eur" ? faEuroSign : faDollarSign}/></h2>
+    //                     </div>)}
+    //                 <div className={styles.orderTotal}>
+    //                     <div>
+    //                         <h2>{t("shop:Subtotal")} : </h2>
+    //                         <h2>{format_price(order.subtotal)} <FontAwesomeIcon icon={order.region.currency_code === "eur" ? faEuroSign : faDollarSign}/></h2>
+    //                     </div>
+    //                     {order.discount_total>0 && <div>
+    //                         <h2>{t("shop:discount")} : </h2>
+    //                         <h2>- {format_price(order.discount_total)} <FontAwesomeIcon
+    //                             icon={order.region.currency_code === "eur" ? faEuroSign : faDollarSign}/></h2>
+    //                     </div>}
+    //                     <div>
+    //                         <h2>{t("shop:Shipping")} : </h2>
+    //                         <h2>{format_price(order.shipping_total)} <FontAwesomeIcon icon={order.region.currency_code === "eur" ? faEuroSign : faDollarSign}/></h2>
+    //                     </div>
+    //                     <div>
+    //                         <h2>Total : </h2>
+    //                         <h2>{format_price(order.total)} <FontAwesomeIcon icon={order.region.currency_code === "eur" ? faEuroSign : faDollarSign}/></h2>
+    //                     </div>
+    //                 </div>
+    //             </div>
+    //
+    //             {new_order && <Confetti
+    //                 className={styles.confettiCanvas}
+    //                 width={width}
+    //                 height={height}
+    //                 numberOfPieces={200}
+    //                 tweenDuration={4000}
+    //                 recycle={false}
+    //             />}
+    //         </main>
+    //
+    //     </Layout>
+    // )
 }
 
 
@@ -169,7 +165,8 @@ export async function getStaticProps({ locale, params }: any) {
     // params contains the post `id`.
     // If the route is like /posts/1, then params.id is 1
     const res = await fetch(`https://pz-medusa-core.herokuapp.com/store/orders/${params.id}`)
-    const order = await res.json()
+    // @ts-ignore
+    const order = await res.json().order;
 
     console.log(order);
 
