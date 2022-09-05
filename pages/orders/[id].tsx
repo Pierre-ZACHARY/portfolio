@@ -6,7 +6,7 @@ import {Order} from "@medusajs/medusa";
 import styles from "./orderPage.module.sass"
 import {LineItem} from "@medusajs/medusa/dist/models/line-item";
 import {NaturalImageFixedHeight} from "../../lib/utils-components";
-import {useTranslation} from "react-i18next";
+import {useTranslation} from "next-i18next";
 import {format_price} from "../../lib/medusa-utils";
 import {
     faCircleCheck,
@@ -17,6 +17,7 @@ import {
     faTruckFast
 } from "@fortawesome/free-solid-svg-icons";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
+import {serverSideTranslations} from "next-i18next/serverSideTranslations";
 import {useWindowSize} from "react-use";
 import Confetti from 'react-confetti'
 import {useEffect, useState} from "react";
@@ -25,10 +26,10 @@ import { ProgressBar, Step } from "react-step-progress-bar";
 
 
 const orderSteps: {i18nVar: string, jsx: JSX.Element}[] = [
-    {i18nVar: "paymentAccepted", jsx: (<FontAwesomeIcon icon={faReceipt} />)},
-    {i18nVar: "confirmed", jsx: (<FontAwesomeIcon icon={faCircleCheck} />)},
-    {i18nVar: "waitingForShipping", jsx: (<FontAwesomeIcon icon={faDolly} />)},
-    {i18nVar: "send", jsx: (<FontAwesomeIcon icon={faTruckFast} />)},
+    {i18nVar: "shop:paymentAccepted", jsx: (<FontAwesomeIcon icon={faReceipt} />)},
+    {i18nVar: "shop:confirmed", jsx: (<FontAwesomeIcon icon={faCircleCheck} />)},
+    {i18nVar: "shop:waitingForShipping", jsx: (<FontAwesomeIcon icon={faDolly} />)},
+    {i18nVar: "shop:send", jsx: (<FontAwesomeIcon icon={faTruckFast} />)},
 ]
 export const getStep = (order: Order) => {
     if(order.fulfillment_status == "shipped"){
@@ -44,20 +45,13 @@ export const getStep = (order: Order) => {
 }
 
 
-export default function OrderPage({id}: {id: number}) {
+export default function OrderPage({order}: {order: Order}) {
     const router = useRouter()
     const {t} = useTranslation()
     const { width, height } = useWindowSize()
     const { new_order } = router.query
     const [progress, setProgress] = useState(0);
     const [step, setStep] = useState(0);
-    const [order, setOrder] = useState<Order | undefined>(undefined)
-
-    useEffect(() => {
-        fetch(`https://pz-medusa-core.herokuapp.com/store/orders/${id}`).then(
-            (res)=>res.json().then((json)=> setOrder(json.order))
-        )
-    }, [id])
 
     const updateProgress  = () => {
         setTimeout(()=>{
@@ -72,26 +66,15 @@ export default function OrderPage({id}: {id: number}) {
     useEffect(()=>{
         if(order) setStep(getStep(order));
     }, [order])
-    // If the page is not yet generated, this will be displayed
-    // initially until getStaticProps() finishes running
-    if (!order) {
-        return <Layout className={utilStyles.defineMaxWidth}>
-                    <Head>
-                        <title>Loading Order</title>
-                    </Head>
-                    <div><h1>Loading...</h1></div>
-        </Layout>
-    }
-
 
     // Render post...
     return(order && <Layout className={utilStyles.defineMaxWidth}>
             <Head>
-                <title>Commande {order.id}</title>
+                <title>{t("shop:Order")+" "+order.id}</title>
             </Head>
             <main className={styles.main}>
                 <div className={styles.info}>
-                    <h1>Commande</h1>
+                    <h1>{t("shop:Order")}</h1>
                     <p>#{order.id}</p>
                 </div>
                 <div className={styles.orderStatus}>
@@ -108,12 +91,13 @@ export default function OrderPage({id}: {id: number}) {
                             })
                         }
                     </ProgressBar>
+                    <h1>{t(orderSteps[step].i18nVar)}</h1>
                 </div>
 
                 <div className={styles.orderRecap}>
                     {order.items.map((i: LineItem)=>
                         <div key={i.id} className={styles.lineItemContainer}>
-                            <NaturalImageFixedHeight props={{src: i.thumbnail as string, alt: "line-item-img"}} fixedHeight={150}/>
+                            <NaturalImageFixedHeight props={{src: i.thumbnail as string, alt: "line-item-img", priority: true}} fixedHeight={150}/>
                             <div>
                                 <h1>{i.title}</h1>
                                 <h2>{t("shop:quantity")} : {i.quantity}</h2>
@@ -158,26 +142,19 @@ export default function OrderPage({id}: {id: number}) {
 
 
 
-export const getStaticPaths = async ({ locales }: {locales: string[]}) => {
-    return {
-        // no paths generated at build time
-        paths: [],
-        fallback: true,
-    };
-}
-
 // This also gets called at build time
-export async function getStaticProps({ locale, params }: any) {
+export async function getServerSideProps({ locale, params }: any) {
     // params contains the post `id`.
     // If the route is like /posts/1, then params.id is 1
+    const res = await fetch(`https://pz-medusa-core.herokuapp.com/store/orders/${params.id}`)
+    const json = await res.json()
 
     // Pass post data to the page via props
     return {
         props: {
+            order: json.order,
+            ...(await serverSideTranslations(locale, ['common', 'header', 'chatbot', 'authentification', 'shop'])),
             id: params.id,
         },
-        // Re-generate the post at most once per second
-        // if a request comes in
-        revalidate: 1,
     }
 }

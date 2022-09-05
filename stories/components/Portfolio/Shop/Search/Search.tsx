@@ -109,7 +109,7 @@ const Hit = ({ hit }: {hit: any}) => {
     const [selected_variants, setSelected_variants] = useState<string[]>(()=>[...variantsMap.keys()]);
     const {t} = useTranslation();
     const {cart, updateCart} = useCart()
-    useEffect(()=>console.log("Cart Changed"), [cart])
+    // useEffect(()=>console.log("Cart Changed"), [cart])
 
 
 
@@ -271,7 +271,7 @@ const Display_AddToCart = ({variant_id, price_range}: {variant_id: string, price
                 quantity: 1
             })
                 .then(({cart}) => {
-                    console.log("Update Cart Called");
+                    // console.log("Update Cart Called");
                     hook.updateCart(cart)
                 });
         }
@@ -296,12 +296,12 @@ const Display_AddToCart = ({variant_id, price_range}: {variant_id: string, price
 
     if(tempQuantity!=undefined && lineItemInCart && hook.cart && tempQuantity!=lineItemInCart?.quantity && canEditQuantity){
         setCanEditQuantity(false);
-        console.log(tempQuantity, lineItemInCart?.quantity)
+        // console.log(tempQuantity, lineItemInCart?.quantity)
         if(tempQuantity <= 0){
             client.carts.lineItems.delete(hook.cart.id, lineItemInCart.id)
                 .then(({cart}) => {
                     setCanEditQuantity(true);
-                    console.log("Update Cart Called");
+                    // console.log("Update Cart Called");
                     hook.updateCart(cart)
                 })
         }
@@ -310,7 +310,7 @@ const Display_AddToCart = ({variant_id, price_range}: {variant_id: string, price
                 quantity: tempQuantity
             }).then(({cart}) => {
                 setCanEditQuantity(true);
-                console.log("Update Cart Called");
+                // console.log("Update Cart Called");
                 hook.updateCart(cart)
             })
         }

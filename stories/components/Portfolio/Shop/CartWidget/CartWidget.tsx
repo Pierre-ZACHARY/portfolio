@@ -130,6 +130,7 @@ function Paypal({onComplete}: {onComplete: Function }) {
 function Form({clientSecret, cartId, onComplete} : any) {
     const stripe = useStripe();
     const elements = useElements();
+    const {t} = useTranslation();
     const {cart, completeOrder} = useCart();
     const [paymentRequest, setPaymentRequest] = useState<PaymentRequest | undefined>(undefined);
     const [processing, setProcessing] = useState<boolean>(false);
@@ -250,10 +251,10 @@ function Form({clientSecret, cartId, onComplete} : any) {
 
     return (<>
         <form className={styles.stripeForm}>
-            <h1>Payer par carte</h1>
+            <h1>{t("shop:PayByCard")}</h1>
             <CardElement />
             <PayByCardButton onClick={handlePayment}/>
-            <h1>Ou choisissez une autre méthode de paiement</h1>
+            <h1>{t("shop:OrChooseAnotherPaymentMethod")}</h1>
 
             {paymentRequest ? <PaymentRequestButtonElement options={{
                 paymentRequest: paymentRequest,
@@ -272,6 +273,7 @@ function Form({clientSecret, cartId, onComplete} : any) {
 const SelectPaymentProvider = ({onBack, onContinue}: {onBack: Function, onContinue: Function}) => {
     const auth = getAuth()
     const [user, setUser] = useState<User | null>(null)
+    const {t}=useTranslation();
     useEffect(()=>{const unsub = auth.onAuthStateChanged((user)=>setUser(user)); return ()=>unsub()}, [auth]);
     const {cart, updateCart} = useCart()
     const [clientSecret, setClientSecret] = useState<undefined | any>(undefined)
@@ -302,15 +304,15 @@ const SelectPaymentProvider = ({onBack, onContinue}: {onBack: Function, onContin
         <div className={styles.selectPaymentProvider}>
             {cart && clientSecret ? (<>
                 <div className={styles.orderRecap}>
-                    <h2>Subtotal : <span>{format_price(cart.subtotal!)} <FontAwesomeIcon icon={cart.region.currency_code === "eur" ? faEuroSign : faDollarSign}/></span></h2>
-                    <h2>Shipping : <span>{format_price(cart.shipping_total!)} <FontAwesomeIcon icon={cart.region.currency_code === "eur" ? faEuroSign : faDollarSign}/></span></h2>
+                    <h2>{t("shop:Subtotal")} : <span>{format_price(cart.subtotal!)} <FontAwesomeIcon icon={cart.region.currency_code === "eur" ? faEuroSign : faDollarSign}/></span></h2>
+                    <h2>{t("shop:shipping")} : <span>{format_price(cart.shipping_total!)} <FontAwesomeIcon icon={cart.region.currency_code === "eur" ? faEuroSign : faDollarSign}/></span></h2>
                     <h1>Total : <span>{format_price(cart.total!)} <FontAwesomeIcon icon={cart.region.currency_code === "eur" ? faEuroSign : faDollarSign}/></span></h1>
                 </div>
                 <Elements stripe={stripePromise} options={{clientSecret}}>
                     <Form clientSecret={clientSecret} cartId={cart.id} onComplete={onContinue}/>
                 </Elements>
                 <div>
-                    <button onClick={()=>onBack()}><FontAwesomeIcon icon={faArrowLeft}/> Back</button>
+                    <button onClick={()=>onBack()}><FontAwesomeIcon icon={faArrowLeft}/> {t("shop:Back")}</button>
                 </div></>
             )
             : <FontAwesomeIcon icon={faSpinner} className={"fa-spin "+styles.spinner}/>}
@@ -320,17 +322,17 @@ const SelectPaymentProvider = ({onBack, onContinue}: {onBack: Function, onContin
 
 const SelectShippingMethod = ({onBack, onContinue}: {onBack: Function, onContinue: Function}) => {
 
+    const {t} = useTranslation();
     const auth = getAuth()
     const [user, setUser] = useState<User | null>(null)
     useEffect(()=>{const unsub = auth.onAuthStateChanged((user)=>setUser(user)); return ()=>unsub()}, [auth]);
     const {cart, updateCart} = useCart()
     const [shipping_options, setShipping_Options] = useState<ShippingOption[]>([])
     useEffect(()=>{if(cart) {
-        console.log(cart);
-
+        // console.log(cart);
         client.shippingOptions.listCartOptions(cart.id).then((res)=>setShipping_Options(res.shipping_options))
     }}, [cart])
-    useEffect(()=>{console.log(shipping_options)}, [shipping_options])
+    // useEffect(()=>{console.log(shipping_options)}, [shipping_options])
     const [loadingContinue, setLoadingContinue] = useState(false);
     const [selected_shipping_option_id, setSelected_shipping_option_id] = useState("");
     const handleContinue = () => {
@@ -340,7 +342,7 @@ const SelectShippingMethod = ({onBack, onContinue}: {onBack: Function, onContinu
                 option_id: selected_shipping_option_id //shipping_option is the select option
             }).then((response) => {
                 //updated cart is in response.cart
-                console.log("update Cart Called")
+                // console.log("update Cart Called")
                 updateCart(response.cart);
                 setLoadingContinue(false);
                 onContinue();
@@ -354,7 +356,7 @@ const SelectShippingMethod = ({onBack, onContinue}: {onBack: Function, onContinu
             <div className={styles.forms}>
                 {/* @ts-ignore */}
                 <fieldset onChange={(e)=>setSelected_shipping_option_id(e.target.value)}>
-                    <legend>Select your shipping method</legend>
+                    <legend>{t("shop:SelectShipping")}</legend>
                     {
                         shipping_options.map(
                             (opt) => {
@@ -380,7 +382,7 @@ const SelectShippingMethod = ({onBack, onContinue}: {onBack: Function, onContinu
 
             <div className={styles.buttons}>
                 <button onClick={()=>onBack()}><FontAwesomeIcon icon={faArrowLeft}/> Back</button>
-                <button onClick={()=>handleContinue()} className={styles.buttonContinue+" "+(loadingContinue ? styles.loading : null)} disabled={selected_shipping_option_id == "" || loadingContinue}>Continue {loadingContinue ? <FontAwesomeIcon icon={faSpinner} className={"fa-spin"}/> : null}</button>
+                <button onClick={()=>handleContinue()} className={styles.buttonContinue+" "+(loadingContinue ? styles.loading : null)} disabled={selected_shipping_option_id == "" || loadingContinue}>{t("shop:Continue")} {loadingContinue ? <FontAwesomeIcon icon={faSpinner} className={"fa-spin"}/> : null}</button>
             </div>
         </div>
     )
@@ -402,6 +404,7 @@ interface Shipping_Address{
 
 const SelectShippingAddress = ({onContinue, onBack}: {onContinue: Function, onBack: Function }) => {
 
+    const {t} = useTranslation()
     const auth = getAuth()
     const [user, setUser] = useState<User | null>(null)
     const [countries, setCountries] = useState<Country[]>([])
@@ -412,10 +415,10 @@ const SelectShippingAddress = ({onContinue, onBack}: {onContinue: Function, onBa
     const [selected_address, setSelected_address] = useState<Shipping_Address>({address_1: "", address_2: "", city: "", ref: undefined, company: "", country_code: "", phone: "", postal_code: "", first_name: "", last_name: "", province: ""})
     const [selected_shipping_address_id, setselected_shipping_address] = useState<string>("")
     useEffect(()=>{
-        console.log(selected_shipping_address_id)
+        // console.log(selected_shipping_address_id)
         const s_a = getShippingAddressFromId(selected_shipping_address_id)
-        console.log(s_a)
-        console.log(shipping_address_list)
+        // console.log(s_a)
+        // console.log(shipping_address_list)
         if(s_a != null) {
             setSelected_address(s_a)
             setTempopary_address(s_a);
@@ -490,12 +493,12 @@ const SelectShippingAddress = ({onContinue, onBack}: {onContinue: Function, onBa
     const handleContinue = () => {
         if(cart && selected_address) {
             const {ref, ...post} = selected_address
-            console.log(post);
+            // console.log(post);
             setLoadingContinue(true);
             client.carts.update(cart.id, {
                 shipping_address: post,
             }).then((response) => {
-                console.log("Update Cart Called");
+                // console.log("Update Cart Called");
                 updateCart(response.cart);
                 setLoadingContinue(false);
                 onContinue();
@@ -512,7 +515,7 @@ const SelectShippingAddress = ({onContinue, onBack}: {onContinue: Function, onBa
             <div className={styles.forms}>
                 {/* @ts-ignore */}
                 <fieldset onChange={(e)=>setselected_shipping_address(e.target.value)}>
-                    <legend>Select a shipping address</legend>
+                    <legend>{t("shop:SelectAddress")}</legend>
                     {
                         shipping_address_list.map(
                             (addr) => {
@@ -540,46 +543,46 @@ const SelectShippingAddress = ({onContinue, onBack}: {onContinue: Function, onBa
                                 <div />
                             </div>
                             <div>
-                                <h1>Add Shipping Address</h1>
+                                <h1>{t("shop:SelectAddress")}</h1>
                             </div>
                         </label>
                     </div>
                 </fieldset>
                 <form onSubmit={(e)=>{e.preventDefault(); handleAddEditShippingAddress(e)}}>
-                    <legend>{selected_shipping_address_id === "" ? "Add Shipping Address" : "Edit Shipping Address"}</legend>
+                    <legend>{selected_shipping_address_id === "" ? t("shop:AddShipping") : t("shop:EditShippingAddress")}</legend>
                     <input type={"hidden"} value={selected_shipping_address_id}/>
                     <div>
-                        <input type={"text"} placeholder={"Address 1 *"} required autoComplete={"address-line1"} value={temporary_address?.address_1} onChange={(e)=>setTempopary_address({...temporary_address!, address_1: e.target.value ?? ""})}/>
-                        <input type={"text"} placeholder={"Address 2"} autoComplete={"address-line2"} value={temporary_address?.address_2} onChange={(e)=>setTempopary_address({...temporary_address!, address_2: e.target.value ?? ""})} />
+                        <input type={"text"} placeholder={t("shop:Address")+" 1 *"} required autoComplete={"address-line1"} value={temporary_address?.address_1} onChange={(e)=>setTempopary_address({...temporary_address!, address_1: e.target.value ?? ""})}/>
+                        <input type={"text"} placeholder={t("shop:Address")+" 2"} autoComplete={"address-line2"} value={temporary_address?.address_2} onChange={(e)=>setTempopary_address({...temporary_address!, address_2: e.target.value ?? ""})} />
                     </div>
                     <div>
-                        <input type={"text"} placeholder={"City *"} required autoComplete={"home city"} value={temporary_address?.city} onChange={(e)=>setTempopary_address({...temporary_address!, city: e.target.value ?? ""})}/>
-                        <input type={"text"} placeholder={"Postal Code *"} required autoComplete={"postal-code"} value={temporary_address?.postal_code} onChange={(e)=>setTempopary_address({...temporary_address!, postal_code: e.target.value ?? ""})}/>
+                        <input type={"text"} placeholder={t("shop:City")+" *"} required autoComplete={"home city"} value={temporary_address?.city} onChange={(e)=>setTempopary_address({...temporary_address!, city: e.target.value ?? ""})}/>
+                        <input type={"text"} placeholder={t("shop:PostalCode")+" *"} required autoComplete={"postal-code"} value={temporary_address?.postal_code} onChange={(e)=>setTempopary_address({...temporary_address!, postal_code: e.target.value ?? ""})}/>
                     </div>
                     <div>
                         <input type={"text"} placeholder={"Province"} value={temporary_address?.province} onChange={(e)=>setTempopary_address({...temporary_address!, province: e.target.value ?? ""})}/>
-                        <select required placeholder={"Country"} autoComplete={"on"} value={temporary_address.country_code} onChange={(e)=>setTempopary_address({...temporary_address!, country_code: e.target.value ?? ""})}>
-                            <option disabled value={""}>Please Select A country *</option>
+                        <select required placeholder={t("shop:Country")+" *"} autoComplete={"on"} value={temporary_address.country_code} onChange={(e)=>setTempopary_address({...temporary_address!, country_code: e.target.value ?? ""})}>
+                            <option disabled value={""}>{t("shop:PleaseSelectCountry")+" *"}</option>
                             {countries.map((c)=>{
                                 return (<option key={c.iso_3} value={c.iso_2}>{c.name.slice(0,1)+c.name.slice(1).toLowerCase()}</option>)
                             })}
                         </select>
                     </div>
-                    <input type={"text"} placeholder={"Company"} value={temporary_address.company} onChange={(e)=>setTempopary_address({...temporary_address!, company: e.target.value ?? ""})}/>
-                    <input type={"text"} placeholder={"Phone *"} required autoComplete={"tel"} value={temporary_address.phone} onChange={(e)=>setTempopary_address({...temporary_address!, phone: e.target.value ?? ""})}/>
+                    <input type={"text"} placeholder={t("shop:Company")} value={temporary_address.company} onChange={(e)=>setTempopary_address({...temporary_address!, company: e.target.value ?? ""})}/>
+                    <input type={"text"} placeholder={t("shop:Phone")+" *"} required autoComplete={"tel"} value={temporary_address.phone} onChange={(e)=>setTempopary_address({...temporary_address!, phone: e.target.value ?? ""})}/>
                     <div>
-                        <input type={"text"} placeholder={"First Name *"} required autoComplete={"given-name"} value={temporary_address.first_name} onChange={(e)=>setTempopary_address({...temporary_address!, first_name: e.target.value ?? ""})}/>
-                        <input type={"text"} placeholder={"Last Name *"} required autoComplete={"family-name"} value={temporary_address.last_name} onChange={(e)=>setTempopary_address({...temporary_address!, last_name: e.target.value ?? ""})}/>
+                        <input type={"text"} placeholder={t("shop:FirstName")+" *"} required autoComplete={"given-name"} value={temporary_address.first_name} onChange={(e)=>setTempopary_address({...temporary_address!, first_name: e.target.value ?? ""})}/>
+                        <input type={"text"} placeholder={t("shop:LastName")+" *"} required autoComplete={"family-name"} value={temporary_address.last_name} onChange={(e)=>setTempopary_address({...temporary_address!, last_name: e.target.value ?? ""})}/>
                     </div>
                     <div className={styles.formButtons}>
-                        <button type={"submit"}>{selected_shipping_address_id === "" ? "Add" : "Confirm Edit"}</button>
-                        {selected_shipping_address_id!= "" ? <button type={"button"} onClick={() => RemoveSelectedAddress()} className={styles.buttonRemove}>Remove</button> : null}
+                        <button type={"submit"}>{selected_shipping_address_id === "" ? t("shop:Add") : t("shop:ConfirmEdit")}</button>
+                        {selected_shipping_address_id!= "" ? <button type={"button"} onClick={() => RemoveSelectedAddress()} className={styles.buttonRemove}>{t("shop:Remove")}</button> : null}
                     </div>
                 </form>
             </div>
             <div className={styles.buttons}>
-                <button onClick={()=>onBack()}><FontAwesomeIcon icon={faArrowLeft}/> Back</button>
-                <button onClick={()=>handleContinue()} className={styles.buttonContinue+" "+(loadingContinue ? styles.loading : null)} disabled={selected_shipping_address_id == "" || loadingContinue}>Continue {loadingContinue ? <FontAwesomeIcon icon={faSpinner} className={"fa-spin"}/> : null}</button>
+                <button onClick={()=>onBack()}><FontAwesomeIcon icon={faArrowLeft}/> {t("shop:Back")}</button>
+                <button onClick={()=>handleContinue()} className={styles.buttonContinue+" "+(loadingContinue ? styles.loading : null)} disabled={selected_shipping_address_id == "" || loadingContinue}>{t("shop:Continue")} {loadingContinue ? <FontAwesomeIcon icon={faSpinner} className={"fa-spin"}/> : null}</button>
             </div>
         </div>
     </>)
@@ -642,7 +645,7 @@ const SelectRegion = () => {
                 region_id
             })
             .then(({cart}) => {
-                console.log("Update Cart Called");
+                // console.log("Update Cart Called");
                 updateCart(cart)
             });
     }
@@ -651,7 +654,6 @@ const SelectRegion = () => {
         <select onChange={(e)=>changeRegion(e.target.value)} value={cart ? cart.region.id : ""}>
             {regionList.map((reg) => {
                 return(
-
                     <option key={reg.id} value={reg.id} >{reg.name}</option>
                 )
             })
@@ -692,28 +694,28 @@ const CartItem = ({default_item}: {default_item: LineItem }) => {
     }}, [hook.cart, default_item])
 
     if(item && item.quantity!=0 && tempQuantity == undefined){
-        console.log(tempQuantity, item.quantity)
+        // console.log(tempQuantity, item.quantity)
         dispatch(setTemporaryQuantity({variant_id: item.variant_id, quantity: item.quantity}));
     }
 
     if(item && tempQuantity!=undefined && hook.cart && tempQuantity!=item.quantity && canEditQuantity){
         setCanEditQuantity(false);
-        console.log(item.quantity, tempQuantity)
+        // console.log(item.quantity, tempQuantity)
         if(tempQuantity <= 0){
             client.carts.lineItems.delete(hook.cart.id, item.id)
                 .then(({cart}) => {
                     setCanEditQuantity(true);
-                    console.log("Update Cart Called");
+                    // console.log("Update Cart Called");
                     hook.updateCart(cart)
                 })
         }
         else{
-            console.log("quantity : "+tempQuantity)
+            // console.log("quantity : "+tempQuantity)
             client.carts.lineItems.update(hook.cart.id, item.id, {
                 quantity: tempQuantity
             }).then(({cart}) => {
                 setCanEditQuantity(true);
-                console.log("Update Cart Called");
+                // console.log("Update Cart Called");
                 hook.updateCart(cart)
             })
         }

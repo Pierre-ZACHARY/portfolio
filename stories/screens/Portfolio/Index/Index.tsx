@@ -71,7 +71,7 @@ export const Index = ({blogPosts = {content: [{
 
     const setScreenHeight = () => {
         let elem = document.getElementById(styles["mobilePresentation"])!;
-        if(parseInt(elem.style.height) > window.innerHeight) elem.setAttribute("style", "height:"+window.innerHeight+"px;");
+        elem.setAttribute("style", "height:"+window.innerHeight+"px;");
     }
 
     useEffect(() => {
@@ -120,7 +120,7 @@ export const Index = ({blogPosts = {content: [{
         <>
             <Layout home paddingTop={0}>
                 <div className={styles.home} id="first" ref={Introduction}>
-                    <div className={styles.screen} style={{paddingTop: 0}}>
+                    <div className={styles.screen} style={{paddingTop: 0, minHeight: "100vh"}}>
                         <div id={styles["mobilePresentation"]}>
                             <Image id="profilePicture" src={profile} alt="Profile Picture" width="100%" height="100%" quality={"100"}/>
                             <h1 style={{marginTop: 20}}>Pierre Zachary</h1>
