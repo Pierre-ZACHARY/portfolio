@@ -5,7 +5,6 @@ import {Layout} from "../../stories/components/Portfolio/Layout/Layout";
 import {Order} from "@medusajs/medusa";
 import styles from "./orderPage.module.sass"
 import {LineItem} from "@medusajs/medusa/dist/models/line-item";
-import Image from "next/image";
 import {NaturalImageFixedHeight} from "../../lib/utils-components";
 import {useTranslation} from "next-i18next";
 import {format_price} from "../../lib/medusa-utils";
@@ -22,8 +21,7 @@ import {serverSideTranslations} from "next-i18next/serverSideTranslations";
 import {useWindowSize} from "react-use";
 import Confetti from 'react-confetti'
 import {useEffect, useState} from "react";
-// @ts-ignore
-import { ProgressBar, Step } from "react-step-progress-bar";
+
 
 
 const orderSteps: {i18nVar: string, jsx: JSX.Element}[] = [
@@ -95,19 +93,19 @@ export default function OrderPage({ order }: {order: any}) {
                     <p>#{orderObj.id}</p>
                 </div>
                 <div className={styles.orderStatus}>
-                    <ProgressBar
-                        percent={progress}
-                        filledBackground="linear-gradient(to right, #0380EF 0%, #05DCD9 100%)"
-                    >
-                        {
-                            orderSteps.map((step)=>{
-                                return (
-                                <Step transition="scale" key={step.i18nVar} >
-                                    {({ accomplished }: any) => <div title={t(step.i18nVar)} className={styles.step+" "+(accomplished ? styles.stepAccomplished : "")}>{step.jsx}</div>}
-                                </Step>)
-                            })
-                        }
-                    </ProgressBar>
+                    {/*<ProgressBar*/}
+                    {/*    percent={progress}*/}
+                    {/*    filledBackground="linear-gradient(to right, #0380EF 0%, #05DCD9 100%)"*/}
+                    {/*>*/}
+                    {/*    {*/}
+                    {/*        orderSteps.map((step)=>{*/}
+                    {/*            return (*/}
+                    {/*            <Step transition="scale" key={step.i18nVar} >*/}
+                    {/*                {({ accomplished }: any) => <div title={t(step.i18nVar)} className={styles.step+" "+(accomplished ? styles.stepAccomplished : "")}>{step.jsx}</div>}*/}
+                    {/*            </Step>)*/}
+                    {/*        })*/}
+                    {/*    }*/}
+                    {/*</ProgressBar>*/}
                 </div>
 
                 <div className={styles.orderRecap}>
@@ -172,6 +170,8 @@ export async function getStaticProps({ locale, params }: any) {
     // If the route is like /posts/1, then params.id is 1
     const res = await fetch(`https://pz-medusa-core.herokuapp.com/store/orders/${params.id}`)
     const order = await res.json()
+
+    console.log(order);
 
     // Pass post data to the page via props
     return {
