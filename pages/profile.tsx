@@ -37,7 +37,7 @@ export async function getStaticProps({ locale }: any) {
     // Fetch necessary data for the blog post using params.id
     return {
         props: {
-            ...(await serverSideTranslations(locale, ['common', 'header', 'chatbot', 'authentification'])),
+            ...(await serverSideTranslations(locale, ['common', 'header', 'chatbot', 'authentification', 'shop'])),
         },
     };
 }

@@ -48,11 +48,14 @@ export const getStep = (order: Order) => {
 export default function OrderPage({order}: {order: Order}) {
     const router = useRouter()
     const {t} = useTranslation()
-    const { width, height } = useWindowSize()
+    const [widthheight, setWidthHeight] = useState<undefined | { width: number, height: number }>(undefined);
     const { new_order } = router.query
     const [progress, setProgress] = useState(0);
     const [step, setStep] = useState(0);
 
+    useEffect(()=>{
+        setWidthHeight({width: window.innerWidth, height: window.innerHeight});
+    }, [])
     const updateProgress  = () => {
         setTimeout(()=>{
             if(progress<(step*33+1)) {
@@ -126,10 +129,10 @@ export default function OrderPage({order}: {order: Order}) {
                     </div>
                 </div>
 
-                {new_order && <Confetti
+                {new_order && widthheight && <Confetti
                     className={styles.confettiCanvas}
-                    width={width}
-                    height={height}
+                    width={widthheight.width}
+                    height={widthheight.height}
                     numberOfPieces={200}
                     tweenDuration={4000}
                     recycle={false}
