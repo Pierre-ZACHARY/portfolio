@@ -17,7 +17,7 @@ import {client, format_price, stripePromise, useCart} from "../../../../../lib/m
 import {NaturalImageFixedHeight} from "../../../../../lib/utils-components";
 import {useTranslation} from "next-i18next";
 import {Country, LineItem, PaymentSession, Region, ShippingOption} from "@medusajs/medusa";
-import {setTemporaryQuantity, useTemporaryQuantity} from "../cartReducer";
+import {reduceCart, setTemporaryQuantity, useTemporaryQuantity} from "../cartReducer";
 import {useAppDispatch} from "../../../../../redux/hooks";
 import {getAuth, User} from "@firebase/auth";
 import Link from "next/link";
@@ -46,6 +46,13 @@ export const CartWidget = ( ) => {
     const [contentState, setContentState] = useState<ContentState>(ContentState.CartOverView);
     const cartHook = useCart()
     const {t} = useTranslation()
+
+    console.log(cartHook.cart);
+    useEffect(()=>{
+        if(cartHook.cart?.completed_at && !cartHook.cart.payment_authorized_at){
+            setContentState(ContentState.SelectPaymentMethod);
+        }
+    }, [cartHook.cart])
 
     return (
         <motion.div layout className={styles.main+" "+(isOpen ? styles.open : null)} onClick={()=>(!isOpen ? setOpen(true) : null)} >
@@ -125,8 +132,6 @@ function Paypal({onComplete}: {onComplete: Function }) {
             {processing && <FontAwesomeIcon icon={faSpinner} className={"fa-spin"}/>}
         </div>);
 }
-
-
 function Form({clientSecret, cartId, onComplete} : any) {
     const stripe = useStripe();
     const elements = useElements();
@@ -312,7 +317,16 @@ const SelectPaymentProvider = ({onBack, onContinue}: {onBack: Function, onContin
                     <Form clientSecret={clientSecret} cartId={cart.id} onComplete={onContinue}/>
                 </Elements>
                 <div>
-                    <button onClick={()=>onBack()}><FontAwesomeIcon icon={faArrowLeft}/> {t("shop:Back")}</button>
+                    {!(cart?.completed_at && !cart.payment_authorized_at) ?
+                        <button onClick={() => onBack()}><FontAwesomeIcon icon={faArrowLeft}/> {t("shop:Back")}</button> :
+                    <button onClick={()=>{
+                        client.carts.create({
+                            region_id: cart?.region_id
+                        }).then((res)=>{
+                            localStorage.setItem('cart_id', res.cart.id);
+                            updateCart(res.cart);
+                        })
+                    }}>Cancel Order</button>}
                 </div></>
             )
             : <FontAwesomeIcon icon={faSpinner} className={"fa-spin "+styles.spinner}/>}
@@ -381,7 +395,7 @@ const SelectShippingMethod = ({onBack, onContinue}: {onBack: Function, onContinu
             </div>
 
             <div className={styles.buttons}>
-                <button onClick={()=>onBack()}><FontAwesomeIcon icon={faArrowLeft}/> Back</button>
+                <button onClick={()=>onBack()}><FontAwesomeIcon icon={faArrowLeft}/> {t("shop:Back")}</button>
                 <button onClick={()=>handleContinue()} className={styles.buttonContinue+" "+(loadingContinue ? styles.loading : null)} disabled={selected_shipping_option_id == "" || loadingContinue}>{t("shop:Continue")} {loadingContinue ? <FontAwesomeIcon icon={faSpinner} className={"fa-spin"}/> : null}</button>
             </div>
         </div>

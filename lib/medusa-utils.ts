@@ -94,8 +94,13 @@ export function useCart(){
 
     const completeOrder = async (): Promise<boolean> => {
         const {data} = await client.carts.complete(cart!.id)
+
         // @ts-ignore
         if (!data || data.object !== "order" || user==null) {
+            // @ts-ignore
+            if(data.object === "cart"){
+                updateCart(data as Cart);
+            }
             return false
         }
         //order successful

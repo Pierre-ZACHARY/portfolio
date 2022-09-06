@@ -122,7 +122,7 @@ export const Index = ({blogPosts = {content: [{
                 <div className={styles.home} id="first" ref={Introduction}>
                     <div className={styles.screen} style={{paddingTop: 0, minHeight: "100vh"}}>
                         <div id={styles["mobilePresentation"]}>
-                            <Image id="profilePicture" src={profile} alt="Profile Picture" width="100%" height="100%" quality={"100"}/>
+                            <Image id="profilePicture" src={profile} alt="Profile Picture" width="100%" height="100%" quality={"100"} priority/>
                             <h1 style={{marginTop: 20}}>Pierre Zachary</h1>
                             <a href="/cv.pdf" target="_blank"><button><FontAwesomeIcon icon={faDownload}/>  {t("index:downloadCv")}</button></a>
                             <Scrolldown/>
