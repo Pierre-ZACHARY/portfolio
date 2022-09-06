@@ -16,7 +16,7 @@ import { motion } from "framer-motion";
 import {client, format_price, stripePromise, useCart} from "../../../../../lib/medusa-utils";
 import {NaturalImageFixedHeight} from "../../../../../lib/utils-components";
 import {useTranslation} from "next-i18next";
-import {Country, LineItem, PaymentSession, Region, ShippingOption} from "@medusajs/medusa";
+import {Country, LineItem, Order, PaymentSession, Region, ShippingOption} from "@medusajs/medusa";
 import {reduceCart, setTemporaryQuantity, useTemporaryQuantity} from "../cartReducer";
 import {useAppDispatch} from "../../../../../redux/hooks";
 import {getAuth, User} from "@firebase/auth";
@@ -46,13 +46,22 @@ export const CartWidget = ( ) => {
     const [contentState, setContentState] = useState<ContentState>(ContentState.CartOverView);
     const cartHook = useCart()
     const {t} = useTranslation()
+    const [order, setOrder] = useState<undefined | Order>(undefined)
 
-    console.log(cartHook.cart);
     useEffect(()=>{
-        if(cartHook.cart?.completed_at && !cartHook.cart.payment_authorized_at){
-            setContentState(ContentState.SelectPaymentMethod);
+        if(cartHook.cart){
+            client.orders.retrieveByCartId(cartHook.cart.id).then((res)=>{
+                if(res.response.status == 200){
+                    setOrder(res.order)
+                }
+            })
         }
     }, [cartHook.cart])
+    useEffect(()=>{
+        if(order){
+            setContentState(ContentState.SelectPaymentMethod)
+        }
+    }, [order])
 
     return (
         <motion.div layout className={styles.main+" "+(isOpen ? styles.open : null)} onClick={()=>(!isOpen ? setOpen(true) : null)} >
@@ -66,7 +75,7 @@ export const CartWidget = ( ) => {
                     [ContentState.CartOverView]: <CartOverView onContinue={()=>setContentState(ContentState.SelectShippingAddress)}/>,
                     [ContentState.SelectShippingAddress]: <SelectShippingAddress onContinue={()=>setContentState(ContentState.SelectShippingMethod)} onBack={()=>setContentState(ContentState.CartOverView)}/>,
                     [ContentState.SelectShippingMethod]: <SelectShippingMethod onBack={()=>setContentState(ContentState.SelectShippingAddress)} onContinue={()=>setContentState(ContentState.SelectPaymentMethod)}/>,
-                    [ContentState.SelectPaymentMethod]: <SelectPaymentProvider onBack={()=>setContentState(ContentState.SelectShippingMethod)} onContinue={()=>setContentState(ContentState.CartOverView)}/>,
+                    [ContentState.SelectPaymentMethod]: <SelectPaymentProvider onBack={()=>setContentState(ContentState.SelectShippingMethod)} onContinue={()=>setContentState(ContentState.CartOverView)} order={order}/>,
                 }[contentState]}
             </div>
             }
@@ -275,7 +284,7 @@ function Form({clientSecret, cartId, onComplete} : any) {
     );
 }
 
-const SelectPaymentProvider = ({onBack, onContinue}: {onBack: Function, onContinue: Function}) => {
+const SelectPaymentProvider = ({onBack, onContinue, order}: {onBack: Function, onContinue: Function, order: Order | undefined}) => {
     const auth = getAuth()
     const [user, setUser] = useState<User | null>(null)
     const {t}=useTranslation();
@@ -317,7 +326,7 @@ const SelectPaymentProvider = ({onBack, onContinue}: {onBack: Function, onContin
                     <Form clientSecret={clientSecret} cartId={cart.id} onComplete={onContinue}/>
                 </Elements>
                 <div>
-                    {!(cart?.completed_at && !cart.payment_authorized_at) ?
+                    {!order ?
                         <button onClick={() => onBack()}><FontAwesomeIcon icon={faArrowLeft}/> {t("shop:Back")}</button> :
                     <button onClick={()=>{
                         client.carts.create({
