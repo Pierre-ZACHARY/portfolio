@@ -369,6 +369,16 @@ const SelectShippingMethod = ({onBack, onContinue}: {onBack: Function, onContinu
                 updateCart(response.cart);
                 setLoadingContinue(false);
                 onContinue();
+            }).catch((error)=>{
+                alert(error.message());
+                client.carts.create({
+                    region_id: cart.region_id
+                }).then((new_cart)=>{
+                    localStorage.setItem('cart_id', new_cart.cart.id);
+                    updateCart(new_cart.cart);
+                }).catch((error2)=>{
+                    alert(error2.message())
+                })
             })
         }
     }
