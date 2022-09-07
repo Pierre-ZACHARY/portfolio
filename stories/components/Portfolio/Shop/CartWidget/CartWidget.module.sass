@@ -87,6 +87,24 @@
       flex: 0 1 auto
       position: relative
       .checkOutSteps
+        .discountLine
+          display: flex
+          gap: 10px
+          align-items: center
+          justify-content: center
+          margin: 20px 0 0 0
+          input
+            flex: 1 1 auto
+            background-color: var(--background)
+            border: none
+            border-radius: 9px
+            padding: 5px
+          button
+            flex: 0 1 auto
+            width: min-content
+            margin: 0
+            font-size: var(--font-small)
+            padding: 5px 10px
         a
           width: 100%
           text-align: center
@@ -100,6 +118,28 @@
             opacity: 0.6
 
       .checkOutInfo
+        .displayDiscountCodes
+          display: flex
+          flex-direction: column
+          gap: 5px
+          margin: 5px 0
+          &>div
+            display: flex
+            align-items: center
+            justify-content: space-between
+            p
+              font-size: var(--font-small)
+              color: var(--primary-color)
+              margin: 0
+            button
+              margin: 0
+              padding: 3px
+              max-height: min-content
+              display: flex
+              align-items: center
+              svg
+                width: var(--font-small)
+                height: var(--font-small)
         &>div
           display: flex
           justify-content: space-between

@@ -16,7 +16,7 @@ import { motion } from "framer-motion";
 import {client, format_price, stripePromise, useCart} from "../../../../../lib/medusa-utils";
 import {NaturalImageFixedHeight} from "../../../../../lib/utils-components";
 import {useTranslation} from "next-i18next";
-import {Country, LineItem, Order, PaymentSession, Region, ShippingOption} from "@medusajs/medusa";
+import {Country, Discount, GiftCard, LineItem, Order, PaymentSession, Region, ShippingOption} from "@medusajs/medusa";
 import {reduceCart, setTemporaryQuantity, useTemporaryQuantity} from "../cartReducer";
 import {useAppDispatch} from "../../../../../redux/hooks";
 import {getAuth, User} from "@firebase/auth";
@@ -629,11 +629,60 @@ const CartOverView = ({onContinue}: {onContinue: Function }) => {
     const [user, setUser] = useState<User | null>(null)
     const {t} = useTranslation()
     const router = useRouter()
+    const [discount, setDiscount] = useState("")
+    const giftCardRegex = new RegExp('((.{3,4}-){3}.{4})');
 
     useEffect(()=>{
         const unsub = auth.onAuthStateChanged((user) => setUser(user))
         return () => unsub()
     }, [auth])
+
+    const handleAddDiscount = () => {
+        if(discount!="" && cartHook.cart){
+            if(giftCardRegex.test(discount)){
+                //it's a gift card
+                const temp: {code: string}[] = [];
+                cartHook.cart.gift_cards.forEach((gc)=>temp.push({code: gc.code}))
+                temp.push({code: discount})
+                client.carts.update(cartHook.cart.id, {
+                    gift_cards: temp
+                }).then(r => cartHook.updateCart(r.cart)).catch((err)=>alert(err.message))
+            }
+            else{
+                // it's a discount code
+                const temp: {code: string}[] = [];
+                cartHook.cart.discounts.forEach((d)=>temp.push({code: d.code}))
+                temp.push({code: discount})
+                client.carts.update(cartHook.cart.id, {
+                    discounts: temp
+                }).then(r => cartHook.updateCart(r.cart)).catch((err)=>alert(err.message))
+            }
+        }
+    }
+
+    const removeDiscount = (dId: string) => {
+        if(cartHook.cart){
+            const temp: Discount[] = []
+            cartHook.cart.discounts.forEach((d) =>{
+                if(d.id != dId) temp.push(d);
+            })
+            client.carts.update(cartHook.cart.id, {
+                discounts: temp
+            }).then(r=>cartHook.updateCart(r.cart)).catch((err)=>alert(err))
+        }
+    }
+
+    const removeGiftCard = (gcId: string) => {
+        if(cartHook.cart){
+            const temp: GiftCard[] = []
+            cartHook.cart.gift_cards.forEach((gc) =>{
+                if(gc.id != gcId) temp.push(gc);
+            })
+            client.carts.update(cartHook.cart.id, {
+                gift_cards: temp
+            }).then(r=>cartHook.updateCart(r.cart)).catch((err)=>alert(err))
+        }
+    }
 
     return(
         <>
@@ -655,10 +704,34 @@ const CartOverView = ({onContinue}: {onContinue: Function }) => {
             <div className={styles.checkOut}>
                 <div className={styles.checkOutInfo}>
                     {cartHook.cart?.discount_total ? <div><h2>{t("shop:discount")} :</h2><h2 className={styles.displayDiscount}>- {format_price(cartHook.cart?.discount_total)} <FontAwesomeIcon icon={cartHook.cart.region.currency_code === "eur" ? faEuroSign : faDollarSign}/></h2></div> : null}
+                    {
+                        cartHook.cart?.discounts.length!>0 &&
+                        <div className={styles.displayDiscountCodes}>
+                            {cartHook.cart?.discounts.map((disc)=>{
+                                return <div key={disc.id}>
+                                    <p>{disc.code}</p>
+                                    <button onClick={()=>removeDiscount(disc.id)}><FontAwesomeIcon icon={faXmark}/></button>
+                                </div>
+                            })}
+                        </div>
+                    }
+                    {cartHook.cart?.gift_card_total ? <div><h2>{t("shop:giftCard")} :</h2><h2 className={styles.displayDiscount}>- {format_price(cartHook.cart?.gift_card_total)} <FontAwesomeIcon icon={cartHook.cart.region.currency_code === "eur" ? faEuroSign : faDollarSign}/></h2></div> : null}
+                    {
+                        cartHook.cart?.gift_cards!.length!>0 &&
+                        <div className={styles.displayDiscountCodes}>
+                            {cartHook.cart?.gift_cards.map((giftcard)=>{
+                                return <div key={giftcard.id}>
+                                    <p>{giftcard.code}</p>
+                                    <button onClick={()=>removeGiftCard(giftcard.id)}><FontAwesomeIcon icon={faXmark}/></button>
+                                </div>
+                            })}
+                        </div>
+                    }
                     {cartHook.cart?.shipping_total ? <div><h2>{t("shop:shipping")} :</h2><h2>{format_price(cartHook.cart?.shipping_total)} <FontAwesomeIcon icon={cartHook.cart.region.currency_code === "eur" ? faEuroSign : faDollarSign}/></h2></div>: null}
                     {cartHook.cart?.total ? <div><h2>Total :</h2><h2>{format_price(cartHook.cart?.total!)} <FontAwesomeIcon icon={cartHook.cart.region.currency_code === "eur" ? faEuroSign : faDollarSign}/></h2></div> : null}
                 </div>
                 <div className={styles.checkOutSteps}>
+                    <div className={styles.discountLine}><input type={"text"} name={"discount-giftcard"} placeholder={t("shop:discountgiftcardplaceholder")} value={discount} onChange={(e)=>setDiscount(e.target.value)}/><button onClick={()=>handleAddDiscount()}>{t("shop:Add")}</button></div>
                     {user ? <button disabled={!(cartHook.cart && cartHook.cart .items.length)} onClick={()=>onContinue()}>{t("shop:continueCheckout")}</button> : <Link href={"/login?onSignIn="+router.asPath}><a>{t("authentification:youMustLoginToContinue")} <FontAwesomeIcon icon={faArrowUpRightFromSquare}/></a></Link>}
                 </div>
             </div>

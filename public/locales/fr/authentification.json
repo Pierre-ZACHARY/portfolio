@@ -1,4 +1,5 @@
 {
+  "Orders": "Commandes",
   "alreadyhave": "Vous avez déjà un compte ?",
   "areYouSure": "Êtes-vous certain de vouloir supprimer votre compte ?",
   "chooseBetweenAvatar": "Ou choisissez parmis",
@@ -13,6 +14,7 @@
   "goodbye": "Au revoir !",
   "inProgress": "En cours...",
   "loginScreenTitle": "Connexion",
+  "noOrdersYet": "Pas encore de commandes",
   "orSignInWith": "Sinon connectez-vous avec :",
   "password": "Mot de passe",
   "passwordTooWeak": "Votre mot de passe doit contenir au moins 6 caractères",
@@ -20,6 +22,7 @@
   "pleaseProvidePassword": "Vous devez entrer votre mot de passe",
   "relogToDelete": "Vous devez à nouveau vous identifier pour supprimer votre compte",
   "resetSent": "Email de récupération envoyé !",
+  "showOrders": "Voir les commandes",
   "signOut": "Déconnexion",
   "signUp": "Inscription",
   "uploadFile": "Choisissez votre photo",

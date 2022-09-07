@@ -18,7 +18,7 @@ import {useTranslation} from "next-i18next";
 import {Swiper, SwiperSlide} from "swiper/react";
 import { EffectCards } from "swiper";
 import Image from "next/image";
-import {LineItem, MoneyAmount, Product} from "@medusajs/medusa";
+import {LineItem, MoneyAmount, Product, ProductVariant} from "@medusajs/medusa";
 import {useAppDispatch, useAppSelector} from "../../../../../redux/hooks";
 import {setTemporaryQuantity, useTemporaryQuantity} from "../cartReducer";
 
@@ -62,14 +62,38 @@ function CustomHits(props: any) {
     const [maxItems, setMax] = useState(3);
     const {t} = useTranslation();
 
+    useEffect(()=>{
+        const temp = new Map<string, Product>();
+        const idsToFetch: string[] = []
+        for(const hit of hits){
+            const id = hit.id as string;
+            if(products.has(id))    {
+                temp.set(id, products.get(id)!)
+            }
+            else{
+                idsToFetch.push(id);
+            }
+        }
+        if(idsToFetch.length){
+            client.products.list({id: idsToFetch}).then((res)=>{
+                if(res.response.status==200){
+                    for(const p of res.products){
+                        temp.set(p.id, p);
+                    }
+                    setProducts(temp);
+                }
+            })
+        }
+    }, [hits])
+
     // remplacer hit : any par hit : Product, pour ça : lors d'un changement de hits, faire un get de chaque hit et les placer dans la map, pour l'affichage utiliser les ids déjà présent dans la map
 
     return <>
         <div className={props.className}>
             <ol>
                 {hits.slice(0, maxItems).map((hit, k) => {
-                    return (<li key={hit.id!}>
-                            <div><Hit hit={hit}/></div>
+                    return (<li key={hit.id! as string}>
+                            <div><Hit hit={hit} product={products.get(hit.id! as string)}/></div>
                         </li>)
                 })}
             </ol>
@@ -80,10 +104,10 @@ function CustomHits(props: any) {
 
 
 
-const Hit = ({ hit }: {hit: any}) => {
+const Hit = ({ hit, product }: {hit: any, product: Product | undefined}) => {
 
 
-    console.log(hit);
+    // console.log(hit);
 
     const [variantsMap, setVariantsMap] = useState<Map<string, any>>(()=>{
         const temp = new Map<string, any>();
@@ -163,14 +187,14 @@ const Hit = ({ hit }: {hit: any}) => {
     }
 
     const getVariantPrice = (currency: string, variant_id: string) : number[] | undefined=> {
-        const variant = variantsMap.get(variant_id);
+        const variant: ProductVariant | undefined = product?.variants.find((elem => elem.id == variant_id));
         if(variant){
             const res: number[] = [];
-            (variant.prices as MoneyAmount[]).forEach((price: MoneyAmount)=>{
+            (variant.prices).forEach((price: MoneyAmount)=>{
                 const now = new Date();
-                console.log(price.price_list);
                 if(price.currency_code === currency){
-                    if((!price.price_list?.starts_at || price.price_list?.starts_at < now) && (!price.price_list?.ends_at || price.price_list?.ends_at > now)){
+                    // @ts-ignore
+                    if((!price.price_list?.starts_at || Date.parse(price.price_list?.starts_at) < now) && (!price.price_list?.ends_at || Date.parse(price.price_list?.ends_at) > now)){
                         res.push(price.amount)
                     }
                 }
@@ -255,7 +279,7 @@ const Hit = ({ hit }: {hit: any}) => {
                         )
                     })}
                 </div>
-                {selected_variants.length == 1 ? <Display_AddToCart variant_id={selected_variants[0]} price_range={getPriceRange(cart?.region.currency_code ?? "usd")}/> : <button className={styles.addToCart} disabled><Display_amount amount={getPriceRange(cart?.region.currency_code ?? "usd")}/></button>}
+                {!product ? <button className={styles.addToCart} disabled>Loading...</button> : selected_variants.length == 1 ? <Display_AddToCart variant_id={selected_variants[0]} price_range={getPriceRange(cart?.region.currency_code ?? "usd")}/> : <button className={styles.addToCart} disabled><Display_amount amount={getPriceRange(cart?.region.currency_code ?? "usd")}/></button>}
             </div>
         </div>
     )
