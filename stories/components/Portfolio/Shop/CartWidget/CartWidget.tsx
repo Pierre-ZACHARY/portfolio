@@ -54,6 +54,8 @@ export const CartWidget = ( ) => {
                 if(res.response.status == 200){
                     setOrder(res.order)
                 }
+            }).catch((error)=>{
+                // no order
             })
         }
     }, [cartHook.cart])

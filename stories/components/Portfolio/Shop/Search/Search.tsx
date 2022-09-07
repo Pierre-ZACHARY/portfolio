@@ -18,7 +18,7 @@ import {useTranslation} from "next-i18next";
 import {Swiper, SwiperSlide} from "swiper/react";
 import { EffectCards } from "swiper";
 import Image from "next/image";
-import {LineItem} from "@medusajs/medusa";
+import {LineItem, MoneyAmount, Product} from "@medusajs/medusa";
 import {useAppDispatch, useAppSelector} from "../../../../../redux/hooks";
 import {setTemporaryQuantity, useTemporaryQuantity} from "../cartReducer";
 
@@ -43,6 +43,7 @@ function CustomSearchBox(props: UseSearchBoxProps) {
 
 export const Search = () => {
 
+
     return (
         <div className={styles.main}>
             <InstantSearch indexName={process.env.NEXT_PUBLIC_SEARCH_INDEX_NAME!} searchClient={searchClient}>
@@ -56,15 +57,18 @@ export const Search = () => {
 
 function CustomHits(props: any) {
 
+    const [products, setProducts] = useState<Map<string, Product>>(new Map<string, Product>());
     const { hits, results, sendEvent } = useHits(props);
     const [maxItems, setMax] = useState(3);
     const {t} = useTranslation();
+
+    // remplacer hit : any par hit : Product, pour ça : lors d'un changement de hits, faire un get de chaque hit et les placer dans la map, pour l'affichage utiliser les ids déjà présent dans la map
 
     return <>
         <div className={props.className}>
             <ol>
                 {hits.slice(0, maxItems).map((hit, k) => {
-                    return (<li key={hit + "li"+k}>
+                    return (<li key={hit.id!}>
                             <div><Hit hit={hit}/></div>
                         </li>)
                 })}
@@ -77,6 +81,9 @@ function CustomHits(props: any) {
 
 
 const Hit = ({ hit }: {hit: any}) => {
+
+
+    console.log(hit);
 
     const [variantsMap, setVariantsMap] = useState<Map<string, any>>(()=>{
         const temp = new Map<string, any>();
@@ -159,10 +166,15 @@ const Hit = ({ hit }: {hit: any}) => {
         const variant = variantsMap.get(variant_id);
         if(variant){
             const res: number[] = [];
-            variant.prices.forEach((price: any)=>{
+            (variant.prices as MoneyAmount[]).forEach((price: MoneyAmount)=>{
+                const now = new Date();
+                console.log(price.price_list);
                 if(price.currency_code === currency){
-                    res.push(price.amount)
+                    if((!price.price_list?.starts_at || price.price_list?.starts_at < now) && (!price.price_list?.ends_at || price.price_list?.ends_at > now)){
+                        res.push(price.amount)
+                    }
                 }
+
             })
             return res;
         }
