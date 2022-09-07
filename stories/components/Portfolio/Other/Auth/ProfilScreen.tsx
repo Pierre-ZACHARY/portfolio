@@ -376,7 +376,7 @@ export const ProfilScreen = ({show_orders = false}) => {
                                 <input type={"password"} ref={currentPassInputRef} placeholder={"Current Password"} />
                             </div></>) : null}
                             <div className={styles.inputLine}>
-                                <a onClick={()=>handleDeleteAccount()}>Delete your account</a>
+                                <a onClick={()=>handleDeleteAccount()}>{t("authentification:Deleteyouraccount")}</a>
                             </div>
                         {user?.providerData[0].providerId == "password" ?<button onClick={()=>handleDangerEdit()}>{loadingChange.current<loadingChange.total && loadingChange.total>0 ? <FontAwesomeIcon icon={faSpinner} className={"fa-spin"}/> : ( loadingChange.total>0 ? <FontAwesomeIcon icon={faCheck}/> : null)} {t("authentification:validate")}</button> : <p></p>}
                         </>) : null}

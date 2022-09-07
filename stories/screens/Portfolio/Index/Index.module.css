@@ -6,6 +6,16 @@
     padding: 110px 20px 0 20px;
 }
 
+.screen .splineContainer{
+    width: 100%;
+    min-height: 500px;
+    margin: 20px 0;
+}
+
+.screen .splineContainer .splineObj{
+    height: 500px;
+}
+
 .screen h1 {
     font-size: 3em;
     margin: 0;
