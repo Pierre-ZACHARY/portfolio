@@ -689,52 +689,55 @@ const CartOverView = ({onContinue}: {onContinue: Function }) => {
             <div className={styles.topBar}>
                 <SelectRegion/>
             </div>
-            <div className={styles.showItems}>
-                <ol>
-                    {
-                        cartHook.cart?.items.map((item)=>{
-                            return (
-                                <li key={item.id}>
-                                    <CartItem default_item={item}/>
-                                </li>)
-                        })
-                    }
-                </ol>
-            </div>
-            <div className={styles.checkOut}>
-                <div className={styles.checkOutInfo}>
-                    {cartHook.cart?.discount_total ? <div><h2>{t("shop:discount")} :</h2><h2 className={styles.displayDiscount}>- {format_price(cartHook.cart?.discount_total)} <FontAwesomeIcon icon={cartHook.cart.region.currency_code === "eur" ? faEuroSign : faDollarSign}/></h2></div> : null}
-                    {
-                        cartHook.cart?.discounts.length!>0 &&
-                        <div className={styles.displayDiscountCodes}>
-                            {cartHook.cart?.discounts.map((disc)=>{
-                                return <div key={disc.id}>
-                                    <p>{disc.code}</p>
-                                    <button onClick={()=>removeDiscount(disc.id)}><FontAwesomeIcon icon={faXmark}/></button>
-                                </div>
-                            })}
-                        </div>
-                    }
-                    {cartHook.cart?.gift_card_total ? <div><h2>{t("shop:giftCard")} :</h2><h2 className={styles.displayDiscount}>- {format_price(cartHook.cart?.gift_card_total)} <FontAwesomeIcon icon={cartHook.cart.region.currency_code === "eur" ? faEuroSign : faDollarSign}/></h2></div> : null}
-                    {
-                        cartHook.cart?.gift_cards!.length!>0 &&
-                        <div className={styles.displayDiscountCodes}>
-                            {cartHook.cart?.gift_cards.map((giftcard)=>{
-                                return <div key={giftcard.id}>
-                                    <p>{giftcard.code}</p>
-                                    <button onClick={()=>removeGiftCard(giftcard.id)}><FontAwesomeIcon icon={faXmark}/></button>
-                                </div>
-                            })}
-                        </div>
-                    }
-                    {cartHook.cart?.shipping_total ? <div><h2>{t("shop:shipping")} :</h2><h2>{format_price(cartHook.cart?.shipping_total)} <FontAwesomeIcon icon={cartHook.cart.region.currency_code === "eur" ? faEuroSign : faDollarSign}/></h2></div>: null}
-                    {cartHook.cart?.total ? <div><h2>Total :</h2><h2>{format_price(cartHook.cart?.total!)} <FontAwesomeIcon icon={cartHook.cart.region.currency_code === "eur" ? faEuroSign : faDollarSign}/></h2></div> : null}
+            <div className={styles.showContent}>
+                <div className={styles.showItems}>
+                    <ol>
+                        {
+                            cartHook.cart?.items.map((item)=>{
+                                return (
+                                    <li key={item.id}>
+                                        <CartItem default_item={item}/>
+                                    </li>)
+                            })
+                        }
+                    </ol>
                 </div>
-                <div className={styles.checkOutSteps}>
-                    <div className={styles.discountLine}><input type={"text"} name={"discount-giftcard"} placeholder={t("shop:discountgiftcardplaceholder")} value={discount} onChange={(e)=>setDiscount(e.target.value)}/><button onClick={()=>handleAddDiscount()}>{t("shop:Add")}</button></div>
-                    {user ? <button disabled={!(cartHook.cart && cartHook.cart .items.length)} onClick={()=>onContinue()}>{t("shop:continueCheckout")}</button> : <Link href={"/login?onSignIn="+router.asPath}><a>{t("authentification:youMustLoginToContinue")} <FontAwesomeIcon icon={faArrowUpRightFromSquare}/></a></Link>}
+                <div className={styles.checkOut}>
+                    <div className={styles.checkOutInfo}>
+                        {cartHook.cart?.discount_total ? <div><h2>{t("shop:discount")} :</h2><h2 className={styles.displayDiscount}>- {format_price(cartHook.cart?.discount_total)} <FontAwesomeIcon icon={cartHook.cart.region.currency_code === "eur" ? faEuroSign : faDollarSign}/></h2></div> : null}
+                        {
+                            cartHook.cart?.discounts.length!>0 &&
+                            <div className={styles.displayDiscountCodes}>
+                                {cartHook.cart?.discounts.map((disc)=>{
+                                    return <div key={disc.id}>
+                                        <p>{disc.code}</p>
+                                        <button onClick={()=>removeDiscount(disc.id)}><FontAwesomeIcon icon={faXmark}/></button>
+                                    </div>
+                                })}
+                            </div>
+                        }
+                        {cartHook.cart?.gift_card_total ? <div><h2>{t("shop:giftCard")} :</h2><h2 className={styles.displayDiscount}>- {format_price(cartHook.cart?.gift_card_total)} <FontAwesomeIcon icon={cartHook.cart.region.currency_code === "eur" ? faEuroSign : faDollarSign}/></h2></div> : null}
+                        {
+                            cartHook.cart?.gift_cards!.length!>0 &&
+                            <div className={styles.displayDiscountCodes}>
+                                {cartHook.cart?.gift_cards.map((giftcard)=>{
+                                    return <div key={giftcard.id}>
+                                        <p>{giftcard.code}</p>
+                                        <button onClick={()=>removeGiftCard(giftcard.id)}><FontAwesomeIcon icon={faXmark}/></button>
+                                    </div>
+                                })}
+                            </div>
+                        }
+                        {cartHook.cart?.shipping_total ? <div><h2>{t("shop:shipping")} :</h2><h2>{format_price(cartHook.cart?.shipping_total)} <FontAwesomeIcon icon={cartHook.cart.region.currency_code === "eur" ? faEuroSign : faDollarSign}/></h2></div>: null}
+                        {cartHook.cart?.total ? <div><h2>Total :</h2><h2>{format_price(cartHook.cart?.total!)} <FontAwesomeIcon icon={cartHook.cart.region.currency_code === "eur" ? faEuroSign : faDollarSign}/></h2></div> : null}
+                    </div>
+                    <div className={styles.checkOutSteps}>
+                        <div className={styles.discountLine}><input type={"text"} name={"discount-giftcard"} placeholder={t("shop:discountgiftcardplaceholder")} value={discount} onChange={(e)=>setDiscount(e.target.value)}/><button onClick={()=>handleAddDiscount()}>{t("shop:Add")}</button></div>
+                        {user ? <button disabled={!(cartHook.cart && cartHook.cart .items.length)} onClick={()=>onContinue()}>{t("shop:continueCheckout")}</button> : <Link href={"/login?onSignIn="+router.asPath}><a>{t("authentification:youMustLoginToContinue")} <FontAwesomeIcon icon={faArrowUpRightFromSquare}/></a></Link>}
+                    </div>
                 </div>
             </div>
+
         </>
     )
 }

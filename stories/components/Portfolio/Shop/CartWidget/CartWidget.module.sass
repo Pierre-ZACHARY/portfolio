@@ -82,127 +82,132 @@
           &:hover
             background-color: var(--primary-color) !important
 
-    .checkOut
-      margin-top: 20px
-      flex: 0 1 auto
-      position: relative
-      .checkOutSteps
-        .discountLine
-          display: flex
-          gap: 10px
-          align-items: center
-          justify-content: center
-          margin: 20px 0 0 0
-          input
-            flex: 1 1 auto
-            background-color: var(--background)
-            border: none
-            border-radius: 9px
-            padding: 5px
-          button
-            flex: 0 1 auto
-            width: min-content
-            margin: 0
-            font-size: var(--font-small)
-            padding: 5px 10px
-        a
-          width: 100%
-          text-align: center
-          color: var(--primary-color)
-        button
-          margin: 20px 0 0 0
-          width: 100%
-          font-weight: 600
-          color: var(--background)
-          &:disabled
-            opacity: 0.6
-
-      .checkOutInfo
-        .displayDiscountCodes
-          display: flex
-          flex-direction: column
-          gap: 5px
-          margin: 5px 0
-          &>div
-            display: flex
-            align-items: center
-            justify-content: space-between
-            p
-              font-size: var(--font-small)
-              color: var(--primary-color)
-              margin: 0
-            button
-              margin: 0
-              padding: 3px
-              max-height: min-content
-              display: flex
-              align-items: center
-              svg
-                width: var(--font-small)
-                height: var(--font-small)
-        &>div
-          display: flex
-          justify-content: space-between
-          flex-wrap: nowrap
-        h1, h2
-          font-size: var(--font-medium)
-          margin: 0
-          line-height: 1
-          &.displayDiscount
-            color: var(--primary-color)
-
-    .showItems
-      flex: 1 1 auto
-      position: relative
+    .showContent
+      display: flex
       overflow-y: auto
-      ol
-        margin: 0
-        list-style-type: none
-        padding: 0
-        width: 100%
-        height: 100%
-        display: flex
-        overflow-y: auto
-        flex-wrap: nowrap
-        gap: 15px
-        flex-direction: column-reverse
-        li
-          display: flex
-          justify-content: space-between
-          .itemInfo
+      flex: 1 1 auto
+      flex-direction: column
+      .checkOut
+        margin-top: 20px
+        flex: 0 1 auto
+        position: relative
+        .checkOutSteps
+          .discountLine
             display: flex
+            gap: 10px
             align-items: center
-            gap: 20px
-            .tempQuantity
-              opacity: 0.4
-          .quantitiesButton
+            justify-content: center
+            margin: 20px 0 0 0
+            input
+              flex: 1 1 auto
+              background-color: var(--background)
+              border: none
+              border-radius: 9px
+              padding: 5px
+            button
+              flex: 0 1 auto
+              width: min-content
+              margin: 0
+              font-size: var(--font-small)
+              padding: 5px 10px
+          a
+            width: 100%
+            text-align: center
+            color: var(--primary-color)
+          button
+            margin: 20px 0 0 0
+            width: 100%
+            font-weight: 600
+            color: var(--background)
+            &:disabled
+              opacity: 0.6
+
+        .checkOutInfo
+          .displayDiscountCodes
             display: flex
             flex-direction: column
-            height: 100%
-            justify-content: center
             gap: 5px
-            button
-              padding: 5px 10px
-              border-radius: 9px
-              margin: 0
-              background-color: var(--background)
-              svg
-                height: var(--font-small)
-                width: var(--font-small)
-                color: var(--primary)
-        h1, h2, h3
+            margin: 5px 0
+            &>div
+              display: flex
+              align-items: center
+              justify-content: space-between
+              p
+                font-size: var(--font-small)
+                color: var(--primary-color)
+                margin: 0
+              button
+                margin: 0
+                padding: 3px
+                max-height: min-content
+                display: flex
+                align-items: center
+                svg
+                  width: var(--font-small)
+                  height: var(--font-small)
+          &>div
+            display: flex
+            justify-content: space-between
+            flex-wrap: nowrap
+          h1, h2
+            font-size: var(--font-medium)
+            margin: 0
+            line-height: 1
+            &.displayDiscount
+              color: var(--primary-color)
+
+      .showItems
+        flex: 1 1 auto
+        position: relative
+
+        ol
           margin: 0
-          line-height: 1
-          font-weight: normal
-        h1
-          font-size: var(--font-medium)
-          font-weight: 800
-        h2, h3
-          font-size: var(--font-small)
-          strong
-            font-weight: 700
-            background-color: transparent
-            color: var(--primary)
+          list-style-type: none
+          padding: 0
+          width: 100%
+          height: 100%
+          display: flex
+          overflow-y: auto
+          flex-wrap: nowrap
+          gap: 15px
+          flex-direction: column-reverse
+          li
+            display: flex
+            justify-content: space-between
+            .itemInfo
+              display: flex
+              align-items: center
+              gap: 20px
+              .tempQuantity
+                opacity: 0.4
+            .quantitiesButton
+              display: flex
+              flex-direction: column
+              height: 100%
+              justify-content: center
+              gap: 5px
+              button
+                padding: 5px 10px
+                border-radius: 9px
+                margin: 0
+                background-color: var(--background)
+                svg
+                  height: var(--font-small)
+                  width: var(--font-small)
+                  color: var(--primary)
+          h1, h2, h3
+            margin: 0
+            line-height: 1
+            font-weight: normal
+          h1
+            font-size: var(--font-medium)
+            font-weight: 800
+          h2, h3
+            font-size: var(--font-small)
+            strong
+              font-weight: 700
+              background-color: transparent
+              color: var(--primary)
 
 .selectUserAddress
   display: flex
