@@ -5,6 +5,7 @@ import {backgroundImages} from "polished";
 import {format, parseISO} from "date-fns";
 import Link from "next/link";
 import { motion } from "framer-motion";
+import {useTranslation} from "next-i18next";
 
 
 interface BlogcardProps {
@@ -25,12 +26,14 @@ export const Blogcard = ({
                              id,
                              ...props
                          }: BlogcardProps) => {
+
+    const {t} = useTranslation()
     let infotext = ""
     if(lastupdated){
-        infotext += "⏱️ Last Post\n"
+        infotext += "⏱️ "+t("index:lastUpdated")+"\n"
     }
     if(mostviewed){
-        infotext += "👀️ Most Viewed"
+        infotext += "👀️ "+t("index:MostViewed")
     }
     let info = <pre className={styles.cardInfo}>{infotext}</pre>
     let date;
