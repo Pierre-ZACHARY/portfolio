@@ -1,0 +1,39 @@
+.container
+  width: fit-content
+  margin: auto
+  display: flex
+  flex-direction: column
+  gap: 10px
+  a
+    cursor: pointer
+  &>.mail
+    border-radius: 20px
+    display: flex
+    align-items: center
+    a
+      color: var(--background)
+      margin: 0
+      line-height: 1.2
+      font-size: var(--font-medium)
+      padding: 15px 20px
+      @media (max-width: 768px)
+        font-size: var(--font-small)
+      &:nth-child(1)
+        background-color: var(--primary-color)
+        border-right: solid var(--background) 1px
+        border-radius: 20px 0 0 20px
+        font-weight: 600
+      &:nth-child(2)
+        background-color: rgba(var(--primary-color-rgb), 0.6)
+        border-right: solid black 1px
+        border-radius: 0 20px 20px 0
+  &>.socialsIcons
+    display: flex
+    justify-content: space-between
+    width: 100%
+    a
+      color: var(--primary)
+      padding: 10px
+      border-radius: 50%
+      &:hover
+        color: var(--primary-color)

@@ -1,5 +1,6 @@
 import {Layout} from "../../../components/Portfolio/Layout/Layout";
 import styles from "./Index.module.css"
+import sass from "./Index.module.sass"
 import {useTranslation} from "react-i18next";
 import {useEffect, useRef, useState} from "react";
 import {useAppDispatch, useAppSelector} from "../../../../redux/hooks";
@@ -12,12 +13,15 @@ import {
 } from "../../../components/Portfolio/Layout/Header/HeaderSection/headerSectionAction";
 import {Scrolldown} from "../../../components/Portfolio/Index/ScollDown/scrolldown";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faDownload, faQuoteLeft, faQuoteRight} from "@fortawesome/free-solid-svg-icons";
+import {faCheck, faClipboard, faCopy, faDownload, faPhone} from "@fortawesome/free-solid-svg-icons";
 import {Blogslider, BlogsliderProps} from "../../../components/Portfolio/Index/BlogSlider/blogslider";
-import { motion } from "framer-motion";
-import { getDimensions } from "lib/utils";
+import {motion} from "framer-motion";
+import {getDimensions} from "lib/utils";
 import {DisplayShop} from "../../../components/Portfolio/Shop/DisplayShop/DisplayShop";
 import Spline from "@splinetool/react-spline";
+import {Application, SPEObject} from "@splinetool/runtime";
+import {faDiscord, faGithub, faLinkedin, faTwitter} from "@fortawesome/free-brands-svg-icons";
+import {IconProp} from "@fortawesome/fontawesome-svg-core";
 
 
 // const eye = "M160 256C160 185.3 217.3 128 288 128C358.7 128 416 185.3 416 256C416 326.7 358.7 384 288 384C217.3 384 160 326.7 160 256zM288 336C332.2 336 368 300.2 368 256C368 211.8 332.2 176 288 176C287.3 176 286.7 176 285.1 176C287.3 181.1 288 186.5 288 192C288 227.3 259.3 256 224 256C218.5 256 213.1 255.3 208 253.1C208 254.7 208 255.3 208 255.1C208 300.2 243.8 336 288 336L288 336zM95.42 112.6C142.5 68.84 207.2 32 288 32C368.8 32 433.5 68.84 480.6 112.6C527.4 156 558.7 207.1 573.5 243.7C576.8 251.6 576.8 260.4 573.5 268.3C558.7 304 527.4 355.1 480.6 399.4C433.5 443.2 368.8 480 288 480C207.2 480 142.5 443.2 95.42 399.4C48.62 355.1 17.34 304 2.461 268.3C-.8205 260.4-.8205 251.6 2.461 243.7C17.34 207.1 48.62 156 95.42 112.6V112.6zM288 80C222.8 80 169.2 109.6 128.1 147.7C89.6 183.5 63.02 225.1 49.44 256C63.02 286 89.6 328.5 128.1 364.3C169.2 402.4 222.8 432 288 432C353.2 432 406.8 402.4 447.9 364.3C486.4 328.5 512.1 286 526.6 256C512.1 225.1 486.4 183.5 447.9 147.7C406.8 109.6 353.2 80 288 80V80z"
@@ -50,6 +54,7 @@ export const Index = ({blogPosts = {content: [{
     }]}}: IndexProps) => {
     const { t } = useTranslation();
     const [state, setState] = useState<IndexState>({mounted: false});
+    const [copied, setCopied] = useState<boolean>(false);
     const selected_index: number = useAppSelector(state => state.headerSection.selected);
     const dispatch = useAppDispatch();
     const Skills = useRef(null);
@@ -57,6 +62,8 @@ export const Index = ({blogPosts = {content: [{
     const Shop = useRef(null);
     const Introduction = useRef(null);
     const Contact = useRef(null);
+
+    const splineRef = useRef< Application | undefined>(undefined);
 
     const sectionRefs = [
         { section: 0, ref: Introduction },
@@ -117,6 +124,8 @@ export const Index = ({blogPosts = {content: [{
 
 
 
+
+
     return (
         <>
             <Layout home paddingTop={0}>
@@ -151,8 +160,46 @@ export const Index = ({blogPosts = {content: [{
                 <div className={styles.screenContact+" "+styles.screen} id="fifth" ref={Contact}>
                     <h1>{t("header:section5")}</h1>
                     <div className={styles.splineContainer}>
-                        <Spline scene="https://prod.spline.design/ZF0DQUkk5PMyP6IZ/scene.splinecode" className={styles.splineObj} />
+                        <Spline onLoad={(spline : Application)=>splineRef.current = spline}
+                                scene="https://prod.spline.design/ZF0DQUkk5PMyP6IZ/scene.splinecode" className={styles.splineObj} />
                     </div>
+                    <div className={sass.container} onMouseLeave={()=>{
+                        splineRef.current?.findObjectByName("ResetView")?.emitEvent("mouseDown");
+                        setTimeout(()=>splineRef.current?.findObjectByName("Rotate")?.emitEvent("mouseDown"), 1000);
+                    }}>
+                        <div className={sass.mail}
+                            onMouseEnter={()=>{
+                            splineRef.current?.findObjectByName("LookAtMail")?.emitEvent("mouseDown")
+                        }}>
+                            <a href={"mailto:pierre.zachary45@gmail.com"}>pierre.zachary45@gmail.com</a>
+                            <a onClick={()=>{
+                                navigator.clipboard.writeText("pierre.zachary45@gmail.com").then(r => {
+                                    setCopied(true);
+                                    setTimeout(()=>setCopied(false), 3000);
+                                });
+                            }}>{copied ? <FontAwesomeIcon icon={faCheck}/> : <FontAwesomeIcon icon={faCopy}/>}</a>
+                        </div>
+                        <div className={sass.socialsIcons} >
+                            <a onMouseEnter={()=>{
+                                splineRef.current?.findObjectByName("LookAtDiscord")?.emitEvent("mouseDown")
+                            }}><FontAwesomeIcon icon={faDiscord as IconProp}/></a>
+                            <a onMouseEnter={()=>{
+                                splineRef.current?.findObjectByName("LookAtTwitter")?.emitEvent("mouseDown")
+                            }}><FontAwesomeIcon icon={faTwitter  as IconProp}/></a>
+                            <a onMouseEnter={()=>{
+                                splineRef.current?.findObjectByName("LookAtTel")?.emitEvent("mouseDown")
+                            }}><FontAwesomeIcon icon={faPhone  as IconProp}/></a>
+                            <a onMouseEnter={()=>{
+                                splineRef.current?.findObjectByName("LookAtLinkedin")?.emitEvent("mouseDown")
+                            }}><FontAwesomeIcon icon={faLinkedin  as IconProp}/></a>
+                            <a href={"https://github.com/Pierre-ZACHARY"} target={"_blank"}
+                                onMouseEnter={()=>{
+                                splineRef.current?.findObjectByName("LookAtGithub")?.emitEvent("mouseDown")
+                            }}><FontAwesomeIcon icon={faGithub  as IconProp}/></a>
+                        </div>
+                    </div>
+
+
                 </div>
             </Layout>
         </>
