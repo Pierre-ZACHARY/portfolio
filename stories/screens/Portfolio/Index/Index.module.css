@@ -19,7 +19,7 @@
 }
 
 .screen .splineContainer canvas{
-    transform: scale(0.3);
+    transform: scale(0.6);
 }
 
 .screen .splineContainer .splineObj{
