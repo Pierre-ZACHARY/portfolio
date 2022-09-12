@@ -148,7 +148,7 @@ export const Index = ({blogPosts = {content: [{
                     <h1>{t("header:section4")}</h1>
                     <DisplayShop/>
                 </div>
-                <div className={styles.screen} id="fifth" ref={Contact}>
+                <div className={styles.screenContact+" "+styles.screen} id="fifth" ref={Contact}>
                     <h1>{t("header:section5")}</h1>
                     <div className={styles.splineContainer}>
                         <Spline scene="https://prod.spline.design/ZF0DQUkk5PMyP6IZ/scene.splinecode" className={styles.splineObj} />
