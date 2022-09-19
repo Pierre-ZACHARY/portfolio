@@ -18,9 +18,7 @@
     height: 320px;
 }
 
-.screen .splineContainer canvas{
-    transform: scale(0.6);
-}
+
 
 .screen .splineContainer .splineObj{
     height: 500px;
