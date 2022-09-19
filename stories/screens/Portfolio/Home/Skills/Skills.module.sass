@@ -10,23 +10,26 @@
     max-height: calc(100vw - 40px)
     max-width: calc(100vw - 40px)
   .select
-    max-height: calc(100vw - 40px)
-    h2
-      line-height: 1.2
-      font-size: var(--font-large)
-    ol
-      list-style-type: none
-      padding-left: 0
-      display: flex
-      flex-direction: column
-      gap: 10px
-      li
-        padding: 1em
-        background-color: var(--background-highlight)
-        border-radius: 20px
-        display: flex
-        justify-content: center
-        width: 100%
+    width: 600px
+    max-width: calc(100vw - 40px)
+    .default
+      &>h1
+        font-size: var(--font-medium)
+        &:nth-child(1)
+          background: linear-gradient(to right, #7F2AC7 0%, #F90182 100%)
+          -webkit-background-clip: text
+          -webkit-text-fill-color: transparent
+        &:nth-child(2)
+          background: linear-gradient(to right, #0380EF 0%, #05DCD9 100%)
+          -webkit-background-clip: text
+          -webkit-text-fill-color: transparent
+        &:nth-child(3)
+          background: linear-gradient(to right, #FF564C 0%, #F9C62A 100%)
+          -webkit-background-clip: text
+          -webkit-text-fill-color: transparent
+      h2, h3, p, ul
+        display: none
+
 
   .titles
     display: flex

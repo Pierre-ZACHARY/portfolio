@@ -5,6 +5,7 @@ import {useEffect, useRef, useState} from "react";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faChevronLeft} from "@fortawesome/free-solid-svg-icons";
 import { motion } from "framer-motion";
+import {JsonTree} from "../../../../../pages";
 
 
 enum Categorie{
@@ -14,25 +15,39 @@ enum Categorie{
     Data="Data"
 }
 
-export const SkillsComponent = () => {
+
+function ulChildNodesToJSX(childNodes: any[]): JSX.Element[]{
+    const res = [];
+    for(const child of childNodes){
+        if(child.childNodes.length) res.push(<li>{childNodesToText(child.childNodes)}</li>);
+    }
+    return res;
+}
+function childNodesToText(childNodes: any[]): string{
+    let res = "";
+    for(const child of childNodes){
+        if(child.childNodes.length) res+=childNodesToText(child.childNodes);
+        else res+=child._rawText;
+    }
+    return res;
+}
+const Skill = ({skill}: {skill: JsonTree }) => {
+    if(!skill.content) console.log(skill);
+    switch(skill.content.rawTagName){
+        case "h1": return <><h1>{childNodesToText(skill.content.childNodes)}</h1> {skill.children.map((s, i)=><Skill key={i} skill={s}/>)}</>
+        case "h2": return <><h2>{childNodesToText(skill.content.childNodes)}</h2> {skill.children.map((s, i)=><Skill key={i} skill={s}/>)}</>
+        case "h3": return <><h3>{childNodesToText(skill.content.childNodes)}</h3> {skill.children.map((s, i)=><Skill key={i} skill={s}/>)}</>
+        case "p": return <><p>{childNodesToText(skill.content.childNodes)}</p></>
+        case "ul": return <><ul>{ulChildNodesToJSX(skill.content.childNodes)}</ul></>
+    }
+    return <></>
+}
+
+export const SkillsComponent = ({skills}: {skills: JsonTree[]}) => {
 
     const splineRef = useRef<Application | undefined>();
     const camRef = useRef<SPEObject | undefined>(undefined);
-    const [selectedCat, setSelectedCat] = useState<Categorie | undefined>(undefined);
 
-    useEffect(()=>{
-        if(splineRef.current) {
-            if(selectedCat) {
-                splineRef.current!.findObjectByName(selectedCat.toString())?.emitEvent("mouseDown")
-            }
-            else {
-
-                splineRef.current!.findObjectByName("ResetSphere")?.emitEvent("mouseDown");
-                setTimeout(()=>{splineRef.current!.findObjectByName("Sphere")?.emitEvent("mouseDown")}, 1000)
-                // todo gérer le cas où y'a déjà un to de lancer
-            }
-        }
-    }, [selectedCat, splineRef])
 
     function onLoad(spline: Application) {
         splineRef.current = spline;
@@ -48,36 +63,7 @@ export const SkillsComponent = () => {
                 />
             </div>
             <div className={styles.select}>
-                {
-                    !selectedCat ?
-                        <>
-                            <h2>Sélectionnez la catégorie qui vous intéresse :</h2>
-                            <ol>
-                                <li onClick={()=>setSelectedCat(Categorie.Web)}><motion.p className={styles.web} layoutId={"web"}>Développement Web</motion.p></li>
-                                <li onClick={()=>setSelectedCat(Categorie.Natif)}><motion.p className={styles.natif} layoutId={"natif"}>Développement Natif</motion.p></li>
-                                <li onClick={()=>setSelectedCat(Categorie.Perf)}><motion.p className={styles.perf} layoutId={"perf"}>Performance</motion.p></li>
-                                <li onClick={()=>setSelectedCat(Categorie.Data)}><motion.p className={styles.data} layoutId={"data"}>Data</motion.p></li>
-                            </ol>
-                        </>
-                        :
-                        <>
-                            <div className={styles.titles} onClick={()=>setSelectedCat(undefined)}>
-                                <FontAwesomeIcon className={{
-                                    [Categorie.Web]:styles.svgWeb,
-                                    [Categorie.Natif]:styles.svgNatif,
-                                    [Categorie.Perf]:styles.svgPerf,
-                                    [Categorie.Data]:styles.svgData,
-                                }[selectedCat]} icon={faChevronLeft}/>
-                                {{
-                                    [Categorie.Web]:<motion.p className={styles.web} layoutId={"web"}>Développement Web</motion.p>,
-                                    [Categorie.Natif]:<motion.p className={styles.natif} layoutId={"natif"}>Développement Natif</motion.p>,
-                                    [Categorie.Perf]:<motion.p className={styles.perf} layoutId={"perf"}>Performance</motion.p>,
-                                    [Categorie.Data]:<motion.p className={styles.data} layoutId={"data"}>Data</motion.p>,
-                                }[selectedCat]}
-                            </div>
-
-                        </>
-                }
+                {skills.map((s)=><Skill key={s.toString()} skill={s}/>)}
             </div>
         </div>
     )
