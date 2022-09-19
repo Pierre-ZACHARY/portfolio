@@ -10,6 +10,7 @@ import {remark} from "remark";
 import fs from 'fs';
 import remarkHtml from "remark-html";
 import { parse, HTMLElement } from 'node-html-parser';
+import {Exception} from "sass";
 
 export default function IndexPage({ allPostsData, skills}: { allPostsData: any, skills: JsonTree[] }) {
     return (
@@ -101,9 +102,14 @@ function clearChilds(childNodes: Node[]): any{
 
 export async function getStaticProps({ locale }: any) {
     const allPostsData = await getSortedPostsData(locale);
-    const skillsHtml: any = (await remark().use(remarkHtml).process(fs.readFileSync(process.cwd()+ '/pages/markdown/'+locale+'/skills.md', 'utf8'))).value;
-    const skills: JsonTree[] = domToJsonTree(parse(skillsHtml));
-    console.log(skills);
+    let skills: JsonTree[] = [];
+    try{
+        const skillsHtml: any = (await remark().use(remarkHtml).process(fs.readFileSync(process.cwd()+ '/pages/markdown/'+locale+'/skills.md', 'utf8'))).value;
+        skills = domToJsonTree(parse(skillsHtml));
+    }
+    catch(e){
+        console.log(e);
+    }
     return {
         props: {
             ...(await serverSideTranslations(locale, ['common', 'header', 'index', 'chatbot', 'authentification', 'shop'])),

@@ -12,24 +12,78 @@
   .select
     width: 600px
     max-width: calc(100vw - 40px)
-    .default
-      &>h1
-        font-size: var(--font-medium)
-        &:nth-child(1)
+    display: flex
+    flex-direction: column
+    gap: 10px
+    margin: 20px
+    .topLevelContainer
+      background-color: var(--background-highlight)
+      border-radius: 20px
+      padding: 0 15px
+      display: flex
+      flex-direction: column
+      gap: 15px
+      .titleOnClick
+        padding: 15px 0
+        cursor: pointer
+        position: relative
+        svg
+          position: absolute
+          left: 0
+          top: 15px
+
+      #title0
+        path
+          fill: #7F2AC7
+        h1
           background: linear-gradient(to right, #7F2AC7 0%, #F90182 100%)
           -webkit-background-clip: text
           -webkit-text-fill-color: transparent
-        &:nth-child(2)
+      #title1
+        path
+          fill: #0380EF
+        h1
           background: linear-gradient(to right, #0380EF 0%, #05DCD9 100%)
           -webkit-background-clip: text
           -webkit-text-fill-color: transparent
-        &:nth-child(3)
+      #title2
+        path
+          fill: #FF564C
+        h1
           background: linear-gradient(to right, #FF564C 0%, #F9C62A 100%)
           -webkit-background-clip: text
           -webkit-text-fill-color: transparent
-      h2, h3, p, ul
-        display: none
+      #title3
+        path
+          fill: #02e890
+        h1
+          background: linear-gradient(to right, #02e890 0%, #4fc946 100%)
+          -webkit-background-clip: text
+          -webkit-text-fill-color: transparent
+    h1
+      font-size: var(--font-medium)
+      background: var(--background-highlight)
+    .h2MainContainer
 
+      .h2Container
+        cursor: pointer
+        display: flex
+        justify-content: space-between
+        align-items: center
+
+      h2, h3
+        display: flex
+        justify-content: flex-start
+        align-items: center
+        gap: 5px
+      h2, h3, p, li
+        margin: 0
+        padding: 0
+      ul
+        padding: 0  0 0 30px
+        margin: 0
+      p, li
+        font-size: var(--font-small)
 
   .titles
     display: flex

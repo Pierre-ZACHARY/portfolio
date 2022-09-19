@@ -3,6 +3,7 @@ import counterReducer from "../stories/components/ReduxExample/Counter/counterRe
 import headerSectionReducer from "../stories/components/Portfolio/Layout/Header/HeaderSection/headerSectionReducer";
 import chatbotReducer from "../stories/components/Portfolio/Layout/Chatbot/chatbotReducer";
 import cartReducer from "../stories/components/Portfolio/Shop/cartReducer";
+import SkillsReducer from "../stories/screens/Portfolio/Home/Skills/SkillsReducer";
 
 
 export const store =  configureStore({
@@ -10,7 +11,8 @@ export const store =  configureStore({
         counter: counterReducer,
         headerSection: headerSectionReducer,
         chatbot: chatbotReducer,
-        cart: cartReducer
+        cart: cartReducer,
+        skills: SkillsReducer
     },
 })
 
