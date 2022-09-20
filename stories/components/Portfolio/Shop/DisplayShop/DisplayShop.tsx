@@ -7,7 +7,6 @@ export const DisplayShop = () => {
         <>
             <div className={styles.main}>
                 <Search/>
-                <ShopCard itemId={""}/>
             </div>
         </>
     )

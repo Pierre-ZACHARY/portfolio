@@ -12,13 +12,13 @@ import remarkHtml from "remark-html";
 import { parse, HTMLElement } from 'node-html-parser';
 import {Exception} from "sass";
 
-export default function IndexPage({ allPostsData, skills}: { allPostsData: any, skills: JsonTree[] }) {
+export default function IndexPage({skills}: { allPostsData: any, skills: JsonTree[] }) {
     return (
         <>
             <Head>
                 <title>Pierre Zachary</title>
             </Head>
-            <Index blogPosts={{content: allPostsData}} skills={skills}/>
+            <Index skills={skills}/>
         </>
     )
 }
@@ -101,7 +101,6 @@ function clearChilds(childNodes: Node[]): any{
 
 
 export async function getStaticProps({ locale }: any) {
-    const allPostsData = await getSortedPostsData(locale);
     let skills: JsonTree[] = [];
     try{
         const skillsHtml: any = (await remark().use(remarkHtml).process(fs.readFileSync(process.cwd()+ '/pages/markdown/'+locale+'/skills.md', 'utf8'))).value;
@@ -113,9 +112,7 @@ export async function getStaticProps({ locale }: any) {
     return {
         props: {
             ...(await serverSideTranslations(locale, ['common', 'header', 'index', 'chatbot', 'authentification', 'shop'])),
-            allPostsData,
             skills: skills,
         },
-        revalidate: 1800, // In seconds
     };
 }

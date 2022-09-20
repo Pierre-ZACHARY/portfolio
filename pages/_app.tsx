@@ -8,6 +8,10 @@ import { appWithTranslation } from 'next-i18next';
 import { config } from '@fortawesome/fontawesome-svg-core'
 import '@fortawesome/fontawesome-svg-core/styles.css'
 import "react-step-progress-bar/styles.css";
+import "swiper/css";
+import "swiper/css/pagination";
+import "swiper/css/navigation";
+
 
 config.autoAddCss = false
 import { initializeApp } from "firebase/app";

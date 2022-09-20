@@ -66,7 +66,7 @@ export const CartWidget = ( ) => {
     }, [order])
 
     return (
-        <motion.div layout className={styles.main+" "+(isOpen ? styles.open : null)} onClick={()=>(!isOpen ? setOpen(true) : null)} >
+        <motion.div layout className={styles.main+" "+(isOpen ? styles.open : null)+" "+(cartHook.cart && cartHook.cart.items.length ? "" : styles.widgetEmpty)} onClick={()=>(!isOpen ? setOpen(true) : null)} >
             {!isOpen ? <div className={styles.svgContainer}>
                 <FontAwesomeIcon icon={faBagShopping}/>
                 {cartHook.cart && cartHook.cart.items.length ? <div className={styles.itemsIndicator}>{cartHook.cart.items.length}</div> : null}

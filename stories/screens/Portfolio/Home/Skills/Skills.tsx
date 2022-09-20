@@ -1,4 +1,3 @@
-import Spline from "@splinetool/react-spline";
 import styles from "./Skills.module.sass";
 import { Application, SPEObject } from "@splinetool/runtime";
 import {createContext, useContext, useEffect, useRef, useState} from "react";
@@ -15,6 +14,12 @@ import { JsonTree } from "../../../../../pages";
 import { useAppDispatch, useAppSelector } from "../../../../../redux/hooks";
 import {setSecondLevelIndex, setTopLevelIndex} from "./SkillsReducer";
 import Image from "next/image";
+import dynamic from "next/dynamic";
+import { Suspense } from 'react'
+
+const Spline = dynamic(() => import('@splinetool/react-spline'), {
+  suspense: true,
+})
 
 const SplineContext = createContext<Application | undefined>(undefined)
 
@@ -140,10 +145,13 @@ export const SkillsComponent = ({ skills }: { skills: JsonTree[] }) => {
       <SplineContext.Provider value={splineState}>
         <div className={styles.main}>
           <div className={styles.skills}>
-            <Spline
-              scene="https://prod.spline.design/XhjYI7UwM5Mo2WPm/scene.splinecode"
-              onLoad={onLoad}
-            />
+            <Suspense fallback={`Loading...`}>
+
+              <Spline
+                scene="https://prod.spline.design/XhjYI7UwM5Mo2WPm/scene.splinecode"
+                onLoad={onLoad}
+              />
+            </Suspense>
           </div>
           <div className={styles.select}>
             {skills.map((s, i) => <div key={s.children.length +String.fromCharCode(87 + i)+ i}><SkillH1  skill={s} index={i} /></div>

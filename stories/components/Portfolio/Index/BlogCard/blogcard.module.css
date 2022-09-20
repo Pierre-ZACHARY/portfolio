@@ -58,7 +58,7 @@
     height: calc(100% + 8px);
     border-radius: 8px;
     position: absolute;
-    z-index: -1;
+    z-index: 1;
     top: -4px;
     left: -4px;
     overflow: hidden;
@@ -66,12 +66,12 @@
 
 
 .cardShadow {
+    z-index: 1;
     position: absolute;
     content: "";
     top: calc(var(--card-height) / 6);
     left: 0;
     right: 0;
-    z-index: -1;
     height: 100%;
     width: 100%;
     transform: scale(0.8);
@@ -146,6 +146,7 @@
     bottom: 0;
     top: 0;
     right: 0;
+    z-index: 2;
     left: 0;
     border-radius: 6px;
     display: flex;

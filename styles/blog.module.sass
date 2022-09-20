@@ -1,0 +1,12 @@
+.main
+  h1
+    margin: 0
+  .cardContainer
+    --card-width: min(300px, calc(100vw - 40px))
+    --card-height: var(--card-width)
+    display: flex
+    gap: 77px
+    margin: 50px 0
+    flex-wrap: wrap
+    @media (max-width: 768px)
+      justify-content: center

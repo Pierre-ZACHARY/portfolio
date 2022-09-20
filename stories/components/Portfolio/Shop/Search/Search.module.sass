@@ -9,10 +9,12 @@
       padding: 0
       display: flex
       flex-wrap: wrap
-      gap: 1em
+      gap: 50px
       align-items: flex-start
+      @media (max-width: 768px)
+        justify-content: center
       li
-        margin: auto
+        //margin: auto
       .highlight
         mark
           background-color: var(--primary-color)
@@ -21,18 +23,21 @@
 .searchBox
   background-color: white
   display: flex
-  margin: auto
+  margin: 0 0 2em 0
   width: fit-content
   border-radius: 9px
   border: 1px solid #1E2025
   cursor: pointer
+  height: 35px
+  align-items: center
+  gap: 5px
   &.focused
     border: 1px solid var(--primary-color)
     svg
       color: var(--primary-color)
   svg
     color: black
-    padding: 15px
+    padding: 0 5px
     &.delete
       color: red
       visibility: hidden

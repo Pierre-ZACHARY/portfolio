@@ -36,7 +36,9 @@ function CustomSearchBox(props: UseSearchBoxProps) {
 
     return <><div className={[styles.searchBox, focused?styles.focused:null].join(" ")} onClick={()=>inputRef.current!.select()}>
         <FontAwesomeIcon icon={faSearch}/>
-        <input ref={inputRef} value={value} onChange={(e)=>{setValue(e.target.value)}} onFocus={()=>setFocused(true)} onBlur={()=>setFocused(false)}/>
+        <label htmlFor={"searchBox"}>
+            <input id={"searchBox"} name={"searchBox"}  placeholder={"Search..."} ref={inputRef} value={value} onChange={(e)=>{setValue(e.target.value)}} onFocus={()=>setFocused(true)} onBlur={()=>setFocused(false)}/>
+        </label>
         <FontAwesomeIcon className={styles.delete+" "+(value ?styles.active:null)} icon={faDeleteLeft} onClick={()=>setValue("")}/>
     </div></>;
 }
@@ -59,7 +61,7 @@ function CustomHits(props: any) {
 
     const [products, setProducts] = useState<Map<string, Product>>(new Map<string, Product>());
     const { hits, results, sendEvent } = useHits(props);
-    const [maxItems, setMax] = useState(3);
+    const [maxItems, setMax] = useState(99);
     const {t} = useTranslation();
 
     useEffect(()=>{

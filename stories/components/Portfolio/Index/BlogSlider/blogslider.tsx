@@ -3,14 +3,12 @@ import cardbg from "../../../../../public/cardbg.jpg"
 import { Swiper, SwiperSlide } from 'swiper/react';
 import {Navigation, Pagination, Scrollbar, A11y, Keyboard} from 'swiper';
 // Import Swiper styles
-import "swiper/css";
-import "swiper/css/pagination";
-import "swiper/css/navigation";
+
 
 import {Blogcard} from "../BlogCard/blogcard";
 
 
-interface BlogSlideI{
+export interface BlogSlideI{
     title: string,
     id: string,
     date: string,
