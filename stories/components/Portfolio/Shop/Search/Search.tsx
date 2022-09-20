@@ -226,7 +226,7 @@ const Hit = ({ hit, product }: {hit: any, product: Product | undefined}) => {
 
     return (
         <div className={"relative" +" "+ styles.hitCard}>
-            <div className={styles.imageBackground}/>
+            {/*<div className={styles.imageBackground}/>*/}
             <div className={styles.imageContainer}>
                 <Swiper effect={"cards"}
                         grabCursor={true}

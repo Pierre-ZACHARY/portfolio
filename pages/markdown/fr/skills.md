@@ -2,8 +2,6 @@
 
 # Performance
 ## ![cIcon](/icons/C_Logo.png "C") ![cppIcon](/icons/c++.png "C++") C / C++
-### Gestion de la mémoire, Frama-C
-Repérage des fuites mémoires avec **Valgrind**, prévention de bugs avec **Frama-C**
 
 ### ![openMpIcon](/icons/OpenMP_logo.png "OpenMP") ![mpiIcon](/icons/Open_MPI_logo.png "MPI") OpenMp / MPI
 Optimisation CPU multi-coeur avec **OpenMP** et multi-CPU avec **MPI**
@@ -61,7 +59,7 @@ Création de webservices avec **Spring**, connexion par JWT, gestion des rôles 
 - Création d'un service web avec une api REST proposant une authentification via JWT, et permettant de récupérer des informations via un scrapper ( avec différent outils comme **Playwright, selenium, scrappy**...)
 
 ## ![phpIcon](/icons/PHP.png "PHP") Php
-### ![wpIcon](/icons/Wordpress.png "Wordpress") Wordpress
+### ![wpIcon](/icons/wordpress.png "Wordpress") Wordpress
 **Stage conventionné de 4 mois** dans l'Agence web [EKELA](https://www.ekela.fr). Ce stage m'aura permis de me professionnaliser, d'acquérir des compétences avancées en développement web via Wordpress, ainsi que des notions d'ux design et de SEO.
 
 ### ![symfonyIcon](/icons/symfony.png "Symfony") Symfony
@@ -91,9 +89,6 @@ Création d'un scrapper pour des pages de produits, récupération des données 
 ### Bases de l'IA 
 - Apprentissage des bases de l'ia via algorithmes de recherche locale, recherche de chemin, backtracking
 - ( En cours ) Mises en place d'un réseau de neuronnes ayant pour objectif de trouver des similarités entre des pages proposant des produits à la vente ( et de déterminer si ces pages proposent effectivement quelque chose à vendre )
-
-### ![qgisIcon](/icons/qgis.png "Qgis") Qgis
-- ( En cours ) Création de script pour le logiciel de géomatique QGIS
 
 ## ![rIcon](/icons/R.png "R") R
 

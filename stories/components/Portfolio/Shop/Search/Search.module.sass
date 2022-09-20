@@ -45,25 +45,26 @@
     outline: none
 
 .hitCard
-  padding: 20px
+  //padding: 20px
   border-radius: 30px
   background-color: var(--background-highlight)
-  width: fit-content
+  width: min-content
   position: relative
   &>span
     width: 100%
   .imageContainer
-    width: 160px
+    width: 100%
     margin: auto
     .swiper
       overflow: visible
       &>div
-        width: 160px
+        width: 100%
         .swiperSlide
-          width: 160px !important
+          width: 100% !important
           height: 200px
           span
-            border-radius: 9px
+            min-width: 100%
+            border-radius: 20px 20px 0 0
           &>div
             border-radius: 9px
   .imageBackground
@@ -107,11 +108,12 @@
 
 
 .objectInfo
+  white-space: nowrap
   display: flex
   align-items: center
   gap: 10px
   flex-wrap: wrap
-  padding-top: 20px
+  padding: 20px
   justify-content: center
   .updateQuantitiesContainer
     display: flex
