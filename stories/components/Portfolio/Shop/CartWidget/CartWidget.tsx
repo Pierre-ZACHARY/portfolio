@@ -40,7 +40,7 @@ enum ContentState{
 }
 
 
-export const CartWidget = ( ) => {
+export default function CartWidget( ) {
 
     const [isOpen, setOpen] = useState(false);
     const [contentState, setContentState] = useState<ContentState>(ContentState.CartOverView);

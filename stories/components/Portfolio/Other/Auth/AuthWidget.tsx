@@ -78,7 +78,7 @@ export const AuthWidget = () => {
     }
     return (
         <>
-            <div tabIndex={1}
+            <div tabIndex={0}
                  style={{position: "relative"}}
                  // onBlur={()=>setIsOpen(false)}
                  className={[styles.parentButton, isOpen ? styles.menuOpen : null].join(" ")}

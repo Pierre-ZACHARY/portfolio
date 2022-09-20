@@ -19,6 +19,7 @@ import { Suspense } from 'react'
 
 const Spline = dynamic(() => import('@splinetool/react-spline'), {
   suspense: true,
+  ssr: false,
 })
 
 const SplineContext = createContext<Application | undefined>(undefined)

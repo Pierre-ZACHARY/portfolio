@@ -1,7 +1,5 @@
 import styles from "./Layout.module.sass"
 import Head from "next/head";
-import {CartWidget} from "../Shop/CartWidget/CartWidget";
-import {Chatbot} from "../Layout/Chatbot/chatbot";
 import {motion} from "framer-motion";
 import Link from "next/link";
 import {AuthWidget} from "../Other/Auth/AuthWidget";
@@ -9,6 +7,18 @@ import {ThemeSwitch, TranslationSwitch} from "../Layout/Header/IconSwitch/IconSw
 import {useEffect, useState} from "react";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
 import {faChevronRight, faChevronDown, faBars, faXmark} from "@fortawesome/free-solid-svg-icons";
+import dynamic from "next/dynamic";
+import { Suspense } from 'react'
+
+const CartWidget = dynamic(() => import("../Shop/CartWidget/CartWidget"), {
+    ssr: false,
+    suspense: true,
+})
+
+const Chatbot = dynamic(() => import("../Layout/Chatbot/chatbot"), {
+    ssr: false,
+    suspense: true,
+})
 
 export const Layout = (props: any) => {
 
@@ -65,8 +75,13 @@ export const Layout = (props: any) => {
                     {props.children}
                 </main>
                 <motion.div layoutScroll className={styles.fixedWidget}>
-                    {/*<CartWidget/>*/}
-                    {/*<Chatbot/>*/}
+                    {/*TODO mettre les deux en lazy load*/}
+                    <Suspense fallback={``}>
+                        <CartWidget/>
+                    </Suspense>
+                    <Suspense fallback={""}>
+                        <Chatbot/>
+                    </Suspense>
                 </motion.div>
             </div>
         </>

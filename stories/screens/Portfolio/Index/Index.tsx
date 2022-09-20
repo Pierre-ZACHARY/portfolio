@@ -43,6 +43,7 @@ import { Suspense } from 'react'
 
 const Spline = dynamic(() => import('@splinetool/react-spline'), {
   suspense: true,
+  ssr: false,
 })
 
 
@@ -97,7 +98,7 @@ export const Index = ({
                 priority
               />
               <h1 style={{ marginTop: 20 }}>Pierre Zachary</h1>
-              <a href="/cv.pdf" target="_blank">
+              <a href="/cv.pdf" target="_blank" aria-label={"Download CV"}>
                 <button>
                   <FontAwesomeIcon icon={faDownload} /> {t("index:downloadCv")}
                 </button>
@@ -137,7 +138,8 @@ export const Index = ({
         </div>
         <div className={styles.screen} id="second">
           <h1>{t("header:section2")}</h1>
-          {/*<SkillsComponent skills={skills}/>*/}
+          {/*TODO mettre en lazy load*/}
+          <SkillsComponent skills={skills}/>
 
         </div>
         <div
@@ -146,13 +148,14 @@ export const Index = ({
         >
           <h1>{t("header:section5")}</h1>
           <div className={styles.splineContainer}>
-            {/*<Suspense fallback={<div>Loading...</div>}>*/}
-            {/*  <Spline*/}
-            {/*    onLoad={(spline: Application) => (splineRef.current = spline)}*/}
-            {/*    scene="https://prod.spline.design/ZF0DQUkk5PMyP6IZ/scene.splinecode"*/}
-            {/*    className={styles.splineObj}*/}
-            {/*  />*/}
-            {/*</Suspense>*/}
+            {/*TODO mettre en lazy load*/}
+            <Suspense fallback={<div>Loading...</div>}>
+              <Spline
+                onLoad={(spline: Application) => (splineRef.current = spline)}
+                scene="https://prod.spline.design/ZF0DQUkk5PMyP6IZ/scene.splinecode"
+                className={styles.splineObj}
+              />
+            </Suspense>
           </div>
           <div
             className={sass.container}
@@ -177,10 +180,10 @@ export const Index = ({
                   ?.emitEvent("mouseDown");
               }}
             >
-              <a href={"mailto:pierre.zachary45@gmail.com"}>
+              <a href={"mailto:pierre.zachary45@gmail.com"} aria-label={"pierre.zachary45@gmail.com"}>
                 pierre.zachary45@gmail.com
               </a>
-              <a
+              <a aria-label={"Copy Email"}
                 onClick={() => {
                   navigator.clipboard
                     .writeText("pierre.zachary45@gmail.com")
@@ -198,7 +201,8 @@ export const Index = ({
               </a>
             </div>
             <div className={sass.socialsIcons}>
-              <a
+              <a aria-label={"Discord"}
+                 href={"/"}
                 onMouseEnter={() => {
                   splineRef.current
                     ?.findObjectByName("LookAtDiscord")
@@ -207,7 +211,8 @@ export const Index = ({
               >
                 <FontAwesomeIcon icon={faDiscord as IconProp} />
               </a>
-              <a
+              <a aria-label={"Twitter"}
+                 href={"/"}
                 onMouseEnter={() => {
                   splineRef.current
                     ?.findObjectByName("LookAtTwitter")
@@ -216,7 +221,8 @@ export const Index = ({
               >
                 <FontAwesomeIcon icon={faTwitter as IconProp} />
               </a>
-              <a
+              <a aria-label={"Phone"}
+                 href={"/"}
                 onMouseEnter={() => {
                   splineRef.current
                     ?.findObjectByName("LookAtTel")
@@ -225,8 +231,9 @@ export const Index = ({
               >
                 <FontAwesomeIcon icon={faPhone as IconProp} />
               </a>
-              <a
-                onMouseEnter={() => {
+              <a aria-label={"Linkedin"}
+                 href={"/"}
+                 onMouseEnter={() => {
                   splineRef.current
                     ?.findObjectByName("LookAtLinkedin")
                     ?.emitEvent("mouseDown");
@@ -234,7 +241,7 @@ export const Index = ({
               >
                 <FontAwesomeIcon icon={faLinkedin as IconProp} />
               </a>
-              <a
+              <a aria-label={"GitHub"}
                 href={"https://github.com/Pierre-ZACHARY"}
                 rel={"_blank"}
                 onMouseEnter={() => {

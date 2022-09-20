@@ -29,7 +29,7 @@ const getKey = (): string => {
 
 const bot: Author = {name: "Bot", avatar_url: "https://images.emojiterra.com/google/android-11/512px/1f916.png"};
 
-export const Chatbot = ({args}: any) => {
+export default function Chatbot({args}: any) {
     let ws: undefined | WebSocket = undefined;
     const { t } = useTranslation();
     const dispatch = useAppDispatch();
