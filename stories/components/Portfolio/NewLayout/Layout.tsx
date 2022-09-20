@@ -25,6 +25,10 @@ export const Layout = (props: any) => {
             <Head>
                 <title>Pierre Zachary</title>
                 <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1"/>
+                <meta
+                    name="description"
+                    content="This is my personal websites for demonstration purposes"
+                />
             </Head>
             <div className={props.className+" "+styles.main}>
                 <motion.header style={{position: "fixed"}} layout layoutScroll className={(scroll>0 ? styles.showShadow : "")+" "+(menuOpen ? styles.menuOpen : "")}>
@@ -61,8 +65,8 @@ export const Layout = (props: any) => {
                     {props.children}
                 </main>
                 <motion.div layoutScroll className={styles.fixedWidget}>
-                    <CartWidget/>
-                    <Chatbot/>
+                    {/*<CartWidget/>*/}
+                    {/*<Chatbot/>*/}
                 </motion.div>
             </div>
         </>

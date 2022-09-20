@@ -137,7 +137,7 @@ export const Index = ({
         </div>
         <div className={styles.screen} id="second">
           <h1>{t("header:section2")}</h1>
-          <SkillsComponent skills={skills}/>
+          {/*<SkillsComponent skills={skills}/>*/}
 
         </div>
         <div
@@ -146,13 +146,13 @@ export const Index = ({
         >
           <h1>{t("header:section5")}</h1>
           <div className={styles.splineContainer}>
-            <Suspense fallback={<div>Loading...</div>}>
-              <Spline
-                onLoad={(spline: Application) => (splineRef.current = spline)}
-                scene="https://prod.spline.design/ZF0DQUkk5PMyP6IZ/scene.splinecode"
-                className={styles.splineObj}
-              />
-            </Suspense>
+            {/*<Suspense fallback={<div>Loading...</div>}>*/}
+            {/*  <Spline*/}
+            {/*    onLoad={(spline: Application) => (splineRef.current = spline)}*/}
+            {/*    scene="https://prod.spline.design/ZF0DQUkk5PMyP6IZ/scene.splinecode"*/}
+            {/*    className={styles.splineObj}*/}
+            {/*  />*/}
+            {/*</Suspense>*/}
           </div>
           <div
             className={sass.container}
