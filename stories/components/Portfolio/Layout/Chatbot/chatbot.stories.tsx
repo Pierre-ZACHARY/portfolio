@@ -1,6 +1,6 @@
 import {ComponentMeta, ComponentStory} from "@storybook/react";
 import React from "react";
-import {Chatbot} from "./chatbot";
+import Chatbot from "./chatbot";
 
 
 export default {

@@ -1,7 +1,7 @@
 import {Header} from "./Header/header";
-import {Chatbot} from "./Chatbot/chatbot";
+import Chatbot from "./Chatbot/chatbot";
 import Head from "next/head";
-import {CartWidget} from "../Shop/CartWidget/CartWidget";
+import CartWidget from "../Shop/CartWidget/CartWidget";
 import styles from "./Layout.module.sass"
 import { motion } from "framer-motion";
 
