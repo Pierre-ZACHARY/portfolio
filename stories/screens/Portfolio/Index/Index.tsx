@@ -59,7 +59,14 @@ export const Index = ({
 }: IndexProps) => {
   const { t } = useTranslation();
   const [copied, setCopied] = useState<boolean>(false);
+  const [pageFullyLoaded, setPageFullyLoaded] = useState<boolean>(false);
 
+  function handlePageLoad() {
+    setPageFullyLoaded(true);
+  }
+  useEffect(()=>{window.addEventListener('load', handlePageLoad);
+    return window.removeEventListener("load", handlePageLoad);
+  }, []);
   const splineRef = useRef<Application | undefined>(undefined);
 
 
@@ -137,8 +144,9 @@ export const Index = ({
         </div>
         <div className={styles.screen} id="second">
           <h1>{t("header:section2")}</h1>
-          {/*TODO mettre en lazy load*/}
-          <SkillsComponent skills={skills}/>
+          {!pageFullyLoaded ?
+              <div>Loading...</div> :
+              <SkillsComponent skills={skills}/>}
 
         </div>
         <div
@@ -147,14 +155,13 @@ export const Index = ({
         >
           <h1>{t("header:section5")}</h1>
           <div className={styles.splineContainer}>
-            {/*TODO mettre en lazy load*/}
-            <Suspense fallback={<div>Loading...</div>}>
-              <Spline
-                onLoad={(spline: Application) => (splineRef.current = spline)}
-                scene="https://prod.spline.design/ZF0DQUkk5PMyP6IZ/scene.splinecode"
-                className={styles.splineObj}
-              />
-            </Suspense>
+            {!pageFullyLoaded ? <div>Loading...</div> :
+                  <Spline
+                    onLoad={(spline: Application) => (splineRef.current = spline)}
+                    scene="https://prod.spline.design/ZF0DQUkk5PMyP6IZ/scene.splinecode"
+                    className={styles.splineObj}
+                  />
+            }
           </div>
           <div
             className={sass.container}
