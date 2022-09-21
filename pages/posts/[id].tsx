@@ -28,7 +28,7 @@ import firebase from "firebase/compat";
 import FirestoreDataConverter = firebase.firestore.FirestoreDataConverter;
 import {Blogslider} from "../../stories/components/Portfolio/Index/BlogSlider/blogslider";
 import {DisplayComments} from "../../stories/components/Portfolio/Posts/DisplayComments/DisplayComments";
-import {Layout} from "../../stories/components/Portfolio/Layout/Layout";
+import { Layout } from "stories/components/Portfolio/NewLayout/Layout";
 
 interface PostDb{
     id: string,
@@ -119,7 +119,7 @@ export default function Post({allPostsData, postData }: any) {
 
     return (
 
-        <Layout postId={postData.id} headerClassName={utilStyles.layoutMaxWidth} className={utilStyles.defineMaxWidth}>
+        <Layout>
             <Head>
                 <title>{postData.title}</title>
                 <meta
