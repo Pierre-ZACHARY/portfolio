@@ -43,7 +43,6 @@ import { Suspense } from 'react'
 
 const Spline = dynamic(() => import('@splinetool/react-spline'), {
   suspense: true,
-  ssr: false,
 })
 
 

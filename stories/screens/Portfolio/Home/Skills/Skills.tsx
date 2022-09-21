@@ -19,7 +19,6 @@ import { Suspense } from 'react'
 
 const Spline = dynamic(() => import('@splinetool/react-spline'), {
   suspense: true,
-  ssr: false,
 })
 
 const SplineContext = createContext<Application | undefined>(undefined)
@@ -148,10 +147,10 @@ export const SkillsComponent = ({ skills }: { skills: JsonTree[] }) => {
           <div className={styles.skills}>
             <Suspense fallback={`Loading...`}>
 
-              <Spline
-                scene="https://prod.spline.design/XhjYI7UwM5Mo2WPm/scene.splinecode"
-                onLoad={onLoad}
-              />
+              {/*<Spline*/}
+              {/*  scene="https://prod.spline.design/XhjYI7UwM5Mo2WPm/scene.splinecode"*/}
+              {/*  onLoad={onLoad}*/}
+              {/*/>*/}
             </Suspense>
           </div>
           <div className={styles.select}>

@@ -11,12 +11,10 @@ import dynamic from "next/dynamic";
 import { Suspense } from 'react'
 
 const CartWidget = dynamic(() => import("../Shop/CartWidget/CartWidget"), {
-    ssr: false,
     suspense: true,
 })
 
 const Chatbot = dynamic(() => import("../Layout/Chatbot/chatbot"), {
-    ssr: false,
     suspense: true,
 })
 
