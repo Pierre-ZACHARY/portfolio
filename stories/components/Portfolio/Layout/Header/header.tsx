@@ -54,7 +54,7 @@ export const Header = ({content, home,  postId = undefined, className = null}: H
     return (
         <>
 
-            <motion.div layoutScroll className={[styles.navcontainer, className, state.scroll>0 ? styles.notOnTop : styles.onTop, home? styles.home : null].join(" ")}>
+            <motion.div layoutScroll={true} className={[styles.navcontainer, className, state.scroll>0 ? styles.notOnTop : styles.onTop, home? styles.home : null].join(" ")}>
                 <nav className={styles.navBar}>
                     {home ? <Link href="/">
                         <a className={styles.logoLink} id="header-name">

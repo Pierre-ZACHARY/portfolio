@@ -4,6 +4,7 @@ import headerSectionReducer from "../stories/components/Portfolio/Layout/Header/
 import chatbotReducer from "../stories/components/Portfolio/Layout/Chatbot/chatbotReducer";
 import cartReducer from "../stories/components/Portfolio/Shop/cartReducer";
 import SkillsReducer from "../stories/screens/Portfolio/Home/Skills/SkillsReducer";
+import LayoutReducer from "../stories/components/Portfolio/NewLayout/LayoutReducer";
 
 
 export const store =  configureStore({
@@ -12,7 +13,8 @@ export const store =  configureStore({
         headerSection: headerSectionReducer,
         chatbot: chatbotReducer,
         cart: cartReducer,
-        skills: SkillsReducer
+        skills: SkillsReducer,
+        layout: LayoutReducer
     },
 })
 

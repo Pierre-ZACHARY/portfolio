@@ -18,7 +18,7 @@ export const HeaderSectionV2 = ({keyList}: HeaderSectionV2Props) => {
         <>
             <AnimatePresence exitBeforeEnter>
                 <LayoutGroup id={"headerSectionV2"}>
-                    <section className={stylesSass.navbar} onPointerLeave={()=>setHovered("")}>
+                    <section className={stylesSass.navbar} onPointerLeave={()=>setHovered("")} >
                         <ul>
                             {
                                 keyList.map((value, index) => {

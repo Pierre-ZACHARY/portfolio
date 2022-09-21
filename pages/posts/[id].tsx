@@ -80,9 +80,17 @@ export default function Post({allPostsData, postData }: any) {
     const {t} = useTranslation();
 
     const [currentIndex, setCurrentIndex] = useState<number>(0);
+    const [viewCount, setViewCount] = useState<number>(0);
 
+    useEffect(()=>{
+        const unsub = onSnapshot(doc(db, "posts", postData.id), (doc) => {
+            // console.log("Current data: ", doc.data());
+            setViewCount(doc.data()?.views);
+        });
+        return ()=>unsub()
+    }, [])
     const handleScroll = () => {
-        const scrollPosition = window.scrollY+150;
+        const scrollPosition = window.scrollY+100;
         const nodeList = document.querySelectorAll("#Summary h1, #Summary h2, #Summary h3, #otherPosts h1, #comments h1");
         if(nodeList && nodeList.length){
             let prev = 0;
@@ -113,13 +121,14 @@ export default function Post({allPostsData, postData }: any) {
     });
 
     const onClickScrollTo = (index: number) =>{
-        document.getElementById("Summary")!.querySelectorAll("h1, h2, h3")[index].scrollIntoView()
+        const y = document.getElementById("Summary")!.querySelectorAll("h1, h2, h3")[index].getBoundingClientRect().y + window.scrollY - 100;
+        window.scrollTo({top: y, behavior: 'smooth'})
     }
 
 
     return (
 
-        <Layout>
+        <Layout selected={"blog"}>
             <Head>
                 <title>{postData.title}</title>
                 <meta
@@ -152,9 +161,11 @@ export default function Post({allPostsData, postData }: any) {
                     </ul>
                 </motion.nav>
                 <article className={utilStyles.article}>
+
                     <h1 className={utilStyles.headingXl}>{postData.title}</h1>
                     <div className={utilStyles.lightText}>
                         <Date dateString={postData.date} />
+                        <p>{t("common:viewCount")} : {viewCount} 👀</p>
                     </div>
                     <div id={"Summary"} dangerouslySetInnerHTML={{ __html: postData.contentHtml }}/>
                     <Link href={"/"}><a className={utilStyles.backToHome}>← {t("common:backToHome")}</a></Link>

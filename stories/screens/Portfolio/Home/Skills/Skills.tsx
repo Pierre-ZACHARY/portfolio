@@ -29,7 +29,7 @@ const ImageWithPresence = ({src, alt, title}: {src: string, alt: string, title: 
   const spline = useContext(SplineContext)
 
   useEffect(()=>{
-    console.log(spline);
+    // console.log(spline);
     if(spline){
       spline.findObjectByName(title)?.emitEvent("mouseDown");
     }

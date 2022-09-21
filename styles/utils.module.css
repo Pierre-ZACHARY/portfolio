@@ -92,6 +92,10 @@
     list-style-type: none;
 }
 
+.nav a{
+    color: var(--primary-color)
+}
+
 .mainHeading a, .subHeading a{
     cursor: pointer;
 }

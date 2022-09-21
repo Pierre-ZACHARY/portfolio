@@ -40,6 +40,7 @@ import {JsonTree} from "../../../../pages";
 import {Layout} from "../../../components/Portfolio/NewLayout/Layout";
 import dynamic from "next/dynamic";
 import { Suspense } from 'react'
+import useIsVisible from "../../../../lib/useIsVisible";
 
 const Spline = dynamic(() => import('@splinetool/react-spline'), {
   suspense: true,
@@ -60,12 +61,24 @@ export const Index = ({
   const { t } = useTranslation();
   const [copied, setCopied] = useState<boolean>(false);
   const [pageFullyLoaded, setPageFullyLoaded] = useState<boolean>(false);
+  const skillsRef = useRef(null);
+  const skillIsVisible = useIsVisible(skillsRef);
+  const contactRef = useRef(null);
+  const contactIsVisible = useIsVisible(contactRef);
+
 
   function handlePageLoad() {
-    setPageFullyLoaded(true);
+    setTimeout(()=>setPageFullyLoaded(true), 1500);
   }
-  useEffect(()=>{window.addEventListener('load', handlePageLoad);
-    return window.removeEventListener("load", handlePageLoad);
+  useEffect(()=>{
+    // console.log(pageFullyLoaded)
+    if (document.readyState === "complete") {
+    handlePageLoad();
+  }else{
+    window.addEventListener("load", handlePageLoad);
+    return ()=>window.removeEventListener("load", handlePageLoad);
+  }
+
   }, []);
   const splineRef = useRef<Application | undefined>(undefined);
 
@@ -144,9 +157,13 @@ export const Index = ({
         </div>
         <div className={styles.screen} id="second">
           <h1>{t("header:section2")}</h1>
-          {!pageFullyLoaded ?
-              <div>Loading...</div> :
-              <SkillsComponent skills={skills}/>}
+          <div className={styles.skillsContainer} ref={skillsRef}>
+            {pageFullyLoaded && skillIsVisible ?
+                <SkillsComponent skills={skills}/> :
+                <div >Loading...</div>
+            }
+          </div>
+
 
         </div>
         <div
@@ -154,13 +171,17 @@ export const Index = ({
           id="fifth"
         >
           <h1>{t("header:section5")}</h1>
-          <div className={styles.splineContainer}>
-            {!pageFullyLoaded ? <div>Loading...</div> :
+          <div className={styles.splineContainer} ref={contactRef}>
+            {pageFullyLoaded && contactIsVisible ?
+                <Suspense fallback={<div>Loading...</div>}>
+
                   <Spline
-                    onLoad={(spline: Application) => (splineRef.current = spline)}
-                    scene="https://prod.spline.design/ZF0DQUkk5PMyP6IZ/scene.splinecode"
-                    className={styles.splineObj}
-                  />
+                      onLoad={(spline: Application) => (splineRef.current = spline)}
+                      scene="https://prod.spline.design/ZF0DQUkk5PMyP6IZ/scene.splinecode"
+                      className={styles.splineObj}
+                    />
+                </Suspense>
+                :<div>Loading...</div>
             }
           </div>
           <div
