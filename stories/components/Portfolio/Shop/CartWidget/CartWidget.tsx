@@ -77,7 +77,7 @@ export default function CartWidget( ) {
                     [ContentState.CartOverView]: <CartOverView onContinue={()=>setContentState(ContentState.SelectShippingAddress)}/>,
                     [ContentState.SelectShippingAddress]: <SelectShippingAddress onContinue={()=>setContentState(ContentState.SelectShippingMethod)} onBack={()=>setContentState(ContentState.CartOverView)}/>,
                     [ContentState.SelectShippingMethod]: <SelectShippingMethod onBack={()=>setContentState(ContentState.SelectShippingAddress)} onContinue={()=>setContentState(ContentState.SelectPaymentMethod)}/>,
-                    [ContentState.SelectPaymentMethod]: <SelectPaymentProvider onBack={()=>setContentState(ContentState.SelectShippingMethod)} onContinue={()=>setContentState(ContentState.CartOverView)} order={order}/>,
+                    [ContentState.SelectPaymentMethod]: <SelectPaymentProvider onBack={()=>setContentState(ContentState.SelectShippingMethod)} onContinue={()=>setContentState(ContentState.CartOverView)} order={order} onCancel={()=>setContentState(ContentState.CartOverView)}/>,
                 }[contentState]}
             </div>
             }
@@ -286,7 +286,7 @@ function Form({clientSecret, cartId, onComplete} : any) {
     );
 }
 
-const SelectPaymentProvider = ({onBack, onContinue, order}: {onBack: Function, onContinue: Function, order: Order | undefined}) => {
+const SelectPaymentProvider = ({onBack, onContinue, order, onCancel}: {onBack: Function, onContinue: Function, order: Order | undefined, onCancel: Function}) => {
     const auth = getAuth()
     const [user, setUser] = useState<User | null>(null)
     const {t}=useTranslation();
@@ -327,7 +327,7 @@ const SelectPaymentProvider = ({onBack, onContinue, order}: {onBack: Function, o
                 <Elements stripe={stripePromise} options={{clientSecret}}>
                     <Form clientSecret={clientSecret} cartId={cart.id} onComplete={onContinue}/>
                 </Elements>
-                <div>
+                <div className={styles.backOrCancel}>
                     {!order ?
                         <button onClick={() => onBack()}><FontAwesomeIcon icon={faArrowLeft}/> {t("shop:Back")}</button> :
                     <button onClick={()=>{
