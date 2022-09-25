@@ -1,7 +1,10 @@
 import styles from "./Hero.module.sass"
 import Image from "next/image";
 import {AnimatePresence, motion } from "framer-motion";
-import Spline from "@splinetool/react-spline";
+import { Suspense } from 'react'
+const Spline = dynamic(() => import('@splinetool/react-spline'), {
+    suspense: true,
+})
 import {useEffect, useRef, useState} from "react";
 import {Application} from "@splinetool/runtime";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
@@ -9,6 +12,9 @@ import {faArrowDown, faArrowRight} from "@fortawesome/free-solid-svg-icons";
 import {useMorph, useMorphList } from 'react-morph';
 import {useTranslation} from "next-i18next";
 import Link from "next/link";
+import LoadAfterInteractive from "../../Utils/LoadAfterInteractive";
+import LoadWhenVisible from "../../Utils/LoadWhenVisible";
+import dynamic from "next/dynamic";
 
 let current_to: NodeJS.Timeout | null = null;
 
@@ -91,10 +97,14 @@ export default function Hero(){
         </div>
         <div className={styles.techStack}>
             <h1>Website stack</h1>
-            {/* TODO Lazy Load */}
             <div className={styles.splineContainer}>
-                <Spline scene="https://prod.spline.design/aFPE4IisyKst-uJq/scene.splinecode" onLoad={(spline)=>{splineRef.current=spline;}}/>
-
+                <LoadAfterInteractive>
+                    <LoadWhenVisible>
+                        <Suspense fallback={<div>Loading...</div>}>
+                            <Spline scene="https://prod.spline.design/aFPE4IisyKst-uJq/scene.splinecode" onLoad={(spline)=>{splineRef.current=spline;}}/>
+                        </Suspense>
+                    </LoadWhenVisible>
+                </LoadAfterInteractive>
             </div>
             <div className={styles.selectStack}>
                 <div className={selected == 0 ? styles.selected : ""} onClick={()=>select(0)}>

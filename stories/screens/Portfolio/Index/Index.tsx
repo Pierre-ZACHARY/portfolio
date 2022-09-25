@@ -42,6 +42,8 @@ import dynamic from "next/dynamic";
 import { Suspense } from 'react'
 import useIsVisible from "../../../../lib/useIsVisible";
 import Hero from "../../../components/Portfolio/Index/Hero/Hero";
+import LoadAfterInteractive from "../../../components/Portfolio/Utils/LoadAfterInteractive";
+import LoadWhenVisible from "../../../components/Portfolio/Utils/LoadWhenVisible";
 
 const Spline = dynamic(() => import('@splinetool/react-spline'), {
   suspense: true,
@@ -61,130 +63,39 @@ export const Index = ({
 }: IndexProps) => {
   const { t } = useTranslation();
   const [copied, setCopied] = useState<boolean>(false);
-  const [pageFullyLoaded, setPageFullyLoaded] = useState<boolean>(false);
-  const skillsRef = useRef(null);
-  const skillIsVisible = useIsVisible(skillsRef);
-  const contactRef = useRef(null);
-  const contactIsVisible = useIsVisible(contactRef);
-
-
-  function handlePageLoad() {
-    setTimeout(()=>setPageFullyLoaded(true), 1500);
-  }
-  useEffect(()=>{
-    // console.log(pageFullyLoaded)
-    if (document.readyState === "complete") {
-    handlePageLoad();
-  }else{
-    window.addEventListener("load", handlePageLoad);
-    return ()=>window.removeEventListener("load", handlePageLoad);
-  }
-
-  }, []);
   const splineRef = useRef<Application | undefined>(undefined);
-
-
-
-  const setScreenHeight = () => {
-    // let elem = document.getElementById(styles["mobilePresentation"])!;
-    // elem.setAttribute("style", "height:" + (window.innerHeight) + "px;");
-  };
-
-  useEffect(() => {
-    setScreenHeight();
-    window.addEventListener("resize", setScreenHeight);
-
-    return () => {
-      window.removeEventListener("resize", setScreenHeight);
-    };
-  }, []);
 
   return (
     <>
       <Layout selected={"about"}>
         <Hero/>
-        {/*<div className={styles.home} id="first">*/}
-        {/*  <div*/}
-        {/*    className={styles.screen}*/}
-        {/*    style={{ paddingTop: 0, minHeight: "100vh" }}*/}
-        {/*  >*/}
-        {/*    <div id={styles["mobilePresentation"]}>*/}
-        {/*      <Image*/}
-        {/*        id="profilePicture"*/}
-        {/*        src={profile}*/}
-        {/*        alt="Profile Picture"*/}
-        {/*        width="100%"*/}
-        {/*        height="100%"*/}
-        {/*        quality={"100"}*/}
-        {/*        priority*/}
-        {/*      />*/}
-        {/*      <h1 style={{ marginTop: 20 }}>Pierre Zachary</h1>*/}
-        {/*      <a href="/cv.pdf" target="_blank" aria-label={"Download CV"}>*/}
-        {/*        <button>*/}
-        {/*          <FontAwesomeIcon icon={faDownload} /> {t("index:downloadCv")}*/}
-        {/*        </button>*/}
-        {/*      </a>*/}
-        {/*      <Scrolldown />*/}
-        {/*    </div>*/}
-        {/*  </div>*/}
-        {/*  <div className={styles.screen}>*/}
-        {/*    <div className={styles.presentationContainer}>*/}
-        {/*      <motion.h2*/}
-        {/*        initial={{ opacity: 0, y: -50 }}*/}
-        {/*        viewport={{ once: true }}*/}
-        {/*        whileInView={{ opacity: 1, y: 0 }}*/}
-        {/*        transition={{ duration: 1, delay: 0.3 }}*/}
-        {/*      >*/}
-        {/*        {t("index:Welcome")} <span>👋</span>{" "}*/}
-        {/*        <span*/}
-        {/*          dangerouslySetInnerHTML={{ __html: t("index:IntroHtml") }}*/}
-        {/*        />{" "}*/}
-        {/*      </motion.h2>*/}
-        {/*      <motion.h2*/}
-        {/*        initial={{ opacity: 0, y: -50 }}*/}
-        {/*        viewport={{ once: true }}*/}
-        {/*        whileInView={{ opacity: 1, y: 0 }}*/}
-        {/*        transition={{ duration: 1, delay: 0.3 }}*/}
-        {/*        dangerouslySetInnerHTML={{ __html: t("index:Intro2Html") }}*/}
-        {/*      ></motion.h2>*/}
-        {/*      <motion.h2*/}
-        {/*        initial={{ opacity: 0, y: -50 }}*/}
-        {/*        viewport={{ once: true }}*/}
-        {/*        whileInView={{ opacity: 1, y: 0 }}*/}
-        {/*        transition={{ duration: 1, delay: 0.3 }}*/}
-        {/*        dangerouslySetInnerHTML={{ __html: t("index:Intro3Html") }}*/}
-        {/*      ></motion.h2>*/}
-        {/*    </div>*/}
-        {/*  </div>*/}
-        {/*</div>*/}
         <div className={styles.screen} id="second">
           <h1>{t("header:section2")}</h1>
-          <div className={styles.skillsContainer} ref={skillsRef}>
-            {pageFullyLoaded && skillIsVisible ?
-                <SkillsComponent skills={skills}/> :
-                <div >Loading...</div>
-            }
+          <div className={styles.skillsContainer}>
+            <LoadAfterInteractive>
+              <LoadWhenVisible>
+                <SkillsComponent skills={skills}/>
+              </LoadWhenVisible>
+            </LoadAfterInteractive>
           </div>
-
-
         </div>
         <div
           className={styles.screenContact + " " + styles.screen}
           id="fifth"
         >
           <h1>{t("header:section5")}</h1>
-          <div className={styles.splineContainer} ref={contactRef}>
-            {pageFullyLoaded && contactIsVisible ?
+          <div className={styles.splineContainer}>
+            <LoadAfterInteractive>
+              <LoadWhenVisible>
                 <Suspense fallback={<div>Loading...</div>}>
-
                   <Spline
                       onLoad={(spline: Application) => (splineRef.current = spline)}
                       scene="https://prod.spline.design/ZF0DQUkk5PMyP6IZ/scene.splinecode"
                       className={styles.splineObj}
-                    />
+                  />
                 </Suspense>
-                :<div>Loading...</div>
-            }
+              </LoadWhenVisible>
+            </LoadAfterInteractive>
           </div>
           <div
             className={sass.container}
