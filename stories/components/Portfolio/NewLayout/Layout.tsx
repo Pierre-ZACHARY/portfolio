@@ -11,6 +11,7 @@ import dynamic from "next/dynamic";
 import { Suspense } from 'react'
 import {useAppDispatch, useAppSelector} from "../../../../redux/hooks";
 import {setAnimateLine} from "./LayoutReducer";
+import InnerHeightCSSVariable from "../Utils/InnerHeightCSSVariable";
 
 const CartWidget = dynamic(() => import("../Shop/CartWidget/CartWidget"), {
     suspense: true,
@@ -111,7 +112,9 @@ export const Layout = (props: any) => {
                     <button className={styles.mobileShow} onClick={()=>{setMenuOpen(!menuOpen)}}><FontAwesomeIcon icon={menuOpen ? faXmark : faBars}/></button>
                 </motion.header>
                 <main>
-                    {props.children}
+                    <InnerHeightCSSVariable>
+                        {props.children}
+                    </InnerHeightCSSVariable>
                 </main>
                 <motion.div layoutScroll className={styles.fixedWidget}>
                     {pageFullyLoaded &&
