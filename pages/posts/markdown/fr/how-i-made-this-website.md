@@ -1,141 +1,143 @@
 ---
-title: 'How I made my website'
+title: "Comment j'ai créé mon site"
 date: '2022-09-21'
-description: 'In this post I try to explain the different tech stack, such as **Next** and **React** I chose and the decision I took to build my personal website.'
+description: "Dans ce poste j'explique les différentes technologies que j'ai utilisé, comme **Next** et **React**, et les décisions que j'ai pris pour créer mon portfolio."
 ---
 
-So you want to know how I made this website ? You are in the right place, in this post I'll explain every part of it tech stack, and why I took this particular decision to build my portfolio.
+Vous souhaitez savoir comment j'ai créer mon site ? Vous êtes au bon endroit, dans ce poste, je vais détaillé les différentes technologies que j'ai utilisé et pourquoi je les ai choisies.
 
-# The framework
+# Le Framework
 
-In first, I had to choose the framework, all I have known for front development was Angular, but everytime I start a new personal project I like to try something different.
+La première étape était de choisir le Framework pour construire mon site. Le seul framework javascript que je connaissais jusque là était Angular, cependant lorsque je démarre un nouveau projet personnel, j'apprécie essayer un nouveau langage ou une nouvelle technologie pour moi.
 
 ## Next & React
 
-So, I have to say that, even now, **React** is still the most popular client-side framework, and since I had never touched it, I wanted to give it a try.
-But React alone isn't great for **Performance & SEO**, because it needs to load all the javascript before rendering any HTML to the client, which may take some time, and robots may not find in-page headings and that would be bad for SEO.
-What you can do to solve this is to use another framework to render html on the server and then give it to the client without any need of loading javascript. A popular framework for that is **Next.js**.
+Encore aujourd'hui, **React** est toujours le framework front-end le plus populaire, et comme je ne l'avais jamais utilisé, c'était l'occasion pour moi de l'essayer.
+Cependant, React seul n'est pas idéal pour certaines raisons comme le **SEO**, ou le **temps de chargement** de la page, étant donné que l'application a besoin de chargé l'ensemble du javascript avant d'afficher un DOM, et pour cette raison, les robots qui parcourraient la page pourraient ne pas trouver les balises internes à la page.
+Pour résoudre ce problème, vous pouvez utiliser un autre framework permettant de faire le rendu de la page courante sur le serveur, avant de l'envoyer au client. **Next** est un framework populaire permettant de faire ça.
 
-Now you may ask, what are my feedback on these two ?
+Vous pouvez alors vous demandez quel est mon avis sur ces deux frameworks ? 
 
 Well, at first I have to say that they are very intuitive to use :
-- React as a good **Components based architecture** which make your view really re-usable. Also, even if it's hooks seems hard to understand, you can start using **useState or useContext** really easily.
-- Next take all the routing of your application based on your server file-system, even for dynamic path, very easy to use. Also, if you have dynamic content on your pages, Next allow you to choose your refreshing method, with SSG, SSR, ISR or CSR :
-  - **Server Side Generation**, your page content is only loaded at build time
-  - **Server Side Rendering**, it reloads your page whenever a request comes in, or once a request comes in after x seconds
-  - **Incremental Server side rendering**, for dynamic content where you may have thousands of pages, you may not want to generate them at build time. For that, next allow you to generate your content when the first request comes in for this specific pages. And it's just one line of codes
-  - **Client Side Rendering**, the classic React behaviour, great when you need specific info from the user navigator, like window size, system theme...
-- Also, Next as some built-in components, like Image, Script, Links, to optimise your pages load, your images sizes, and to make your application feel like a SPA, even if it isn't.
+Premièrement j'aimerai dire que ces deux frameworks auront été très faciles à prendre en main :
+- React possède une **architecture basée sur le pattern Composite**, ce qui rend vos vues très réutilisables. En plus de cela, les hooks basiques de react comme **useState ou useContext** sont très simple à prendre en main.
+- Next s'occupera du routing de l'application à la place de React, en fonction de votre architecture de fichiers, y compris pour les chemins dynamiques. De plus, si le contenu de votre page est dynamique, Next permet de choisir la méthode de rendu qui vous serait idéal, avec le SSG, SSR, ISR ou encore CSR : 
+  - **Server Side Generation**, cela permet de faire le rendu de votre page seulement lors du build du serveur
+  - **Server Side Rendering**, cela permet de recharger votre page à chaque requête, ou lors d'une requête après un nombre de temps donné
+  - **Incremental Server side rendering**, pour les sites qui possèderaient un nombre indéterminé de chemin, ou un très grand nombre de pages à générer, rendant le build (trop) long, il est possible de ne faire le rendu statique de la page que lorsque la première requête pour ce chemin arrive, avec seulement une ou deux lignes de codes.
+  - **Client Side Rendering**, le comportement classique de React, idéal quand vous avez besoin d'informations à propos du navigateur de l'utilisateur, comme la taille de sa fenêtre, le thème de son appareil... 
+- De plus, Next possède plusieurs composants React pré-faits, comme next/Image, Script, Link, permettant d'optimiser le contenu de la page, ou d'effectuer des transitions vers d'autres routes comme sur une SPA, même s'il ne s'agit pas d'une SPA
 
-But there are some cons, for Next you can't just import images from any CDN with the Image optimised component, also if you use **Storybook** to test your React Components, you'll have to do some manual installation to make it work with Next components.
-On the React side, even if I said that the component architecture is really intuitive and hooks are easy to use, the way it's designed may lead to performance issues, like with a bad **setState inside a useEffect**.
-Did you already try to send a notification to your server whenever your client finished loading the pages ? To increment a view counter or something... Well since React 18, use-effect is called 2 times, so if you want your counter to be called one time you have to make a dedicated hook.
+Il y a cependant quelques inconvénients, Next ne vous permet pas d'optimiser des images venant de n'importe quel url, vous devez au préalable les importants sur votre serveur de stockage. Si vous utilisez **Storybook** avec Next, vous devrez adapter votre configuration pour pouvoir forcer le rendu de vos components, étant donné que Storybook ne supporte pas le SSR, et le rendre compatible avec Next/image.
+Pour react, la façon de rafraichir l'affichage peut potentiellement causer des problèmes de performance. Sans parler du DOM virtuel, on risque rapidement de se retrouver avec une boucle infinie en plaçant un **setState dans un useEffect**, ou bien juste de recréer un component un nombre non-nécessaire de fois.
+Aussi, si vous avez déjà essayé d'envoyer une notification à votre serveur quand votre client a fini de charger, vous devez savoir que depuis React 18, useEffect est toujours appelé 2 fois, il faut donc créer un nouveau hook pour éviter un second appel de fonction au chargement d'une page.
 Sometimes I just want to change a specific variable in my pages, but since this variable is at the top of the page hierarchy, it'll **re-render all the page components**, not great for performances.
-Also, whenever you want to share state between your components, even with useContext, it seems hard to do for no reason.
+Parfois vous pouvez vouloir modifier une variable spécifique de votre page, mais comme cette variable appartient à une vue en haut de votre hiérarchie, cela provoque le rafraichissement de tous vos components, ce qui n'est pas nécessaire.
+Enfin, quand vous souhaitez partager l'état d'un component, vous devez, par défaut, vous servir de useContext, ce qui peut vous demander de remonter très haut dans votre hiérarchie pour le faire.
 
 ## Redux
-And, that's where Redux comes in.
-Redux is a tool that wrap your application in a **single context**, providing your components only the necessary state and refreshing them only when needed.
-It's really great to helps you share the state of your components.
+Pour ce dernier point, un outil très connu nommé **Redux** permet d'éviter d'avoir à toujours modifier son architecture. 
+Redux permet d'envelopper votre application dans un seul context, et de rafraichir vos components seulement lorsqu'un changement d'état les concerne 
+C'est très utile pour partager l'état de vos composants React.
 
-It comes with some cool **dev-tools** which helps you go back and forward your application usage, and that also helps you share the application state of a User that got a bug.
+Redux possède aussi plusieurs **dev-tools** permettant de vous aidez à observer l'état de votre application, revenir en arrière, mais aussi à partager l'état de l'application d'un utilisateur qui aurait eu un bug non-souhaité.
 
-But that's not so convenient, you'll have a lot of boilerplate code to write yourself.
-I know there are **Redux alternatives** with less boilerplate code, but since Redux is so popular I had to test it to get my own opinion on it.
+Selon moi l'inconvénient de Redux est qu'il y a beaucoup de code similaire à réécrire vous-même à chaque fois que vous voulez ajouter un état ou une nouvelle action.
+Je sais qu'il existe plusieurs alternatives à Redux plus simples à utiliser, cependant Redux est le plus populaire pour gérer les états des applications React et je voulais d'abord l'utiliser pour me faire ma propre opinion.
 
 ## i18n & Next-Themes
 
-Next comes with some notable plugin ( which really are plug-in ), such as Next-i18n, a **server side version of the same plugin for React**, very good for SEO when you have translated pages.
-And **Next-Theme**, which good with hooks to make it easy to change your app theme, use the user-system one, and apply class on your body depending on the selected-themes, easy to use.
+Il existe plusieurs plugins notables avec Next, comme Next-i18n, une version serveur du plugin React du même nom, permettant de faire le rendu de vos textes traduits directement sur le serveur, ce qui est idéal pour le SEO.
+Next-Theme propose certains hooks permettant de modifier le thème et appliquer des classes au body facilement, en plus de s'adapter au thème du système de l'utilisateur.
 
-# Databases, Tools & Other microservices
+# Bases de données, outils et autres micro-services
 
-Since I'm not a designer nor an excellent Front-End developer capable of making my own pages designs, by making this website I wanted to show that I'm capable of implementing **multiples features** and using some tools / microservices.
+Comme je ne suis pas un designer ou un développeur spécialisé en Front-End, capable de créer mes propres design, je voulais montrer en faisant ce site que j'étais capable d'intégrer **plusieurs fonctionnalités** à mon site, en utilisant différents microservices et outils dédiés.
 
 ## Framer Motion
 
-At first I was making my animation using the default React Animation library, and then I discovered **Framer Motion** and it's awesome **Layout** animation features, which automatically animate any change of your component css.
+Dans un premier temps, j'écrivais mes animations à la main, en utilisant la library d'animations React par défaut. Puis j'ai découvert **Framer Motion** et ses animations **Layout**, qui animate automatiquement n'importe quel changement dans le DOM d'un composants données, y compris un changement dans ses règles css.
 
-Moreover, the animation using Framer are so smooth that I wanted to remade mine with it.
+En plus les animations qui utilisent Framer sont tellement fluide que j'ai préféré réécrire un certain nombre des miennes avec Framer.
 
-The only cons I find is that when animating something inside a fixed component, it may give wrong animation when loading a new page ( which reset the scroll position ).
+Le seul problème que j'ai repéré est que les animations Layout à l'intérieur d'un composant "fixed" (un header par exemple) provoque des défauts lors d'un changement de page avec le routeur de Next.
 
 ## Firebase
 
-The most common features to be implemented on a website is authentication. Well I have to say that using Firebase, there isn't much left to do from the developer...
+La fonctionnalité la plus classique sur toute application est authentification. Je dois dire qu'avec Firebase, il n'y a pas énormément de travail à faire pour la réaliser.
 
-Firebase allowed me to **easily set-up user authentication**, sending user-related mails, like password reset, and storing user-related information with its **real time database**.
+Firebase m'a permis de mettre en place facilement la connexion des utilisateurs, cela comprend l'envoi de mail comme le fait de modifier son mot de passe, ainsi que stocker les informations propres à chaque utilisateur, comme les commentaires, avec sa base de données en temps réel **Firestore**
+J'ai aussi utilisé la fonctionnalité de stockage pour uploader des photos lors de l'envoi de commentaires.
 
-I've also used it to make a **real-time comment section**, handling medias, upvotes and replies.
-
-I haven't much to say beside its **great developer experience**. I know that Firebase may become very costly when your application grow in scale, but that's a personal website, so I don't really have to worry about that.
+Je n'ai pas grand-chose d'autres à dire en dehors de l'expérience développeur très satisfaisante. Je sais que Firebase devient cher lorsque le nombre d'utilisateur actif devient intéressant, mais pour mon site web cela semblait suffisant.
 
 ## Spline
 
-Since 3D websites is very popular and wanted to add some 3D to mine. I had some basic knowledge on 3D, with an experience on OpenGL ES, making my own game without a game-engine on an Android Device. I also already used blender for some modeling, but I haven't that much experience with it.
+Comme la 3D devient de plus en plus populaire à l'intérieur des applications webs, je voulais ajouter quelques scènes à la mienne. J'ai quelques connaissances basiques en 3D, j'ai une expérience de réalisation d'un mini moteur de jeu avec OpenGLES pour Android, et j'ai aussi un peu utilisé Blender pour la modélisation de quelques objets basiques pour un jeu Unity.
 
-So, I needed something easy, and Spline, is really easy. Their **webapp** allow you to model your 3D objects, add materials, and to add events to move them from user-input, or from your javascript code. There even is a **React SDK** for easy integration on your website.
+Pour mon site, je voulais une solution très simple à prendre en main, et Spline a très bien répondu à ma demande. Leur application web vous permet de modéliser vos objets, créer des matériaux basiques et ajouter des events que vous pouvez appeler via du code javascript. Il y a même un **SDK React** ce qui permet d'intégrer très facilement votre scène sur votre site.
 
-You are quite limited, in terms of features, compare to blender, but that's enough for web 3D. You can also **benchmark your scene** when finished to understand where you need optimisation.
+De manière générale, vous êtes très limité sur ce que vous pouvez faire par rapport à blender, cependant, cela est idéal pour le web. Vous pouvez même réalisé un benchmark de votre scène pour savoir si elle ne risque pas de détruire les performances de votre site.
 
-## Hand-made Chatbot
+## Chatbot fait-main
 
-A chatbot is a very common feature on web, it allows costumer to ask questions without the need to send a mail or contact the support by any other way.
+Un chatbot est une fonctionnalité très commune pour le web, cela permet aux utilisateurs de prendre contact avec vous sans avoir à passer par l'envoi de mail ou autre moyen, et potentiellement recevoir une réponse immédiate.
 
-I already had to create chatbots, in my other web experiences, but I often had to use a specific sdk with dedicated application, and I have none of these for my website.
+J'ai déjà eu l'opportunité de créer des chatbots, dans mes autres expériences de développeur web. Mais, le plus souvent on utilise un SDK existant et une app déjà construit, ce qui a un coût.
 
-Another option I have, is to use an existing application, like **Discord** or Slack, and to share messages between my website and the app. Discord bots support two languages : **Javascript ( node ) and Python**.
-Ideally, I would like to put the server-side code for my discord bot on my website, so I don't have to run another server instance. But there is one problem : I use Vercel for hosting my Next app, and Vercel doesn't allow your app to run 24/24 ( only boot up when needed ), and my chatbot, potentially need to maintain its **websocket** connection for longer than the maximum function runtime allowed by Vercel. In others words, **I can't host my discord bot on Vercel**.
+L'autre option que j'avais était d'utiliser une application existante, comme **Discord** ou Slack, et de partager les messages du chatbot entre un salon de l'application et mon site. Le SDK pour créer un bot discord est disponible dans deux langages : **Javascript (node) et python**
+Dans mon cas, le mieux serait d'héberger le bot discord sur le serveur web qui utilise déjà node.js. Malheureusement je ne peux pas faire ça à cause des limitations de mon hébergeur (Vercel), qui ne permet pas de garder un websocket ouvert indéfiniment, ce qui est potentiellement nécessaire pour un chatbot ( au moins plusieurs minutes ... ).
+J'ai alors choisi d'héberger mon bot discord sur **Heroku**, j'ai écrit un petit script **Python**, pour ouvrir un websocket sur un endpoint, écouter les messages provenant de ce websocket et les retransmettre sur discord (et inversement).
 
-So I have chosen to host it on **Heroku**. I made a little **Python** script to listen for messages from both sides ( web & discord ), and send it to the other side. Then I made a widget on my website that connect to my bot websocket endpoint, and interact with it.
-Sadly, one month after I have done that, I heard that free-plan will be removed from Heroku. I plan to change it to **Railway**, which offer 5$ monthly, by then.
+Malheureusement j'ai appris quelques semaines après qu'Heroku arrêtera bientôt de proposer son service gratuitement, j'ai prévu de migrer mon bot sur **Railway** d'ici là.
 
 ## Medusa
 
-Another really common feature for web is **e-commerce**. I already have experience with **shopify**, and so I wanted to try something **open-source**, also I wanted to integrate the storefront to my website ( I could have used the default storefront of medusa ).
+Une autre fonctionnalité très commune sur le web est l'**e-commerce**. J'avais déjà quelques expériences avec **shopify**, mais j'ai jamais eu l'occasion d'intégrer un front à un site existant. De plus je souhaitais tester une alternative **open-source**
 
-[Medusa]("https://medusajs.com/") is an open-source e-commerce platform composed of **3 services** : the core, the admin/back and the storefront ( optional ). Its core is a REST Api that handle every transaction for admin and client front, from getting items info to completing the order.
+[Medusa]("https://medusajs.com/") est une plate-forme d'e-commerce open-source composé **3 services** : Le serveur, le panneau d'administration, et éventuellement le front du shop. Le serveur est une Api REST qui s'occupe des interactions entre Admin et Client, que ce soit pour remplir le panier ou passer commande.
 
-It also has a javascript client to helps you integrate its front to any node based websites.
+Medusa possède aussi son propre **client javascript** permettant de l'intégrer facilement à votre site.
 
-The only cons I found is that **it may lack of features** when it comes to customising your items, like, you can't complete an order without choosing a shipping address ( isn't great digital product for example ), you can't also choose what thumbnail to display for a specific item variant. And it would also be cool to have a way to directly propose subscription ( order an item every x day or something like that ... )
+Le seul point négatif que je pourrais noter est que Medusa peut **manquer de fonctionnalités**, concernant la customisation de vos produits, ou encore le fait de devoir choisir une adresse de livraison, y compris si votre produit est digitale. De plus j'aurais aimé pouvoir proposer des abonnements, pour passer commande automatiquement tous les x temps. 
 
-For information, I used **Stripe** and **Paypal** for processing payments.
+Pour information, j'ai utilisé **Stripe** et **Paypal** pour gérer les paiements.
 
 ## Storybook
 
-Last tools I want to talk about is **Storybook**. I already mentioned it before, saying that it isn't easy to integrate with Next, since Storybook can't do SSR.
+Le dernier outil que j'aimerais présenter est **Storybook**. Je l'ai déjà mentionné en disant qu'il n'était pas facile de l'intégrer avec Next, mais Storybook a de vrais atouts.
 
-But there are cool features, like **component isolation testing or visual regression**. And for people that use **Figma** or Any UI/UX software to design their view, it's easy to integrate your design components to Storybook and begin working on them within it.
+Storybook permet de **tester vos components en isolation**, ainsi que de réaliser des tests de **régression visuel**, pour savoir s'il y a eu une modification visuel entre deux commits. De plus si vous utilisez **Figma** pour maquetter votre UI, il est très facile d'intégrer vos composants Figma dans Storybook.
 
-# What I would do if I had to remake this website
-The first problem I have with my website is the huge amount of refresh on every component, because of React's rendering architecture. It makes some part of the app, load and reload more than needed and make the navigation feel slower.
+# Ce que je modifierais si je devais refaire mon site
+Le premier problème que j'ai avec mon site est le grand de nombre de rafraichissements de l'ensemble de mes composants à cause de l'architecture de React. Cela pourrait encore être largement optimisé en s'attardant sur chacun, ou alors il existe des alternatives à React, comme Solid, évitant ce genre de problème.
 
 Another point that I don't like is that there is no way to chose **when to load a specific component**.
-You can do that when loading a script, with the Next/Script component, and it's built-in for Images, but the only thing you can do with components is to lazy load them using **React Suspense** ( that will execute the component Javascript **ASAP**, but will show the page before the execution is finished ).
-In my case I would like a way to say "don't load this until the page is fully interactive", but I can't figure a way to do that.
+Un autre point qui m'embête est qu'il n'y a pas vraiment de façon de choisir **quand un component doit être chargé** par défaut.
+Vous pouvez le faire en chargeant un script, avec le composant Next/Script, mais pour les components React vous pouvez seulement choisir de les Lazy Load avec React **Suspense** (mais cela execute le code Javascript du component concerné dès le chargement de la page, seul composant ne s'affiche pas).
+Dans mon cas, je souhaitais empêcher de charger un composant tant que la page n'est pas fini de charger, et pour cela j'ai eu besoin de créer un nouveau component...
 
-The most recent frameworks handle this by adopting the **"Island Architecture"**, this make you able to send the javascript to the client **only when needed**.
-Two interesting examples for that are [Astro]("https://astro.build/") and [Fresh]("https://fresh.deno.dev/"). Better than that, Astro makes you able to **use any Front framework**, like React, Angular or View... So if you don't like one, or if you need a specific library that doesn't exist on your framework, you can still change without remaking all your app.
+Les frameworks les plus récents permettent de gérer ça en utilisant une **architecture par îlots**. Cela vous permet de choisir, pour chaque élément de votre page, quand envoyer le javascript au client ( **hydratation partielle** ).
+Deux frameworks intéressants adoptant cette architecture sont [Astro]("https://astro.build/") et [Fresh]("https://fresh.deno.dev/"). En plus de ça, Astro vous permet d'utiliser **n'importe quel framework Front**, comme React Angular ou Vue, pour vous permettre de changer à tout moment, ou de travailler avec des développeurs qui n'utilise pas forcément tous le même framework.
+La deuxième chose dont je voudrais parler est qu'il aurait été une meilleure expérience de développeur pour moi si j'avais adopté l'architecture par microservices dès le début de mon développement. Cela signifie qu'il aurait été plus pratique de regrouper tous mes services au même endroit en utilisant **Docker ou Kubernetes**, plutôt que d'hébergez mes services à plusieurs endroits avec Vercel, Heroku ou encore Railway... Cela aurait aussi permis de réduire le temps de communication entre chaque service.
+Dans ce contexte, j'aimerais essayer d'utiliser des solutions un peu plus open-sources que celles que j'ai utilisées, pour pouvoir les héberger localement. Comme alternative à Firebase je pourrais me servir de [Supabase]("https://supabase.com/"), [Appwrite]("https://appwrite.io/"), ou encore [SurrealDb]("https://surrealdb.com/").
+Aussi, si je devais refaire mon site depuis le départ, je commencerais par mettre en place [Meilisearch]("https://www.meilisearch.com/"), pour pouvoir indexer chacune de mes pages, ce qui me faciliterai le fait de mettre en place un système de recherche globale. 
+J'aurais aussi commencé par mettre en place un serveur DHCP pour centralisé l'envoi de mail.
 
-The second thing I want to mention is that I would be a better experience for me to adopt the microservices' architecture at the beginning of my work. And by that I mean to deploy my app, not by using multiples host like Vercel, Heroku or Railway, but using Docker or Kubernetes to deploy **all my microservices at the same place** ( and on the same server, which can improve communications speed between them ).
-For that purposes I would like to try more Open-Source Solutions that I can self-host. As an alternative to Firebase I could have used [Supabase]("https://supabase.com/"), [Appwrite]("https://appwrite.io/"), or maybe [SurrealDb]("https://surrealdb.com/").
-Also, if I had to remake the website from the beginning, I would start by setting up [Meilisearch]("https://www.meilisearch.com/"), so that I would be able to index all my pages to have a single entrypoint for real-time search, and a single DHCP Server.
+Un autre type de microservices que je n'ai pas du tout utilisé ici, sont tout ce qui concerne le traitement des erreurs ou les analytics. Deux outils open-sources pour ces tâches seraient [GlitchTip]("https://glitchtip.com/") et [Plausible]("https://github.com/plausible/analytics").
 
-Another kind of microservices that I didn't use are errors tracking or analytics. Two great open-sources tools to do that are [GlitchTip]("https://glitchtip.com/") and [Plausible]("https://github.com/plausible/analytics").
+Enfin, j'utilise actuellement le système de fichier ainsi que le format markdown en tant que CMS dans mon dépôt git. Cela me donne une bonne expérience de développeur mais ce n'est pas idéal comme CMS à partager avec des personnes non-initié. Une façon plus adéquate à tous de gérer le contenu du site serait d'utiliser un outil adapté, comme [Strapi]("https://strapi.io/") ou [Tina]("https://tina.io/").
 
-Finally, I'm currently using markdown as a CMS inside my git repo, that give me a good developer experience, but it may not be very scalable for a webapp to share with non-developer people. A better way to do Content Management would be to use a dedicated tool, like [Strapi]("https://strapi.io/") or [Tina]("https://tina.io/").
+# Codepen & autres sources d'inspirations
 
-# Codepen & others sources of inspiration
-
-I would add that I got inspired by some codepen, are others works :
-- [The javascript confetti screen]("https://codepen.io/Gthibaud/pen/ENzXbp") from Gthibaud, which I used on the order screen when you just completed an order.
-- [FontAwesome]("https://fontawesome.com/"), all my icons comes from their free tier
-- [The magic card effect]("https://codepen.io/gayane-gasparyan/pen/jOmaBQK") from Gayane, which I used for my blog posts cards
-- [The chat notification widget]("https://codepen.io/coswise/pen/NWqNWqe") from Cosimo Scarpa, I didn't really used his code but remade something similar using React and Framer
-- [The drag confirm button]("https://codepen.io/coswise/pen/LYNaJrO") also from Cosimo Scarpa, that I used for my logout confirmation on the user profile page
-- [A little credit card animated button]("https://codepen.io/TurkAysenur/pen/wvaGqXW") from Aysenur Turk. I used it on my card widget when you click on confirm payment.
-- [The blog of Maxime Heckel]("https://blog.maximeheckel.com/"), for information about Framer Motion ( as well as officials docs ).
-- I also got alot of inspiration by the work of [Aaron Iker]("https://codepen.io/aaroniker")
+J'aimerais ajouter que j'ai été inspiré par plusieurs réalisations, sur codepen ou autre :
+- [The javascript confetti screen]("https://codepen.io/Gthibaud/pen/ENzXbp") de Gthibaud, que j'ai utilisé pour la page commande validée.
+- [FontAwesome]("https://fontawesome.com/"), tous mes icons viennent de leur version gratuite.
+- [The magic card effect]("https://codepen.io/gayane-gasparyan/pen/jOmaBQK") de Gayane, que j'ai utilisé pour les cartes de mes posts.
+- [The chat notification widget]("https://codepen.io/coswise/pen/NWqNWqe") de Cosimo Scarpa, je n'ai pas utilisé son code, mais j'ai refait quelque chose de similaire avec Framer
+- [The drag confirm button]("https://codepen.io/coswise/pen/LYNaJrO") aussi de Cosimo Scarpa, que j'ai utilisé pour mon bouton de déconnexion sur ma page profile utilisateur
+- [A little credit card animated button]("https://codepen.io/TurkAysenur/pen/wvaGqXW") de Aysenur Turk. Je l'ai utilisé pour mon bouton de validation de paiement par carte bleue.
+- [The blog of Maxime Heckel]("https://blog.maximeheckel.com/"), pour obtenir des informations sur Framer (en plus de la documentation officielle)
+- Je me suis aussi énormément inspiré du travail d'[Aaron Iker]("https://codepen.io/aaroniker")
 
 

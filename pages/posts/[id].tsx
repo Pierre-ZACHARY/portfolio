@@ -5,7 +5,7 @@ import utilStyles from "/styles/utils.module.css";
 import {useTranslation} from "next-i18next";
 import {serverSideTranslations} from "next-i18next/serverSideTranslations";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faArrowRight, faCircle} from "@fortawesome/free-solid-svg-icons";
+import {faArrowRight, faChevronDown, faChevronRight, faCircle} from "@fortawesome/free-solid-svg-icons";
 import {useEffect, useRef, useState} from "react";
 import {Comment} from "lib/Comment";
 import {getDimensions, useEffectOnce} from "lib/utils";
@@ -29,6 +29,7 @@ import FirestoreDataConverter = firebase.firestore.FirestoreDataConverter;
 import {Blogslider} from "../../stories/components/Portfolio/Index/BlogSlider/blogslider";
 import {DisplayComments} from "../../stories/components/Portfolio/Posts/DisplayComments/DisplayComments";
 import { Layout } from "stories/components/Portfolio/NewLayout/Layout";
+import sass from "./blogpost.module.sass";
 
 interface PostDb{
     id: string,
@@ -81,6 +82,7 @@ export default function Post({allPostsData, postData }: any) {
 
     const [currentIndex, setCurrentIndex] = useState<number>(0);
     const [viewCount, setViewCount] = useState<number>(0);
+    const [openSummary, setOpenSummary] = useState<boolean>(false)
 
     useEffect(()=>{
         const unsub = onSnapshot(doc(db, "posts", postData.id), (doc) => {
@@ -166,6 +168,23 @@ export default function Post({allPostsData, postData }: any) {
                     <div className={utilStyles.lightText}>
                         <Date dateString={postData.date} />
                         <p>{t("common:viewCount")} : {viewCount} 👀</p>
+                    </div>
+                    <div className={sass.mobileSass}>
+                        <div className={sass.summaryTitle} onClick={()=>setOpenSummary(!openSummary)}>
+                            <h2>{t("common:summary")}...</h2>
+                            <FontAwesomeIcon icon={openSummary ? faChevronDown : faChevronRight}/>
+                        </div>
+                        {openSummary && <ul>
+                            {postData.titles.map(({
+                                                      heading,
+                                                      content
+                                                  }: { heading: string, content: string }, index: number) => {
+                                return <li key={index}
+                                           className={[heading == "h1" ? utilStyles.mainHeading : utilStyles.subHeading, currentIndex == index ? utilStyles.currentHeading : null].join(" ")}>
+                                    <a onClick={() => onClickScrollTo(index)}>{content}</a>
+                                </li>
+                            })}
+                        </ul>}
                     </div>
                     <div id={"Summary"} dangerouslySetInnerHTML={{ __html: postData.contentHtml }}/>
                     <Link href={"/"}><a className={utilStyles.backToHome}>← {t("common:backToHome")}</a></Link>

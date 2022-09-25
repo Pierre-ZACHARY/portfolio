@@ -19,7 +19,7 @@ What you can do to solve this is to use another framework to render html on the 
 Now you may ask, what are my feedback on these two ?
 
 Well, at first I have to say that they are very intuitive to use :
-- React as a good **Components based architecture** which make your view really re-usable. Also, even if it's hooks seems hard to understand, you can start using **useState or useContext** really easily.
+- React has a good **Components based architecture** which make your view really re-usable. Also, even if it's hooks seems hard to understand, you can start using **useState or useContext** really easily.
 - Next take all the routing of your application based on your server file-system, even for dynamic path, very easy to use. Also, if you have dynamic content on your pages, Next allow you to choose your refreshing method, with SSG, SSR, ISR or CSR : 
   - **Server Side Generation**, your page content is only loaded at build time
   - **Server Side Rendering**, it reloads your page whenever a request comes in, or once a request comes in after x seconds
@@ -40,13 +40,13 @@ It's really great to helps you share the state of your components.
 
 It comes with some cool **dev-tools** which helps you go back and forward your application usage, and that also helps you share the application state of a User that got a bug.
 
-But that's not so convenient, you'll have a lot of boilerplate code to write yourself.
-I know there are **Redux alternatives** with less boilerplate code, but since Redux is so popular I had to test it to get my own opinion on it.
+But that's not so convenient, you'll have a lot of template code to write yourself.
+I know there are **Redux alternatives** with less template code, but since Redux is so popular I had to test it to get my own opinion on it.
 
 ## i18n & Next-Themes
 
 Next comes with some notable plugin ( which really are plug-in ), such as Next-i18n, a **server side version of the same plugin for React**, very good for SEO when you have translated pages.
-And **Next-Theme**, which good with hooks to make it easy to change your app theme, use the user-system one, and apply class on your body depending on the selected-themes, easy to use.
+And **Next-Theme**, with hooks to make it easy to change your app theme, use the user-system one, and apply class on your body depending on the selected-themes, easy to use.
 
 # Databases, Tools & Other microservices
 
@@ -111,9 +111,9 @@ But there are cool features, like **component isolation testing or visual regres
 # What I would do if I had to remake this website
 The first problem I have with my website is the huge amount of refresh on every component, because of React's rendering architecture. It makes some part of the app, load and reload more than needed and make the navigation feel slower. 
 
-Another point that I don't like is that there is no way to chose **when to load a specific component**. 
+Another point that I don't like is that there is no default way to chose **when to load a specific component**. 
 You can do that when loading a script, with the Next/Script component, and it's built-in for Images, but the only thing you can do with components is to lazy load them using **React Suspense** ( that will execute the component Javascript **ASAP**, but will show the page before the execution is finished ).
-In my case I would like a way to say "don't load this until the page is fully interactive", but I can't figure a way to do that.
+In my case I would like a way to say "don't load this until the page is fully interactive", to do that I had to make another component that wait for window.onLoad...
 
 The most recent frameworks handle this by adopting the **"Island Architecture"**, this make you able to send the javascript to the client **only when needed**. 
 Two interesting examples for that are [Astro]("https://astro.build/") and [Fresh]("https://fresh.deno.dev/"). Better than that, Astro makes you able to **use any Front framework**, like React, Angular or View... So if you don't like one, or if you need a specific library that doesn't exist on your framework, you can still change without remaking all your app.
