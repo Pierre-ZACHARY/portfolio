@@ -1,18 +1,29 @@
 import styles from "./Hero.module.sass"
 import Image from "next/image";
-import { motion } from "framer-motion";
+import {AnimatePresence, motion } from "framer-motion";
 import Spline from "@splinetool/react-spline";
 import {useEffect, useRef, useState} from "react";
 import {Application} from "@splinetool/runtime";
 import {FontAwesomeIcon} from "@fortawesome/react-fontawesome";
-import {faArrowDown} from "@fortawesome/free-solid-svg-icons";
+import {faArrowDown, faArrowRight} from "@fortawesome/free-solid-svg-icons";
+import {useMorph, useMorphList } from 'react-morph';
+import {useTranslation} from "next-i18next";
+import Link from "next/link";
 
 let current_to: NodeJS.Timeout | null = null;
 
 export default function Hero(){
 
+    const {t} = useTranslation();
 
+    const firstRow = "Welcome on my website!"
+    const secondRow = "This is a features-oriented portfolio, with"
+    const featuresString = "E-Commerce;Internationalization;Blog;Comment Section;Authentication;Custom Search;3D Scenes;Theming;Animations;Lighthouse's optimisations;Chat-Bot;RealTime Data"
+
+    const features = featuresString.split(";")
+    const morph = useMorph()
     const [selected, setSelected] = useState(2)
+    const [feature, setFeatures] = useState(0)
     const splineRef = useRef<Application | null>(null);
     useEffect(()=>{
         current_to = setTimeout(()=>setSelected((selected+1)%3), 4000);
@@ -20,6 +31,9 @@ export default function Hero(){
             splineRef.current?.findObjectByName("Rectangle "+selected)?.emitEvent("mouseDown")
         }
     }, [selected])
+    useEffect(()=>{
+        setTimeout(()=>setFeatures((feature+1)%features.length), 4000)
+    }, [feature])
     useEffect(()=>{
         if(splineRef.current){
          if(window.screen.width <= 768){
@@ -43,35 +57,41 @@ export default function Hero(){
 
         </div>
         <div className={styles.presentation}>
-            <div className={styles.line}>
+
+            <div className={styles.line+" "+styles.profile}>
                 <Image src={"/profile.jpg"} width={40} height={40} className={styles.profilePicture}/>
                 <h3>Pierre Zachary</h3>
             </div>
             <div className={styles.line}>
                 <h1>Hello</h1>
                 <motion.div className={styles.emoji} initial={{rotateZ: 0}} animate={{rotateZ: [0, 45, -45, 45, -45, 0]}} transition={{delay: 1, rotateZ: {duration: 1.4}}}><span>👋</span></motion.div>
-                <h1>Welcome</h1> <h1>on</h1> <h1>my</h1> <h1>website !</h1>
+                {firstRow.split(" ").map((t)=><h1 key={t}>{t}</h1>)}
             </div>
-            <p>➡️I'm a French IT student interested in all sorts of software development</p>
-            <h2>This is a <u>features-oriented</u> portfolio ⬇️</h2>
-            <div className={styles.featuresContainer}>
-                <h1>E-Commerce</h1>
-                <h2>Internationalization</h2>
-                <h1>Blog</h1>
-                <h2>Comment Section</h2>
-                <h1>Authentication</h1>
-                <h2>Custom Search</h2>
-                <h1>3D Scenes</h1>
-                <h2>Theming</h2>
-                <h1>Animations</h1>
-                <h2>Lighthouse Optimised</h2>
-                <h1>Chat-bot</h1>
-                <h2>Realtime</h2>
+            <p>➡️ I'm a French IT student interested in all sorts of software development</p>
+
+            <div className={styles.line}>
+                {secondRow.split(" ").map((t)=><h2 key={t}>{t}</h2>)}
+                {
+                    features.map((title, index)=>{
+                        return <>{ feature==index ?
+                                    <h2 id={styles["h2Colored"+feature%4]} className={styles.feature}><FontAwesomeIcon icon={faArrowRight}/> {title}</h2>
+                            : <></>
+                                }</>
+                    })
+                }
             </div>
 
+            <Link href={"/cv.pdf"}><a target={"__blank"}>
+                <div className={styles.buttonShadow}>
+                    <span id={styles["background-gradient"+(feature%4)]} className={styles.background}/>
+                    <button id={styles["gradient"+(feature%4)]}>{t("index:downloadCv")}</button>
+                    <button className={styles.hidden}>{t("index:downloadCv")}</button>
+                </div>
+            </a></Link>
         </div>
         <div className={styles.techStack}>
             <h1>Website stack</h1>
+            {/* TODO Lazy Load */}
             <div className={styles.splineContainer}>
                 <Spline scene="https://prod.spline.design/aFPE4IisyKst-uJq/scene.splinecode" onLoad={(spline)=>{splineRef.current=spline;}}/>
 

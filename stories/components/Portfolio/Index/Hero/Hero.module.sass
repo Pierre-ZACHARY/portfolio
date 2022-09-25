@@ -37,6 +37,8 @@
       justify-content: center
       flex-direction: column
       align-items: center
+      &>h1
+        margin: 0
       .splineContainer
         width: calc(var(--side-width))
         height: calc(var(--side-width) * 0.7 + 40px)
@@ -52,8 +54,8 @@
           display: flex
           flex-direction: column
           background-color: var(--background-highlight)
-          padding: 20px
-          align-items: center
+          padding: 15px
+          //align-items: center
           border-radius: 20px
           max-width: var(--side-width)
           cursor: pointer
@@ -62,30 +64,110 @@
             color: var(--background)
           h1
             margin: 0
-            font-size: calc(var(--font-medium) - 2px)
+            line-height: 1.5
+            font-size: calc(var(--font-medium) - 5px)
           p
-            font-size: calc(var(--font-small) - 2px)
+            font-size: calc(var(--font-small) - 5px)
             margin: 0
             padding: 0
+            line-height: 1
 
     &.presentation
       width: 100%
       height: 100%
+      min-height: var(--side-width)
       position: relative
       display: flex
       justify-content: center
       flex-direction: column
+      @media (max-width: 768px)
+        padding: 0 0 150px
+      .buttonShadow
+        margin: 20px auto
+        padding: 6px
+        border-radius: 50em
+        position: relative
+        width: fit-content
+
+        &>span
+          &.background
+            position: absolute
+            top: 0
+            left: 0
+            right: 0
+            bottom: 0
+            filter: blur(20px)
+            border-radius: 50em
+            opacity: 0.2
+            &#background-gradient0
+              background: linear-gradient(to right, #7F2AC7 0%, #F90182 100%)
+            &#background-gradient1
+              background: linear-gradient(to right, #0380EF 0%, #05DCD9 100%)
+            &#background-gradient2
+              background: linear-gradient(to right, #FF564C 0%, #F9C62A 100%)
+            &#background-gradient3
+              background: linear-gradient(to right, #02e890 0%, #4fc946 100%)
+
+        button
+          &.hidden
+            visibility: hidden
+            position: relative
+          width: fit-content
+          margin: 0
+          position: absolute
+          line-height: 1.2
+          font-size: 18px
+          padding: 10px 20px
+          color: var(--primary)
+          border: 1px solid transparent
+          &#gradient0
+            background: linear-gradient(to right, var(--background-highlight), var(--background-highlight)) padding-box, linear-gradient(to right, #7F2AC7 0%, #F90182 100%) border-box
+          &#gradient1
+            background: linear-gradient(to right, var(--background-highlight), var(--background-highlight)) padding-box, linear-gradient(to right, #0380EF 0%, #05DCD9 100%) border-box
+          &#gradient2
+            background: linear-gradient(to right, var(--background-highlight), var(--background-highlight)) padding-box, linear-gradient(to right, #FF564C 0%, #F9C62A 100%) border-box
+          &#gradient3
+            background: linear-gradient(to right, var(--background-highlight), var(--background-highlight)) padding-box, linear-gradient(to right, #02e890 0%, #4fc946 100%) border-box
+
       .profilePicture
         border-radius: 50%
       .line
         display: flex
         align-items: center
-        gap: 3px 10px
+        gap: 3px 7px
         flex-wrap: wrap
+        .feature
+          width: 100%
+        #h2Colored0
+          background: linear-gradient(to right, #7F2AC7 0%, #F90182 100%)
+          -webkit-background-clip: text
+          -webkit-text-fill-color: transparent
+          path
+            fill: #7F2AC7
+        #h2Colored1
+          background: linear-gradient(to right, #0380EF 0%, #05DCD9 100%)
+          -webkit-background-clip: text
+          -webkit-text-fill-color: transparent
+          path
+            fill: #0380EF
+        #h2Colored2
+          background: linear-gradient(to right, #FF564C 0%, #F9C62A 100%)
+          -webkit-background-clip: text
+          -webkit-text-fill-color: transparent
+          path
+            fill: #FF564C
+        #h2Colored3
+          background: linear-gradient(to right, #02e890 0%, #4fc946 100%)
+          -webkit-background-clip: text
+          -webkit-text-fill-color: transparent
+          path
+            fill: #02e890
+        &.profile
+          margin-bottom: 10px
 
       h1,h2,h3
         margin: 0
-
+        line-height: 1.3
       p
         margin: 20px 0
       h1
@@ -95,51 +177,31 @@
         font-weight: 700
         font-size: var(--font-xlarge)
       p
+        font-size: var(--font-medium)
         em
           font-size: 14px
 
       .emoji
-        height: 50px
-        width: 50px
+        height: 40px
+        width: 40px
         display: flex
-        font-size: 40px
+        font-size: 35px
         align-items: center
         justify-content: center
         position: relative
         margin-left: 30px
-        margin-right: -25px
-        margin-bottom: -20px
+        margin-right: -15px
+        margin-bottom: -15px
+        @media (max-width: 720px)
+          font-size: 30px
+          height: 30px
+          width: 30px
+          margin-right: -10px
+          margin-bottom: -10px
+          svg
+            top: -10px
+            left: -15px
         span
           position: absolute
-          top: -25px
-          left: -30px
-      .featuresContainer
-        width: 100%
-        overflow: hidden
-        max-width: var(--side-width)
-        display: flex
-        justify-content: space-between
-        flex-wrap: wrap
-        align-items: baseline
-        gap: 0 10px
-        h1,h2
-          white-space: nowrap
-          margin: 0
-          line-height: 1.3
-          font-size: var(--font-medium)
-          &:nth-child(4n)
-            background: linear-gradient(to right, #7F2AC7 0%, #F90182 100%)
-            -webkit-background-clip: text
-            -webkit-text-fill-color: transparent
-          &:nth-child(4n+1)
-            background: linear-gradient(to right, #0380EF 0%, #05DCD9 100%)
-            -webkit-background-clip: text
-            -webkit-text-fill-color: transparent
-          &:nth-child(4n+2)
-            background: linear-gradient(to right, #FF564C 0%, #F9C62A 100%)
-            -webkit-background-clip: text
-            -webkit-text-fill-color: transparent
-          &:nth-child(4n+3)
-            background: linear-gradient(to right, #02e890 0%, #4fc946 100%)
-            -webkit-background-clip: text
-            -webkit-text-fill-color: transparent
+          top: -15px
+          left: -20px
