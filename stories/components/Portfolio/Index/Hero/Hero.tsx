@@ -22,12 +22,10 @@ export default function Hero(){
 
     const {t} = useTranslation();
 
-    const firstRow = "Welcome on my website!"
-    const secondRow = "This is a features-oriented portfolio, with"
-    const featuresString = "E-Commerce;Internationalization;Blog;Comment Section;Authentication;Custom Search;3D Scenes;Theming;Animations;Lighthouse's optimisations;Chat-Bot;RealTime Data"
-
+    const firstRow = t("index:firstRow")
+    const secondRow = t("index:secondRow")
+    const featuresString = t("index:features")
     const features = featuresString.split(";")
-    const morph = useMorph()
     const [selected, setSelected] = useState(2)
     const [feature, setFeatures] = useState(0)
     const splineRef = useRef<Application | null>(null);
@@ -58,7 +56,7 @@ export default function Hero(){
 
     return <div className={styles.main}>
         <div className={styles.arrowScrollForMore}>
-            <p>Scroll for more</p>
+            <p>{t("index:scrollForMore")}</p>
             <motion.div initial={{y: -50, opacity: 0}} animate={{y: 0, opacity: 1}} transition={{ease: "easeInOut", repeat: Infinity, duration: 2}}><FontAwesomeIcon icon={faArrowDown}/></motion.div>
 
         </div>
@@ -69,11 +67,11 @@ export default function Hero(){
                 <h3>Pierre Zachary</h3>
             </div>
             <div className={styles.line}>
-                <h1>Hello</h1>
+                <h1>{t("index:Welcome")}</h1>
                 <motion.div className={styles.emoji} initial={{rotateZ: 0}} animate={{rotateZ: [0, 45, -45, 45, -45, 0]}} transition={{delay: 1, rotateZ: {duration: 1.4}}}><span>👋</span></motion.div>
                 {firstRow.split(" ").map((t)=><h1 key={t}>{t}</h1>)}
             </div>
-            <p>➡️ I'm a French IT student interested in all sorts of software development</p>
+            <p>➡️ {t("index:intro")}</p>
 
             <div className={styles.line}>
                 {secondRow.split(" ").map((t)=><h2 key={t}>{t}</h2>)}
@@ -96,7 +94,7 @@ export default function Hero(){
             </a></Link>
         </div>
         <div className={styles.techStack}>
-            <h1>Website stack</h1>
+            <h1>{t("index:websiteStack")}</h1>
             <div className={styles.splineContainer}>
                 <LoadAfterInteractive>
                     <LoadWhenVisible>

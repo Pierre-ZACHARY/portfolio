@@ -3,7 +3,13 @@
   "Intro3Html": "N’hésitez pas à me <strong>contacter</strong> via le widget dédié à cet effet en bas à droite de votre écran, par mail ou sur les réseaux sociaux.",
   "IntroHtml": "Welcome on my website, it allow me to <strong>show</strong> and <strong>inform</strong> you about my productions.",
   "MostViewed": "Most Viewed",
-  "Welcome": "Hi",
+  "Welcome": "Hello",
   "downloadCv": "View my Resume",
-  "lastUpdated": "Last Updated"
+  "features": "E-Commerce;Internationalization;Blog;Comments Sections;Authentication;Instant Search;3D Scenes;Theming;Animations;Lighthouse's optimisations;Chat-Bot;RealTime Data",
+  "firstRow": "Welcome on my website!",
+  "intro": "I'm a French IT student interested in all sorts of software development",
+  "lastUpdated": "Last Updated",
+  "scrollForMore": "Scroll for more",
+  "secondRow": "This is a features-oriented portfolio, with",
+  "websiteStack": "Website' stack"
 }
