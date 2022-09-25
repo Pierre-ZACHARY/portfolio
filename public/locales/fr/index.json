@@ -5,11 +5,11 @@
   "MostViewed": "Le plus vue",
   "Welcome": "Bonjour",
   "downloadCv": "Voir mon CV",
-  "features": "E-Commerce;Multi-Languages;Blog;Sections Commentaires;Authentification;Recherche Instantannée;Scènes en 3D;Plusieurs Thèmes;Animations;Optimisation pour lighthouse;Chat-Bot;Données en Temps Réel",
+  "features": "E-Commerce;Multi-Languages;Blog;Sections Commentaires;Authentification;Recherche Instantannée;Scènes en 3D;Multi-Thèmes;Animations;Optimisation pour lighthouse;Chat-Bot;Données en Temps Réel",
   "firstRow": "Bienvenue sur mon site!",
   "intro": "Je suis un étudiant intéressé par tous types de développement d'applications",
   "lastUpdated": "Le plus récent",
   "scrollForMore": "Voir plus ",
-  "secondRow": "Ce portfolio présente plusieurs features, avec ",
+  "secondRow": "Ce portfolio présente plusieurs fonctionnalités, tel que :",
   "websiteStack": "Technologies du site"
 }
