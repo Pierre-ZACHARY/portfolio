@@ -74,15 +74,10 @@ export default function Hero(){
             <p>➡️ {t("index:intro")}</p>
 
             <div className={styles.line}>
-                {secondRow.split(" ").map((t)=><h2 key={t}>{t}</h2>)}
-                {
-                    features.map((title, index)=>{
-                        return <>{ feature==index ?
-                                    <h2 id={styles["h2Colored"+feature%4]} className={styles.feature}><FontAwesomeIcon icon={faArrowRight}/> {title}</h2>
-                            : <></>
-                                }</>
-                    })
-                }
+                <h2>{secondRow}</h2>
+
+                <h2 id={styles["h2Colored"+feature%4]} className={styles.feature}><FontAwesomeIcon icon={faArrowRight}/> {features[feature]}</h2>
+
             </div>
 
             <Link href={"/cv.pdf"}><a target={"__blank"}>
