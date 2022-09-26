@@ -6,18 +6,6 @@ const nextConfig = {
   i18n,
   images: {
     domains: ["firebasestorage.googleapis.com", "medusa-public-images.s3.eu-west-1.amazonaws.com"]
-  },
-  webpack: (config) => {
-    config.module.rules.push({
-      test: /\.pdf$/,
-      use: {
-        loader: 'file-loader',
-        options: {
-          name: '[path][name].[ext]',
-        },
-      },
-    });
-    return config;
   }
 }
 

@@ -80,7 +80,7 @@ export default function Hero(){
 
             </div>
 
-            <a href={"/files/cv.pdf"}
+            <a href={"https://drive.google.com/file/d/1-_4kCuDi_V5K9odDXkmihN3gThERwhgh/view"}
                target="_blank"
                rel="noopener noreferrer" >
                 <div className={styles.buttonShadow}>
