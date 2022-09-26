@@ -63,7 +63,7 @@ export default function Hero(){
         <div className={styles.presentation}>
 
             <div className={styles.line+" "+styles.profile}>
-                <Image src={"/profile.jpg"} width={40} height={40} className={styles.profilePicture}/>
+                <Image alt={"profile-picture"} src={"/profile.jpg"} width={40} height={40} className={styles.profilePicture}/>
                 <h3>Pierre Zachary</h3>
             </div>
             <div className={styles.line}>

@@ -123,7 +123,8 @@ export const Index = ({
               <a href={"mailto:pierre.zachary45@gmail.com"} aria-label={"pierre.zachary45@gmail.com"}>
                 pierre.zachary45@gmail.com
               </a>
-              <a aria-label={"Copy Email"}
+              <a href={"#"}
+                  aria-label={"Copy Email"}
                 onClick={() => {
                   navigator.clipboard
                     .writeText("pierre.zachary45@gmail.com")

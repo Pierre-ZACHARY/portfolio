@@ -148,12 +148,16 @@ export default function Post({allPostsData, postData }: any) {
                                 <a onClick={()=>onClickScrollTo(index)}>{content}</a>
                             </li>
                         })}
-                        <li className={currentIndex == postData.titles.length ? utilStyles.currentHeading : ""}>
+                        {allPostsData.length>0 && <li className={currentIndex == postData.titles.length ? utilStyles.currentHeading : ""}>
                             <a href={"#otherPosts"}>
-                                {currentIndex == postData.titles.length ? <motion.div layout={"position"} layoutId={"arrow"} style={{position: "absolute", left: "-20px"}}><FontAwesomeIcon style={{color: "var(--secondary-color)"}} icon={faArrowRight}/></motion.div> : null}
+                                {currentIndex == postData.titles.length ?
+                                    <motion.div layout={"position"} layoutId={"arrow"}
+                                                style={{position: "absolute", left: "-20px"}}><FontAwesomeIcon
+                                        style={{color: "var(--secondary-color)"}} icon={faArrowRight}/>
+                                    </motion.div> : null}
                                 {t("common:otherPosts")}
                             </a>
-                        </li>
+                        </li>}
                         <li className={currentIndex == postData.titles.length+1 ? utilStyles.currentHeading : ""}>
                             <a href={"#comments"}>
                                 {currentIndex == postData.titles.length+1 ? <motion.div layout={"position"} layoutId={"arrow"} style={{position: "absolute", left: "-20px"}}><FontAwesomeIcon style={{color: "var(--secondary-color)"}} icon={faArrowRight}/></motion.div> : null}
@@ -184,15 +188,25 @@ export default function Post({allPostsData, postData }: any) {
                                     <a onClick={() => onClickScrollTo(index)}>{content}</a>
                                 </li>
                             })}
+                            {allPostsData.length>0 && <li className={currentIndex == postData.titles.length ? utilStyles.currentHeading : ""}>
+                                <a href={"#otherPosts"}>
+                                    {t("common:otherPosts")}
+                                </a>
+                            </li>}
+                            <li className={currentIndex == postData.titles.length+1 ? utilStyles.currentHeading : ""}>
+                                <a href={"#comments"}>
+                                    {t("common:comments")}
+                                </a>
+                            </li>
                         </ul>}
                     </div>
                     <div id={"Summary"} dangerouslySetInnerHTML={{ __html: postData.contentHtml }}/>
                     <Link href={"/"}><a className={utilStyles.backToHome}>← {t("common:backToHome")}</a></Link>
 
-                    <div id={"otherPosts"}><h1>{t("common:otherPosts")} :</h1></div>
-                    <div id={"BlogSlider"}>
+                    {allPostsData.length>0 && <><div id={"otherPosts"}><h1>{t("common:otherPosts")} :</h1></div>
+                        <div id={"BlogSlider"}>
                         <Blogslider content={allPostsData} />
-                    </div>
+                        </div></>}
                     <div id={"comments"}><h1>{t("common:comments")} :</h1></div>
                     <DisplayComments postId={postData.id}/>
                 </article>
