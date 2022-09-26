@@ -120,14 +120,14 @@ export const Index = ({
                   ?.emitEvent("mouseDown");
               }}
             >
-              <a href={"mailto:pierre.zachary45@gmail.com"} aria-label={"pierre.zachary45@gmail.com"}>
-                pierre.zachary45@gmail.com
+              <a href={"mailto:pierre.zacharyfr@gmail.com"} aria-label={"pierre.zacharyfr@gmail.com"}>
+                pierre.zacharyfr@gmail.com
               </a>
               <a href={"#"}
                   aria-label={"Copy Email"}
                 onClick={() => {
                   navigator.clipboard
-                    .writeText("pierre.zachary45@gmail.com")
+                    .writeText("pierre.zacharyfr@gmail.com")
                     .then((r) => {
                       setCopied(true);
                       setTimeout(() => setCopied(false), 3000);

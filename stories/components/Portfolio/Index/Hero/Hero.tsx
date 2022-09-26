@@ -80,13 +80,15 @@ export default function Hero(){
 
             </div>
 
-            <Link href={"/cv.pdf"}><a target={"__blank"}>
+            <a href={"/cv.pdf"}
+               target="_blank"
+               rel="noopener noreferrer" >
                 <div className={styles.buttonShadow}>
                     <span id={styles["background-gradient"+(feature%4)]} className={styles.background}/>
                     <button id={styles["gradient"+(feature%4)]}>{t("index:downloadCv")}</button>
                     <button className={styles.hidden}>{t("index:downloadCv")}</button>
                 </div>
-            </a></Link>
+            </a>
         </div>
         <div className={styles.techStack}>
             <h1>{t("index:websiteStack")}</h1>
